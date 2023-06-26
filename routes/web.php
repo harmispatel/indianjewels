@@ -43,5 +43,12 @@ Route::group(['prefix' => 'admin'], function ()
 
         // Logout Route
         Route::get('logout', [AuthController::class,'AdminLogout'])->name('admin.logout');
+
+        //Categories Route
+        Route::get('/categories',[CategoryController::class,'index'])->name('admin.categories');
+        Route::get('/load-categories',[CategoryController::class,'loadCategories'])->name('load-categories');
+        Route::post('/add-category',[CategoryController::class,'store'])->name('add-category');
+        Route::post('/edit-category',[CategoryController::class,'edit'])->name('edit-category');
+        Route::post('/update-category',[CategoryController::class,'update'])->name('update-category');
     });
 });

@@ -52,7 +52,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'https://192.168.1.73/indianjewel/'),
+    'url' => env('APP_URL', 'https://192.168.1.78/indianjewel/'),
 
     'asset_url' => env('ASSET_URL', null),
 
