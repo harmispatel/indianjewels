@@ -22,3 +22,23 @@
 
 <!-- Template Main CSS File -->
 <link href="{{ asset('public/assets/css/style.css') }}" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.min.css">
+
+<style>
+    
+    /* Toggle Status Button */
+    .form-check-input:checked{
+        background-color: #198754!important;
+        border-color: #198754!important;
+    }
+    .form-check-input{
+        background-color: #e47b86!important;
+        border-color: #e47b86!important;
+    }
+    .form-switch .form-check-input
+    {
+        width: 45px!important;
+        height: 25px!important;
+    }
+</style>

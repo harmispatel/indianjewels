@@ -1,10 +1,13 @@
  <!-- Vendor JS Files -->
  <script src="{{ asset('public/assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-<script src="{{ asset('public/assets/vendor/simple-datatables/simple-datatables.js') }}"></script>
-
-
+ 
+ 
+ 
+ 
  {{-- Jquery --}}
  <script src="{{ asset('public/assets/js/jquery.min.js') }}"></script>
+ 
+ <script src="{{ asset('public/assets/vendor/simple-datatables/simple-datatables.js') }}"></script>
 
 {{-- Sweet Alert --}}
 <script src="{{ asset('public/assets/js/sweet-alert.js') }}"></script>
@@ -27,5 +30,24 @@
         "positionClass": "toast-top-right",
         timeOut: 4000
     }
+
+
+    @if(Session::has('message'))
+  toastr.options =
+  {
+  	"closeButton" : true,
+  	"progressBar" : true
+  }
+  		toastr.success("{{ session('message') }}");
+  @endif
+
+  @if(Session::has('error'))
+  toastr.options =
+  {
+  	"closeButton" : true,
+  	"progressBar" : true
+  }
+  		toastr.error("{{ session('error') }}");
+  @endif   
 
 </script>

@@ -14,6 +14,11 @@
             </a>
             <ul id="catalogue-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
+                    <a href="{{ route('tags')}}">
+                    <i class="bi bi-circle"></i><span>Tags</span>
+                    </a>
+                </li>
+                <li>
                     <a href="#">
                     <i class="bi bi-circle"></i><span>Categories</span>
                     </a>
