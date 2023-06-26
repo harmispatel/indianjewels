@@ -17,7 +17,7 @@
                 </nav>
             </div>
             <div class="col-md-4" style="text-align: right;">
-                <a data-bs-target="{{ route('categories.add-category') }}" class="btn btn-sm new-category btn-primary">
+                <a href="{{ route('categories.add-category') }}" class="btn btn-sm new-category btn-primary">
                     <i class="bi bi-plus-lg"></i>
                 </a>
             </div>
@@ -57,11 +57,10 @@
                         <thead>
                             <tr>
                                 <th>Id</th>
-                                <th>Name</th>
+                                <!-- <th>Name</th>
                                 <th>Image</th>
-                                <!-- <th>Parent Category</th> -->
                                 <th>Status</th>
-                                <th>Actions</th>
+                                <th>Actions</th> -->
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -106,10 +105,10 @@
                 order: [0, 'desc'],
                 columns: [
                     {data: 'id', name: 'id'},
-                    {data: 'name', name: 'name'},
-                    {data: 'image', name: 'image'},
-                    {data: 'status', name: 'status'},
-                    {data: 'actions', name: 'actions'},
+                    // {data: 'name', name: 'name'},
+                    // {data: 'image', name: 'image'},
+                    // {data: 'status', name: 'status'},
+                    // {data: 'actions', name: 'actions'},
                 ]
             });
         }
