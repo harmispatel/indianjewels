@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\{AuthController,DashboardController};
+use App\Http\Controllers\{AuthController,DashboardController,CategoryController};
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
@@ -46,9 +46,10 @@ Route::group(['prefix' => 'admin'], function ()
 
         //Categories Route
         Route::get('/categories',[CategoryController::class,'index'])->name('admin.categories');
-        Route::get('/load-categories',[CategoryController::class,'loadCategories'])->name('load-categories');
-        Route::post('/add-category',[CategoryController::class,'store'])->name('add-category');
-        Route::post('/edit-category',[CategoryController::class,'edit'])->name('edit-category');
-        Route::post('/update-category',[CategoryController::class,'update'])->name('update-category');
+        Route::get('categories/load-categories',[CategoryController::class,'loadCategories'])->name('categories.load-categories');
+        Route::get('categories/add/category',[CategoryController::class,'create'])->name('categories.add-category');
+        Route::post('categories/store/category',[CategoryController::class,'store'])->name('categories.store-category');
+        Route::get('categories/edit/category/{id}',[CategoryController::class,'edit'])->name('categories.edit-category');
+        Route::post('categories/update/category',[CategoryController::class,'update'])->name('categories.update-category');
     });
 });

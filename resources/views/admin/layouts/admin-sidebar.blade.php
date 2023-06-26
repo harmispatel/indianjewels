@@ -14,7 +14,7 @@
             </a>
             <ul id="catalogue-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="#">
+                    <a href="{{ route('admin.categories') }}">
                     <i class="bi bi-circle"></i><span>Categories</span>
                     </a>
                 </li>
