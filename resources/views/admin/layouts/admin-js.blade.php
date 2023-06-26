@@ -1,5 +1,7 @@
  <!-- Vendor JS Files -->
  <script src="{{ asset('public/assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ asset('public/assets/vendor/simple-datatables/simple-datatables.js') }}"></script>
+
 
  {{-- Jquery --}}
  <script src="{{ asset('public/assets/js/jquery.min.js') }}"></script>

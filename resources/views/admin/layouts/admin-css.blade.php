@@ -7,6 +7,9 @@
 <link href="{{ asset('public/assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
 <link href="{{ asset('public/assets/vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
 <link href="{{ asset('public/assets/vendor/remixicon/remixicon.css') }}" rel="stylesheet">
+<link href="{{ asset('public/assets/vendor/simple-datatables/style.css') }}" rel="stylesheet">
+
+
 
 {{-- Toastr --}}
 <link href="{{ asset('public/assets/vendor/toastr/css/toastr.min.css') }}" rel="stylesheet">
