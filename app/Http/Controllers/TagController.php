@@ -1,0 +1,173 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Tag;
+use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
+use App\Http\Requests\TagRequest;
+
+class TagController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        return view('admin.tags.tags');
+    }
+
+     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function loadtags(Request $request)
+    {
+        if ($request->ajax())
+        {
+            $tags= Tag::get();
+            return DataTables::of($tags)
+            ->addIndexColumn()
+            ->addColumn('changestatus', function ($row){
+                $status = $row->status;
+                $checked = ($status == 1) ? 'checked' : '';
+                $checkVal = ($status == 1) ? 0 : 1;
+                $tag_id = isset($row->id) ? $row->id : '';
+                return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus('.$checkVal.','.$tag_id.')" id="statusBtn" '.$checked.'></div>';
+            })
+            ->addColumn('actions',function($row)
+            {
+                $tag_id = isset($row->id) ? $row->id : '';
+                $action_html = '';
+                $action_html .= '<a href="'.route('tags.edit',$tag_id).'" class="btn btn-sm btn-primary me-1"><i class="bi bi-pencil"></i></a>';
+                $action_html .= '<a   onclick="deleteTag('.$tag_id.')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
+                return $action_html;
+            })
+            ->rawColumns(['changestatus','actions'])
+            ->make(true);
+        }
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        return view('admin.tags.create_tags');  
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(TagRequest $request)
+    {
+        try {
+            $input = $request->except('_token');
+
+            Tag::create($input);
+
+            return redirect()->route('tags')->with('message','Tags added Successfully');
+        } catch (\Throwable $th) {
+            //throw $th;
+            return redirect()->route('tags')->with('error','Something with wrong');
+            
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Tag  $tag
+     * @return \Illuminate\Http\Response
+     */
+    public function status(Request $request)
+    {
+        $status = $request->status;
+        $id = $request->id;
+        try {
+            $input = Tag::find($id);
+            $input->status =  $status;
+            $input->update();
+
+            return response()->json([
+                'success' => 1,
+                'message' => "Tag Status has been Changed Successfully..",
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'success' => 0,
+                'message' => "Internal Server Error!",
+            ]);
+        }
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Models\Tag  $tag
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Tag $tag,$id)
+    {
+        
+         $data = Tag::where('id',$id)->first();
+        return view('admin.tags.edit_tags', compact('data'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Tag  $tag
+     * @return \Illuminate\Http\Response
+     */
+    public function update(TagRequest $request, Tag $tag)
+    {
+        try {
+            $input = $request->except('_token','id');
+     
+            $tags = Tag::find($request->id);
+            $tags->update($input);
+            return redirect()->route('tags')->with('message','Tags added Successfully');
+        } catch (\Throwable $th) {
+            
+            return redirect()->route('tags')->with('error','Something with wrong');
+
+        }
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Tag  $tag
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Request $request)
+        {
+            
+            try {
+                $tags = Tag::where('id',$request->id)->delete();
+                return response()->json([
+                    'success' => 1,
+                    'message' => "Tag delete Successfully..",
+                ]);
+            } catch (\Throwable $th) {
+                return response()->json([
+                    'success' => 0,
+                    'message' => "Something with wrong",
+                ]);
+            }   
+
+            //
+        }
+}

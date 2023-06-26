@@ -14,13 +14,18 @@
             </a>
             <ul id="catalogue-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
+                    <a href="{{ route('tags')}}">
+                        <i class="bi bi-circle"></i><span>Tags</span>
+                    </a>
+                </li>
+                <li>
                     <a href="{{ route('admin.categories') }}">
-                    <i class="bi bi-circle"></i><span>Categories</span>
+                        <i class="bi bi-circle"></i><span>Categories</span>
                     </a>
                 </li>
                 <li>
                     <a href="#">
-                    <i class="bi bi-circle"></i><span>Data Tables</span>
+                        <i class="bi bi-circle"></i><span>Data Tables</span>
                     </a>
                 </li>
             </ul>

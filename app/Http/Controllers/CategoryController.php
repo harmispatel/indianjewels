@@ -47,7 +47,7 @@ class CategoryController extends Controller
                     $checked = ($status == 1) ? 'checked' : '';
                     $checkVal = ($status == 1) ? 0 : 1;
                     $category_id = isset($row->id) ? $row->id : '';
-                    return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus('.$checkVal.','.$amenity_id.','.$row->vendor_amenities_count.')" id="statusBtn" '.$checked.'></div>';
+                    return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus()" id="statusBtn" '.$checked.'></div>';
                 })
                 ->addColumn('actions',function($row)
                 {

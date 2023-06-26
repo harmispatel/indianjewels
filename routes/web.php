@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\{AuthController,DashboardController,CategoryController};
+use App\Http\Controllers\{AuthController,DashboardController,CategoryController,TagController};
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
@@ -51,5 +51,15 @@ Route::group(['prefix' => 'admin'], function ()
         Route::post('categories/store/category',[CategoryController::class,'store'])->name('categories.store-category');
         Route::get('categories/edit/category/{id}',[CategoryController::class,'edit'])->name('categories.edit-category');
         Route::post('categories/update/category',[CategoryController::class,'update'])->name('categories.update-category');
+        
+        // Tag
+        Route::get('tags',[TagController::class,'index'])->name('tags');
+        Route::get('tags/load',[TagController::class,'loadtags'])->name('tags.load');
+        Route::get('tags/create',[TagController::class,'create'])->name('tags.create');
+        Route::post('tags/store',[TagController::class,'store'])->name('tags.store');
+        Route::get('tags/edit/{id}',[TagController::class,'edit'])->name('tags.edit');
+        Route::post('tags/update',[TagController::class,'update'])->name('tags.update');
+        Route::post('tags/status',[TagController::class,'status'])->name('tags.status');
+        Route::post('tags/destroy',[TagController::class,'destroy'])->name('tags.destroy');
     });
 });

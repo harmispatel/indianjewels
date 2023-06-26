@@ -57,10 +57,11 @@
                         <thead>
                             <tr>
                                 <th>Id</th>
-                                <!-- <th>Name</th>
+                                <th>Name</th>
                                 <th>Image</th>
+                                <!-- <th>Parent Category</th> -->
                                 <th>Status</th>
-                                <th>Actions</th> -->
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -105,10 +106,10 @@
                 order: [0, 'desc'],
                 columns: [
                     {data: 'id', name: 'id'},
-                    // {data: 'name', name: 'name'},
-                    // {data: 'image', name: 'image'},
-                    // {data: 'status', name: 'status'},
-                    // {data: 'actions', name: 'actions'},
+                    {data: 'name', name: 'name'},
+                    {data: 'image', name: 'image'},
+                    {data: 'status', name: 'status'},
+                    {data: 'actions', name: 'actions'},
                 ]
             });
         }
