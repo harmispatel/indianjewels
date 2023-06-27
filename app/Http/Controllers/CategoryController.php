@@ -7,23 +7,24 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Requests\CategoriesRequest;
 use Yajra\DataTables\Facades\DataTables;
+use App\Traits\ImageTrait;
 
 class CategoryController extends Controller
 {
+    use ImageTrait;
+
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
      */
     public function index()
     {
         $categories = Category::get();
-    
         return view('admin.categories.categories' , compact('categories'));
     }
     
-    
-    // Load Categories Data.
+    /**
+     * Load Categories Data.
+     */ 
     public function loadCategories(Request $request)
     {
         if ($request->ajax())
@@ -35,43 +36,41 @@ class CategoryController extends Controller
             ->addIndexColumn()
             ->addColumn('image', function ($row)
             {
-                  $default_image = asset("public/category_image/demo_images/not-found/not-found4.png");
-                  $image = ($row->icon) ? asset($row->icon) : $default_image;
-                  $image_html = '';
-                  $image_html .= '<img src="'.$image.'" width="50">';
-                  return $image_html;
-                })
-                ->addColumn('status', function ($row)
-                {
-                    $status = $row->status;
-                    $checked = ($status == 1) ? 'checked' : '';
-                    $checkVal = ($status == 1) ? 0 : 1;
-                    $category_id = isset($row->id) ? $row->id : '';
-                    return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus()" id="statusBtn" '.$checked.'></div>';
-                })
-                ->addColumn('actions',function($row)
-                {
-                    $category_id = isset($row->id) ? $row->id : '';
-                    $action_html = '';
-                    $action_html .= '<a onclick="editCategories('.$category_id.')" class="btn btn-sm btn-primary me-1"><i class="bi bi-pencil"></i></a>';
-                    //   $action_html .= '<a onclick="deleteCategories('.$amenity_id.','.$row->vendor_amenities_count.')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
-                    return $action_html;
-                })
-                ->rawColumns(['status','actions','image'])
-                ->make(true);
-            }
+                $default_image = asset("public/images/category_image/not-found1.png");
+                $image = ($row->image) ? asset('public/images/category_image/'.$row->image) : $default_image;
+                $image_html = '';
+                $image_html .= '<img class="me-2" src="'.$image.'" width="50">';
+                return $image_html;
+            })
+            ->addColumn('status', function ($row)
+            {
+                $status = $row->status;
+                $checked = ($status == 1) ? 'checked' : '';
+                $checkVal = ($status == 1) ? 0 : 1;
+                $category_id = isset($row->id) ? $row->id : '';
+                return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus('.$checkVal.','.$category_id.')" id="statusBtn" '.$checked.'></div>';
+            })
+            ->addColumn('actions',function($row)
+            {
+                $category_id = isset($row->id) ? $row->id : '';
+                $action_html = '';
+                $action_html .= '<a href="'.route('categories.edit-category',$category_id).'" class="btn btn-sm btn-primary me-1"><i class="bi bi-pencil"></i></a>';
+                $action_html .= '<a onclick="deleteCategories('.$category_id.')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
+                return $action_html;
+            })
+            ->rawColumns(['status','actions','image'])
+            ->make(true);
         }
+    }
         
-        
-        /**
-         * Show the form for creating a new resource.
-         *
-         * @return \Illuminate\Http\Response
-         */
-        public function create()
-        {
-            return view('admin.categories.add-category');
-        }
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        $categories = Category::all();
+        return view('admin.categories.add-category', compact('categories'));
+    }
 
         
     /**
@@ -79,33 +78,30 @@ class CategoryController extends Controller
      */
     public function store(CategoriesRequest $request)
     {
-        // Except this fields from input
-        $input = $request->except('_token','categories_id');
-
-        // Add this field in input
-        $input['created_at'] = Carbon::now();
-
-        
-            if ($image = $request->file('image')) 
-            {
-                $destinationPath = 'public/images/category_image/';
-                $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
-                $image->move($destinationPath, $profileImage);
-                $input['image'] = "$profileImage";
-            }
-            
+        $input = $request->except('_token','image');
+ 
+        // Upload new Image
+        if ($request->has('image'))
+        {
+            $file = $request->image;
+            $singleFile = $this->addSingleImage('images/category_image',$file, $oldImage = '',"300*300");
+            $input['image'] = $singleFile;
+        }
+        try
+        {
             $category = Category::insert($input);
-            // return $this->sendResponse(true,"Category has been Inserted SuccessFully...");
-            return redirect()->route('admin.categories')->with('success','Category created successfully.');
-        
+            return redirect()->route('admin.categories')->with('message','Category created successfully.');
+        }
+        catch (\Throwable $th)
+        {
+            // dd($th);
+            return redirect()->route('admin.categories')->with('error','Something with wrong');
+        }
         
     }
 
     /**
      * Display the specified resource.
-     *
-     * @param  \App\Models\Category  $category
-     * @return \Illuminate\Http\Response
      */
     public function show(Category $category)
     {
@@ -114,53 +110,116 @@ class CategoryController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Category  $category
-     * @return \Illuminate\Http\Response
      */
-    public function edit(Request $request)
+    public function edit(Category $category,$id)
     {
-        $categories = Category::where('id', $request->id)->first();
-        return view('admin.categories.edit-category', compact('categories'));
+        // $id = encrypt($data->id);
+        $data = Category::where('id', $id)->first();
+        // dd($data);
+        $categories = Category::where('id','!=',$id)->get();
+        return view('admin.categories.edit-category', compact('categories','data'));
     }
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Category  $category
-     * @return \Illuminate\Http\Response
      */
     public function update(CategoriesRequest $request, Category $category)
     {
-        $input = $request->all();
-        // $input = $request->except('_token','categories_id');
+        $input = $request->except('_token');
+        try
+        {
+            $category = Category::find($request->id);
+            // Save Image if exists and Delete old Image
+            if ($request->has('image'))
+            {
+                // Delete old Image
+                $old_image = isset($categories->image) ? $categories->image : '';
+                if (!empty($old_image) || $old_image != '')
+                {
+                    (file_exists($old_image)) ? unlink($old_image) : '';
+                }
 
-        if ($image = $request->file('image')) 
-        {
-            $destinationPath = 'public/images/category_image/';
-            $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
-            $image->move($destinationPath, $profileImage);
-            $input['image'] = "$profileImage";
+                // Upload new Image
+                $file = $request->image;
+                $singleFile = $this->addSingleImage('images/category_image',$file, $oldImage = '',"300*300");
+                $input['image'] = $singleFile;
+                
+            }
+
+            if ($category) 
+            {
+                $category->update($input);
+            }
+            return redirect()->route('admin.categories')->with('message','Category updated successfully');
         }
-        else
+        catch (\Throwable $th) 
         {
-            unset($input['image']);
+            // dd($th);
+            return redirect()->route('admin.categories')->with('error','Something went wrong');
         }
-          
-        $category->update($input);
-    
-        return redirect()->route('admin.categories')->with('success','Category updated successfully');
+    }
+
+    /**
+     * Update the specified status in storage.
+     */
+    public function status(Request $request)
+    {
+        $status = $request->status;
+        $id = $request->id;
+        try 
+        {
+            $input = Category::find($id);
+            $input->status =  $status;
+            $input->update();
+
+            return response()->json(
+            [
+                'success' => 1,
+                'message' => "Category Status has been Changed Successfully..",
+            ]);
+        } 
+        catch (\Throwable $th) 
+        {
+            // dd($th);
+            return response()->json(
+            [
+                'success' => 0,
+                'message' => "Internal Server Error!",
+            ]);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Category  $category
-     * @return \Illuminate\Http\Response
      */
-    public function destroy(Category $category)
-    {
-        //
+    public function destroy(Request $request)
+    {    
+        try 
+        {
+            $category = Category::where('id',$request->id)->delete();
+            
+            // Delete old Image
+            $oldImage = isset($categories->image) ? $categories->image : '';
+            if (!empty($oldImage) || $oldImage != '')
+            {
+                (file_exists($oldImage)) ? unlink($oldImage) : '';
+            }
+            // dd($oldImage);
+            return response()->json(
+            [
+                'success' => 1,
+                'message' => "Category delete Successfully..",
+            ]);
+        } 
+        catch (\Throwable $th)
+        {
+            // dd($th);
+            return response()->json(
+            [
+                'success' => 0,
+                'message' => "Something with wrong",
+            ]);
+        }   
+
     }
 }

@@ -105,14 +105,97 @@
                 ajax: "{{ route('categories.load-categories') }}",
                 order: [0, 'desc'],
                 columns: [
-                    {data: 'id', name: 'id'},
-                    {data: 'name', name: 'name'},
-                    {data: 'image', name: 'image'},
-                    {data: 'status', name: 'status'},
-                    {data: 'actions', name: 'actions'},
+                    {
+                        data: 'id', 
+                        name: 'id'
+                    },
+                    {
+                        data: 'name', 
+                        name: 'name'
+                    },
+                    {
+                        data: 'image', 
+                        name: 'image', 
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: 'status', 
+                        name: 'status', 
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: 'actions', 
+                        name: 'actions', 
+                        orderable: false,
+                        searchable: false
+                    },
                 ]
             });
         }
+
+        function changeStatus(status, id) 
+        {
+            $.ajax(
+            {
+                type: "POST",
+                url: '{{ route('categories.status') }}',
+                data: 
+                {
+                    "_token": "{{ csrf_token() }}",
+                    "status": status,
+                    "id": id
+                },
+                dataType: 'JSON',
+                success: function(response) 
+                {
+                    if (response.success == 1) 
+                    {
+                        toastr.success(response.message);
+                    } 
+                    else 
+                    {
+                        toastr.error(response.message);
+                    }
+                }
+            })
+        }
+
+        // Function for Delete Table
+        function deleteCategories(categoriesID) 
+        {
+            swal({
+                    title: "Are you sure You want to Delete It ?",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                })
+                .then((willDeleteTags) => {
+                    if (willDeleteTags) {
+                        $.ajax({
+                            type: "POST",
+                            url: '{{ route('categories.destroy') }}',
+                            data: {
+                                "_token": "{{ csrf_token() }}",
+                                'id': categoriesID,
+                            },
+                            dataType: 'JSON',
+                            success: function(response) {
+                                if (response.success == 1) {
+                                    toastr.success(response.message);
+                                    $('#categoriesTable').DataTable().ajax.reload();
+                                } else {
+                                    swal(response.message, "", "error");
+                                }
+                            }
+                        });
+                    } else {
+                        swal("Cancelled", "", "error");
+                    }
+                });
+        }
+
     </script>
 
 @endsection
