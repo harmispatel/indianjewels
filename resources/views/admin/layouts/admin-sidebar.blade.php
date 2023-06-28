@@ -24,6 +24,11 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{ route('designs') }}">
+                        <i class="bi bi-circle"></i><span>Designs</span>
+                    </a>
+                </li>
+                <li>
                     <a href="#">
                         <i class="bi bi-circle"></i><span>Data Tables</span>
                     </a>

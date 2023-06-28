@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\{AuthController,DashboardController,CategoryController,TagController};
+use App\Http\Controllers\{AuthController,DashboardController,CategoryController,TagController, DesignController};
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
@@ -61,5 +61,10 @@ Route::group(['prefix' => 'admin'], function ()
         Route::post('tags/update',[TagController::class,'update'])->name('tags.update');
         Route::post('tags/status',[TagController::class,'status'])->name('tags.status');
         Route::post('tags/destroy',[TagController::class,'destroy'])->name('tags.destroy');
+
+        // Design
+        Route::get('designs',[DesignController::class,'index'])->name('designs');
+        Route::get('designs/create',[DesignController::class,'create'])->name('designs.create');
+        Route::post('designs/store',[DesignController::class,'store'])->name('designs.store');
     });
 });

@@ -23,18 +23,19 @@ class TagRequest extends FormRequest
      */
     public function rules()
     {
+        // dd($this);
         if($this->id)
         {
             $rules = [
-                'name' => 'required|unique:tags,name,'.$this->id,
-                'status'=>'required'               
+                'name' => 'required|unique:tags,name,'.decrypt($this->id),
+                              
             ];
         }
         else
         {
             $rules = [
                 'name' => 'required|unique:tags,name',
-                'status'=>'required'               
+                              
             ];
         }
         return $rules;

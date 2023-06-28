@@ -50,17 +50,17 @@
             {{-- Clients Card --}}
             <div class="col-md-12">
                 <div class="card">
-                    
+
                     <form class="form" action="{{ route('tags.store') }}" method="POST" enctype="multipart/form-data">
-                        
+
                         <div class="card-body">
-                        @csrf
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <h3>Tags Details</h3>
+                            @csrf
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <h3>Tags Details</h3>
+                                    </div>
                                 </div>
-                            </div>
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <div class="form-group">
@@ -75,14 +75,6 @@
                                                 </div>
                                             @endif
                                         </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="status" class="form-label">Status</label>
-                                        <select name="status" class="form-control @error('status') is-invalid @enderror"
-                                            id="status-select">
-                                            <option value="1">Active</option>
-                                            <option value="2">InActive</option>
-                                        </select>
                                     </div>
                                 </div>
                             </div>

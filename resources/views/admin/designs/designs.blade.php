@@ -1,23 +1,23 @@
 @extends('admin.layouts.admin-layout')
 
-@section('title', 'Tags')
+@section('title', 'Designs')
 
 @section('content')
 
     {{-- Page Title --}}
     <div class="pagetitle">
-        <h1>Tags</h1>
+        <h1>Designs</h1>
         <div class="row">
             <div class="col-md-8">
                 <nav>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item active">Tags</li>
+                        <li class="breadcrumb-item active">Designs</li>
                     </ol>
                 </nav>
             </div>
             <div class="col-md-4" style="text-align: right;">
-                <a href="{{ route('tags.create') }}" class="btn btn-sm new-category btn-primary">
+                <a href="{{ route('designs.create') }}" class="btn btn-sm new-category btn-primary">
                     <i class="bi bi-plus-lg"></i>
                 </a>
             </div>
@@ -28,6 +28,25 @@
     {{-- Category Section --}}
     <section class="section dashboard">
         <div class="row">
+            {{-- Error Message Section --}}
+            @if (session()->has('error'))
+                <div class="col-md-12">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ session('error') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+            @endif
+
+            {{-- Success Message Section --}}
+            @if (session()->has('success'))
+                <div class="col-md-12">
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+            @endif
 
             {{-- Categories Card --}}
             <div class="col-md-12">
@@ -36,7 +55,7 @@
                         <div class="card-title">
                         </div>
                         <div class="table-responsive">
-                            <table class="table table-striped w-100" id="TagsTable">
+                            <table class="table table-striped w-100" id="DesignTable">
                                 <thead>
                                     <tr>
                                         <th>Id</th>
@@ -62,7 +81,7 @@
 @section('page-js')
 
 
-    <script type="text/javascript">
+    {{-- <script type="text/javascript">
         $(function() {
 
             var table = $('#TagsTable').DataTable({
@@ -80,9 +99,7 @@
                     },
                     {
                         data: 'changestatus',
-                        name: 'changestatus',
-                        orderable: false,
-                        searchable: false
+                        name: 'changestatus'
                     },
                     {
                         data: 'actions',
@@ -114,9 +131,8 @@
                 }
             })
         }
-        // Function for Delete Tags
+        // Function for Delete Table
         function deleteTag(tagId) {
-
             swal({
                     title: "Are you sure You want to Delete It ?",
                     icon: "warning",
@@ -144,10 +160,9 @@
                         });
                     } else {
                         swal("Cancelled", "", "error");
-
                     }
                 });
         }
-    </script>
+    </script> --}}
 
 @endsection
