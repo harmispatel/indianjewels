@@ -11,7 +11,7 @@ trait ImageTrait {
      * add/remove Multi image from sotage.
      * @return $this|false|string
      */
-    public function   ($path,$files,$oldImage = null)
+    public function addMultiImage($path,$files,$oldImage = null)
     {
         // remove multi image.
         if ($oldImage != '') 

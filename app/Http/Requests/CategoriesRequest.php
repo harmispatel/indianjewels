@@ -24,9 +24,8 @@ class CategoriesRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required',
-            // 'iamge' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            // 'perent_category' => 'required',
+            'name' => 'required|unique:categories,name,'.$this->id,
+            'iamge' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }
 }
