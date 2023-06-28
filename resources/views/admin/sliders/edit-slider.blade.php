@@ -1,23 +1,23 @@
 @extends('admin.layouts.admin-layout')
 
-@section('title', __('Categories'))
+@section('title', __('Sliders'))
 
 @section('content')
 
     {{-- Page Title --}}
     <div class="pagetitle">
-        <h1>Categories</h1>
+        <h1>Sliders</h1>
         <div class="row">
             <div class="col-md-8">
                 <nav>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
-                        <li class="breadcrumb-item "><a href="{{ route('admin.categories') }}">Categories</a></li>
+                        <li class="breadcrumb-item "><a href="{{ route('sliders') }}">Sliders</a></li>
                     </ol>
                 </nav>
             </div>
             <div class="col-md-4" style="text-align: right;">
-                <a href="{{ route('admin.categories') }}" class="btn btn-sm new-categories btn-primary">
+                <a href="{{ route('sliders') }}" class="btn btn-sm new-slider btn-primary">
                     <i class="bi bi-arrow-left"></i>
                 </a>
             </div>
@@ -50,50 +50,33 @@
             {{-- Clients Card --}}
             <div class="col-md-12">
                 <div class="card">
-                    <form action="{{ route('categories.update-category') }}" method="POST" enctype="multipart/form-data"> 
+                    <form action="{{ route('sliders.update-slider') }}" method="POST" enctype="multipart/form-data"> 
                         <div class="card-body">
                         @csrf
                             <div class="container">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <h3>Categories Details</h3>
+                                        <h3>Sliders Details</h3>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                    <input type="hidden" name="id" value="{{encrypt($data->id)}}">
+                                        <input type="hidden" name="id" value="{{encrypt($data->id)}}">
                                         <div class="form-group">
-                                        <label for="firstname" class="form-label">Name <span
+                                        <label for="image" class="form-label">Image <span
                                             class="text-danger">*</span></label>
-                                            <input type="text" name="name" value="{{ $data->name }}" class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" placeholder="Enter Name">
-                                            @if ($errors->has('name'))
-                                                <div class="invalid-feedback">
-                                                    {{ $errors->first('name') }}
-                                                </div>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="col-md-6 mb-3">
-                                        <div class="form-group">
-                                        <label for = "parent_category" class="form-label">Perent Category</label>
-                                            <select name="parent_category" id="parent_category" class="form-control">
-                                                <option value="">Select Perent Categories  </option>
-                                                @foreach ($categories as $category)
-                                                <option value="{{ $category->id }}" @if($data->parent_category== $category->id) selected='selected' @endif>{{ $category->name }}</option>
-                                            @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <div class="form-group">
-                                        <label for="image" class="form-label">Image </label>
-                                            <input type="file" name="image" class="form-control" placeholder="image">
+                                            <input type="file" name="image" class="form-control @error('iamge') is-invalid @enderror" placeholder="image">
                                             @if($data->image)
-                                            <img src="{{ asset('public/images/category_image/'.$data->image) }}" width="50px" height="50px">
+                                            <img src="{{ asset('public/images/slider_image/'.$data->image) }}" width="50px" height="50px">
                                             @else
-                                            <img src="{{ asset('public/images/category_image/not-found1.png') }}" width="50px" height="50px">
+                                            <img src="{{ asset('public/images/slider_image/not-found4.png') }}" width="50px" height="50px">
                                             @endif
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-group">
+                                        <label for="banner_text" class="form-label">Banner Text </label>
+                                            <textarea name="banner_text" id="banner_text" value="{{ $data->banner_text }}" class="form-control" placeholder="Enter Banner Text"></textarea>
                                         </div>
                                     </div>
                                     <div class="col-md-6 mb-3">

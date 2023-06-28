@@ -1,30 +1,30 @@
 @extends('admin.layouts.admin-layout')
 
-@section('title', __('Categories'))
+@section('title', __('Sliders'))
 
 @section('content')
 
 {{-- Page Title --}}
     <div class="pagetitle">
-        <h1>Categories</h1>
+        <h1>Sliders</h1>
         <div class="row">
             <div class="col-md-8">
                 <nav>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item active">Categories</li>
+                        <li class="breadcrumb-item active">Sliders</li>
                     </ol>
                 </nav>
             </div>
             <div class="col-md-4" style="text-align: right;">
-                <a href="{{ route('categories.add-category') }}" class="btn btn-sm new-category btn-primary">
+                <a href="{{ route('sliders.add-slider') }}" class="btn btn-sm new-slider btn-primary">
                     <i class="bi bi-plus-lg"></i>
                 </a>
             </div>
         </div>
     </div>
 
-    {{-- Category Section --}}
+    {{-- Slider Section --}}
     <section class="section dashboard">
         <div class="row">
             {{-- Error Message Section --}}
@@ -53,12 +53,12 @@
                 <div class="card-title">
                 </div>
                 <div class="table-responsive">
-                    <table class="table table-striped w-100" id="categoriesTable">
+                    <table class="table table-striped w-100" id="slidersTable">
                         <thead>
                             <tr>
                                 <th>Id</th>
-                                <th>Name</th>
                                 <th>Image</th>
+                                <th>Banner Text</th>
                                 <th>Status</th>
                                 <th>Actions</th>
                             </tr>
@@ -79,30 +79,31 @@
         $(document).ready(function()
         {
             // Toastr Options
-            toastr.options = {
+            toastr.options = 
+            {
                 "closeButton": true,
                 "progressBar": true,
                 timeOut: 10000
             }
         });
 
-         // Load all Categories Records
-         loadCategories();
-        // Function for get all Categories Records.
-        function loadCategories()
+         // Load all Sliders Records
+         loadSliders();
+        // Function for get all Sliders Records.
+        function loadSliders()
         {
-            // Assign Categories Table to Variable;
-            var categoriesTable = $('#categoriesTable').DataTable();
+            // Assign Sliders Table to Variable;
+            var slidersTable = $('#slidersTable').DataTable();
 
             // Destroy old Data
-            categoriesTable.destroy();
+            slidersTable.destroy();
 
             // ReGenerate Amenties Table
-            categoriesTable = $('#categoriesTable').DataTable({
+            slidersTable = $('#slidersTable').DataTable({
                 processing: true,
                 serverSide: true,
                 pageLength: 100,
-                ajax: "{{ route('categories.load-categories') }}",
+                ajax: "{{ route('sliders.load-sliders') }}",
                 // order: [0, 'desc'],
                 columns: [
                     {
@@ -110,12 +111,14 @@
                         name: 'id'
                     },
                     {
-                        data: 'name', 
-                        name: 'name'
-                    },
-                    {
                         data: 'image', 
                         name: 'image', 
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: 'banner_text', 
+                        name: 'banner_text',
                         orderable: false,
                         searchable: false
                     },
@@ -140,7 +143,7 @@
             $.ajax(
             {
                 type: "POST",
-                url: '{{ route('categories.status') }}',
+                url: '{{ route('sliders.status') }}',
                 data: 
                 {
                     "_token": "{{ csrf_token() }}",
@@ -163,37 +166,48 @@
         }
 
         // Function for Delete Table
-        function deleteCategories(categoriesID) 
+        function deleteSliders(slidersID) 
         {
-            swal({
-                    title: "Are you sure You want to Delete It ?",
-                    icon: "warning",
-                    buttons: true,
-                    dangerMode: true,
-                })
-                .then((willDeleteCategories) => {
-                    if (willDeleteCategories) {
-                        $.ajax({
-                            type: "POST",
-                            url: '{{ route('categories.destroy') }}',
-                            data: {
-                                "_token": "{{ csrf_token() }}",
-                                'id': categoriesID,
-                            },
-                            dataType: 'JSON',
-                            success: function(response) {
-                                if (response.success == 1) {
-                                    toastr.success(response.message);
-                                    $('#categoriesTable').DataTable().ajax.reload();
-                                } else {
-                                    swal(response.message, "", "error");
-                                }
+            swal(
+            {
+                title: "Are you sure You want to Delete It ?",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((willDeleteSliders) => 
+            {
+                if (willDeleteSliders) 
+                {
+                    $.ajax(
+                    {
+                        type: "POST",
+                        url: '{{ route('sliders.destroy') }}',
+                        data: 
+                        {
+                            "_token": "{{ csrf_token() }}",
+                            'id': slidersID,
+                        },
+                        dataType: 'JSON',
+                        success: function(response) 
+                        {
+                            if (response.success == 1) 
+                            {
+                                toastr.success(response.message);
+                                $('#slidersTable').DataTable().ajax.reload();
+                            } 
+                            else 
+                            {
+                                swal(response.message, "", "error");
                             }
-                        });
-                    } else {
-                        swal("Cancelled", "", "error");
-                    }
-                });
+                        }
+                    });
+                } 
+                else 
+                {
+                    swal("Cancelled", "", "error");
+                }
+            });
         }
 
     </script>

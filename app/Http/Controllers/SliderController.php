@@ -2,45 +2,41 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
-use Carbon\Carbon;
+use App\Models\Slider;
 use Illuminate\Http\Request;
-use App\Http\Requests\CategoriesRequest;
+use App\Http\Requests\SlidersRequest;
 use Yajra\DataTables\Facades\DataTables;
 use App\Traits\ImageTrait;
 
-
-class CategoryController extends Controller
+class SliderController extends Controller
 {
     use ImageTrait;
-
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $categories = Category::get();
-        return view('admin.categories.categories' , compact('categories'));
+        return view('admin.sliders.sliders');
     }
-    
+
     /**
-     * Load Categories Data.
+     * Load Sliders Data.
      */ 
-    public function loadCategories(Request $request)
+    public function loadSliders(Request $request)
     {
         if ($request->ajax())
         {
             // Get all Amenities
-            $categories = Category::get();
+            $sliders = Slider::get();
             
-            return DataTables::of($categories)
+            return DataTables::of($sliders)
             ->addIndexColumn()
             ->addColumn('image', function ($row)
             {
-                $default_image = asset("public/images/category_image/not-found1.png");
-                $image = ($row->image) ? asset('public/images/category_image/'.$row->image) : $default_image;
+                $default_image = asset("public/images/slider_image/not-found4.png");
+                $image = ($row->image) ? asset('public/images/slider_image/'.$row->image) : $default_image;
                 $image_html = '';
-                $image_html .= '<img class="me-2" src="'.$image.'" width="50">';
+                $image_html .= '<img class="me-2" src="'.$image.'" width="50" height="50">';
                 return $image_html;
             })
             ->addColumn('status', function ($row)
@@ -48,61 +44,61 @@ class CategoryController extends Controller
                 $status = $row->status;
                 $checked = ($status == 1) ? 'checked' : '';
                 $checkVal = ($status == 1) ? 0 : 1;
-                $category_id = isset($row->id) ? $row->id : '';
-                return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus('.$checkVal.','.$category_id.')" id="statusBtn" '.$checked.'></div>';
+                $slider_id = isset($row->id) ? $row->id : '';
+                return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus('.$checkVal.','.$slider_id.')" id="statusBtn" '.$checked.'></div>';
             })
             ->addColumn('actions',function($row)
             {
-                $category_id = isset($row->id) ? $row->id : '';
+                $slider_id = isset($row->id) ? $row->id : '';
                 $action_html = '';
-                $action_html .= '<a href="'.route('categories.edit-category',encrypt($category_id)).'" class="btn btn-sm btn-primary me-1"><i class="bi bi-pencil"></i></a>';
-                $action_html .= '<a onclick="deleteCategories(\''.encrypt($category_id).'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
+                $action_html .= '<a href="'.route('sliders.edit-slider',encrypt($slider_id)).'" class="btn btn-sm btn-primary me-1"><i class="bi bi-pencil"></i></a>';
+                $action_html .= '<a onclick="deleteSliders(\''.encrypt($slider_id).'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
                 return $action_html;
             })
             ->rawColumns(['status','actions','image'])
             ->make(true);
         }
     }
-        
+
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        $categories = Category::all();
-        return view('admin.categories.add-category', compact('categories'));
+        // $sliders = Slider::all();
+        return view('admin.sliders.add-slider');
     }
 
-        
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CategoriesRequest $request)
+    public function store(SlidersRequest $request)
     {
-        $input = $request->except('_token','image');
+        $input = $request->except('_token');
  
         // Upload new Image
         if ($request->has('image'))
         {
             $file = $request->image;
-            $singleFile = $this->addSingleImage('category_image',$file, $oldImage = '',"300*300");
+            $singleFile = $this->addSingleImage('slider_image',$file, $oldImage = '',"1200*500");
             $input['image'] = $singleFile;
         }
         try
         {
-            $category = Category::insert($input);
-            return redirect()->route('admin.categories')->with('message','Category created successfully.');
+            $slider = Slider::create($input);
+            return redirect()->route('sliders')->with('message','Slider created successfully.');
         }
         catch (\Throwable $th)
         {
-            return redirect()->route('admin.categories')->with('error','Something with wrong');
-        } 
+            dd($th);
+            return redirect()->route('sliders')->with('error','Something with wrong');
+        }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Category $category)
+    public function show(Slider $slider)
     {
         //
     }
@@ -110,48 +106,47 @@ class CategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Category $category,$id)
+    public function edit(Slider $slider,$id)
     {
         $id =  decrypt($id);
-        $data = Category::where('id',$id)->first();
-        $categories = Category::where('id','!=',$id)->get();
-        return view('admin.categories.edit-category', compact('categories','data'));
+        $data = Slider::where('id',$id)->first();
+        return view('admin.sliders.edit-slider', compact('data'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(CategoriesRequest $request, Category $category)
+    public function update(SlidersRequest $request, Slider $slider)
     {
-        $input = $request->except('_token');
+        $input = $request->except('_token','id');
         try
         {
             $id = decrypt($request->id);
-            $category = Category::find($id);
+            $slider = Slider::find($id);
             
             // Save Image if exists and Delete old Image
             if ($request->has('image'))
             {
-                $cimg = Category::where('id',$id)->first();
+                $cimg = Slider::where('id',$id)->first();
                 
                 // Delete old Image
                 $old_image = isset($cimg->image) ? $cimg->image : '';
         
                 // Upload new Image
                 $file = $request->image;
-                $singleFile = $this->addSingleImage('category_image',$file, $old_image,"300*300");
+                $singleFile = $this->addSingleImage('slider_image',$file, $old_image,"1200*500");
                 $input['image'] = $singleFile; 
             }
 
-            if ($category) 
+            if ($slider) 
             {
-                $category->update($input);
+                $slider->update($input);
             }
-            return redirect()->route('admin.categories')->with('message','Category updated successfully');
+            return redirect()->route('sliders')->with('message','Slider updated successfully');
         }
         catch (\Throwable $th) 
         {
-            return redirect()->route('admin.categories')->with('error','Something went wrong');
+            return redirect()->route('sliders')->with('error','Something went wrong');
         }
     }
 
@@ -164,19 +159,18 @@ class CategoryController extends Controller
         $id = $request->id;
         try 
         {
-            $input = Category::find($id);
+            $input = Slider::find($id);
             $input->status =  $status;
             $input->update();
 
             return response()->json(
             [
                 'success' => 1,
-                'message' => "Category Status has been Changed Successfully..",
+                'message' => "Slider Status has been Changed Successfully..",
             ]);
         } 
         catch (\Throwable $th) 
         {
-            
             return response()->json(
             [
                 'success' => 0,
@@ -184,6 +178,7 @@ class CategoryController extends Controller
             ]);
         }
     }
+
 
     /**
      * Remove the specified resource from storage.
@@ -193,20 +188,20 @@ class CategoryController extends Controller
         try 
         {
             $id = decrypt($request->id);
-            $category = Category::where('id',$id)->first();
+            $slider = Slider::where('id',$id)->first();
             // Delete old Image
-            $oldImage = isset($category->image) ? $category->image : '';
-            if (!empty($oldImage) && file_exists('public/images/category_image/'.$oldImage))
+            $oldImage = isset($slider->image) ? $slider->image : '';
+            if (!empty($oldImage) && file_exists('public/images/slider_image/'.$oldImage))
             {
-                unlink('public/images/category_image/'.$oldImage);
+                unlink('public/images/slider_image/'.$oldImage);
             }
             
-             Category::where('id',$id)->delete();
+             Slider::where('id',$id)->delete();
             
             return response()->json(
             [
                 'success' => 1,
-                'message' => "Category delete Successfully..",
+                'message' => "Slider delete Successfully..",
             ]);
         } 
         catch (\Throwable $th)

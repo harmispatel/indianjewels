@@ -24,6 +24,11 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{ route('sliders') }}">
+                        <i class="bi bi-circle"></i><span>Sliders</span>
+                    </a>
+                </li>
+                <li>
                     <a href="#">
                         <i class="bi bi-circle"></i><span>Data Tables</span>
                     </a>

@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\{AuthController,DashboardController,CategoryController,TagController};
+use App\Http\Controllers\{AuthController,DashboardController,CategoryController,TagController,SliderController};
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
@@ -63,5 +63,18 @@ Route::group(['prefix' => 'admin'], function ()
         Route::post('tags/update',[TagController::class,'update'])->name('tags.update');
         Route::post('tags/status',[TagController::class,'status'])->name('tags.status');
         Route::post('tags/destroy',[TagController::class,'destroy'])->name('tags.destroy');
+
+        // Sliders
+        Route::get('sliders',[SliderController::class,'index'])->name('sliders');
+        Route::get('sliders/load-sliders',[SliderController::class,'loadSliders'])->name('sliders.load-sliders');
+        Route::get('sliders/add/slider',[SliderController::class,'create'])->name('sliders.add-slider');
+        Route::post('sliders/store/slider',[SliderController::class,'store'])->name('sliders.store-slider');
+        Route::get('sliders/edit/slider/{id}',[SliderController::class,'edit'])->name('sliders.edit-slider');
+        Route::post('sliders/update/slider',[SliderController::class,'update'])->name('sliders.update-slider');
+        Route::post('sliders/status',[SliderController::class,'status'])->name('sliders.status');
+        Route::post('sliders/destroy',[SliderController::class,'destroy'])->name('sliders.destroy');
+
+
+
     });
 });
