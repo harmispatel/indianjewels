@@ -4,6 +4,7 @@ namespace App\Traits;
   
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Intervention\Image\Facades\Image;
   
 trait ImageTrait {
   
@@ -30,7 +31,7 @@ trait ImageTrait {
         // add multi image.
         if ($files != '') 
         {
-            // dd($files);
+            
             foreach ($files as $file)        
             {
                 $multiImage = date('YmdHi').$file->getClientOriginalName();
@@ -46,16 +47,15 @@ trait ImageTrait {
     }
 
 
-    public function addSingleImage($path,$file,$oldImage = null)
+    public function addSingleImage($path,$file,$oldImage = null,$dim)
     {
-      
-        $date = Carbon::now();
-        $date_path = $date->format('Y')."/".$date->format('m');
+    
 
         // remove Single image
         if ($oldImage != null) 
         {
-            $oldimage_path = public_path().'/'.$path.'/'.$oldImage;
+            $oldimage_path = public_path().'/images/'.$path.'/'.$oldImage;
+            
             if (file_exists($oldimage_path)) 
             {
                 unlink($oldimage_path);
@@ -67,9 +67,22 @@ trait ImageTrait {
         {
             $filename = date('YmdHi').$file->getClientOriginalName();
             $filename = str_replace(' ','_',$filename);
-            $file->move(public_path($path."/".$date_path), $filename);
-            $date_file = $date_path."/".$filename;
-            return $date_file;
+             // Image Upload Path
+            $image_path = public_path().'/images/'.$path;
+
+              // Image Dimension Array
+                $dim_array = explode('*',$dim);
+
+                // Get Image Path
+                 $image = Image::make($file->path());
+
+                 // Resize Image & Upload in Storage
+        $image->resize($dim_array[0],$dim_array[1], function ($constraint)
+        {
+        })->save($image_path.'/'.$filename);
+
+            
+            return $filename;
         }
         return null;
     }

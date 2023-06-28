@@ -9,6 +9,7 @@ use App\Http\Requests\CategoriesRequest;
 use Yajra\DataTables\Facades\DataTables;
 use App\Traits\ImageTrait;
 
+
 class CategoryController extends Controller
 {
     use ImageTrait;
@@ -84,7 +85,7 @@ class CategoryController extends Controller
         if ($request->has('image'))
         {
             $file = $request->image;
-            $singleFile = $this->addSingleImage('images/category_image',$file, $oldImage = '',"300*300");
+            $singleFile = $this->addSingleImage('category_image',$file, $oldImage = '',"300*300");
             $input['image'] = $singleFile;
         }
         try
@@ -94,7 +95,7 @@ class CategoryController extends Controller
         }
         catch (\Throwable $th)
         {
-            // dd($th);
+            
             return redirect()->route('admin.categories')->with('error','Something with wrong');
         }
         
@@ -113,9 +114,9 @@ class CategoryController extends Controller
      */
     public function edit(Category $category,$id)
     {
-        // $id = encrypt($data->id);
+        
         $data = Category::where('id', $id)->first();
-        // dd($data);
+        
         $categories = Category::where('id','!=',$id)->get();
         return view('admin.categories.edit-category', compact('categories','data'));
     }
@@ -132,16 +133,16 @@ class CategoryController extends Controller
             // Save Image if exists and Delete old Image
             if ($request->has('image'))
             {
+                $cimg = Category::where('id',$request->id)->first();
+                
                 // Delete old Image
-                $old_image = isset($categories->image) ? $categories->image : '';
-                if (!empty($old_image) || $old_image != '')
-                {
-                    (file_exists($old_image)) ? unlink($old_image) : '';
-                }
+                $old_image = isset($cimg->image) ? $cimg->image : '';
+                
 
                 // Upload new Image
                 $file = $request->image;
-                $singleFile = $this->addSingleImage('images/category_image',$file, $oldImage = '',"300*300");
+                $singleFile = $this->addSingleImage('category_image',$file, $old_image,"300*300");
+
                 $input['image'] = $singleFile;
                 
             }
@@ -154,7 +155,7 @@ class CategoryController extends Controller
         }
         catch (\Throwable $th) 
         {
-            // dd($th);
+            
             return redirect()->route('admin.categories')->with('error','Something went wrong');
         }
     }
@@ -180,7 +181,7 @@ class CategoryController extends Controller
         } 
         catch (\Throwable $th) 
         {
-            // dd($th);
+            
             return response()->json(
             [
                 'success' => 0,
@@ -196,15 +197,16 @@ class CategoryController extends Controller
     {    
         try 
         {
-            $category = Category::where('id',$request->id)->delete();
-            
+            $category = Category::where('id',$request->id)->first();
             // Delete old Image
-            $oldImage = isset($categories->image) ? $categories->image : '';
-            if (!empty($oldImage) || $oldImage != '')
+            $oldImage = isset($category->image) ? $category->image : '';
+            if (!empty($oldImage) && file_exists('public/images/category_image/'.$oldImage))
             {
-                (file_exists($oldImage)) ? unlink($oldImage) : '';
+                     unlink('public/images/category_image/'.$oldImage);
             }
-            // dd($oldImage);
+            
+             Category::where('id',$request->id)->delete();
+            
             return response()->json(
             [
                 'success' => 1,
@@ -213,7 +215,7 @@ class CategoryController extends Controller
         } 
         catch (\Throwable $th)
         {
-            // dd($th);
+            
             return response()->json(
             [
                 'success' => 0,
