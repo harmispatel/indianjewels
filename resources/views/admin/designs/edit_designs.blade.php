@@ -13,7 +13,7 @@
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
                         <li class="breadcrumb-item "><a href="{{ route('designs') }}">Designs</a></li>
-                        <li class="breadcrumb-item active">Create</li>
+                        <li class="breadcrumb-item active">Edit</li>
                     </ol>
                 </nav>
             </div>
@@ -39,9 +39,8 @@
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <div class="form-group">
-                                                <label for="name" class="form-label">
-                                                    Item Name
-                                                    <span class="text-danger">*</span></label>
+                                                <label for="name" class="form-label">Item Name<span
+                                                        class="text-danger">*</span></label>
                                                 <input type="text" name="name" id="name"
                                                     class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}"
                                                     placeholder="Enter Item Name">

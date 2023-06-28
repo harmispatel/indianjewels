@@ -59,7 +59,8 @@
                                 <thead>
                                     <tr>
                                         <th>Id</th>
-                                        <th>Name</th>
+                                        <th>Item Name</th>
+                                        <th>Item Code</th>
                                         <th>Status</th>
                                         <th>Actions</th>
                                     </tr>
@@ -81,14 +82,14 @@
 @section('page-js')
 
 
-    {{-- <script type="text/javascript">
+    <script type="text/javascript">
         $(function() {
 
-            var table = $('#TagsTable').DataTable({
+            var table = $('#DesignTable').DataTable({
                 processing: true,
                 serverSide: true,
                 pageLength: 100,
-                ajax: "{{ route('tags.load') }}",
+                ajax: "{{ route('designs.load') }}",
                 columns: [{
                         data: 'id',
                         name: 'id'
@@ -96,6 +97,10 @@
                     {
                         data: 'name',
                         name: 'name'
+                    },
+                    {
+                        data: 'code',
+                        name: 'code'
                     },
                     {
                         data: 'changestatus',
@@ -115,7 +120,7 @@
         function changeStatus(status, id) {
             $.ajax({
                 type: "POST",
-                url: '{{ route('tags.status') }}',
+                url: '{{ route('designs.status') }}',
                 data: {
                     "_token": "{{ csrf_token() }}",
                     "status": status,
@@ -132,27 +137,27 @@
             })
         }
         // Function for Delete Table
-        function deleteTag(tagId) {
+        function deleteTag(designId) {
             swal({
                     title: "Are you sure You want to Delete It ?",
                     icon: "warning",
                     buttons: true,
                     dangerMode: true,
                 })
-                .then((willDeleteTags) => {
-                    if (willDeleteTags) {
+                .then((willDeleteDesigns) => {
+                    if (willDeleteDesigns) {
                         $.ajax({
                             type: "POST",
-                            url: '{{ route('tags.destroy') }}',
+                            url: '{{ route('designs.destroy') }}',
                             data: {
                                 "_token": "{{ csrf_token() }}",
-                                'id': tagId,
+                                'id': designId,
                             },
                             dataType: 'JSON',
                             success: function(response) {
                                 if (response.success == 1) {
                                     toastr.success(response.message);
-                                    $('#TagsTable').DataTable().ajax.reload();
+                                    $('#DesignTable').DataTable().ajax.reload();
                                 } else {
                                     swal(response.message, "", "error");
                                 }
@@ -163,6 +168,6 @@
                     }
                 });
         }
-    </script> --}}
+    </script>
 
 @endsection

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\{Design,Category,Gender,Metal,Tag, Design_image};
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
+
 
 class DesignController extends Controller
 {
@@ -17,6 +19,34 @@ class DesignController extends Controller
         //
         
         return view('admin.designs.designs');
+    }
+
+    // Display a listing Tags.
+    public function loaddesigns(Request $request)
+    {
+        if ($request->ajax())
+        {
+            $designs= Design::get();
+            return DataTables::of($designs)
+            ->addIndexColumn()
+            ->addColumn('changestatus', function ($row){
+                $status = $row->status;
+                $checked = ($status == 1) ? 'checked' : '';
+                $checkVal = ($status == 1) ? 0 : 1;
+                $design_id = isset($row->id) ? $row->id : '';
+                return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus('.$checkVal.','.$design_id.')" id="statusBtn" '.$checked.'></div>';
+            })
+            ->addColumn('actions',function($row)
+            {
+                $tag_id = isset($row->id) ? encrypt($row->id) : '';
+                $action_html = '';
+                $action_html .= '<a href="'.route('designs.edit',$tag_id).'" class="btn btn-sm btn-primary me-1"><i class="bi bi-pencil"></i></a>';
+                $action_html .= '<a   onclick="deleteDesign(\''.$tag_id.'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
+                return $action_html;
+            })
+            ->rawColumns(['changestatus','actions'])
+            ->make(true);
+        }
     }
 
     /**
@@ -60,15 +90,28 @@ class DesignController extends Controller
         //
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Design  $design
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Design $design)
+    // Store a Tags status Changes resource in storage..    
+    public function status(Request $request)
     {
-        //
+        $status = $request->status;
+        $id = $request->id;
+        try {
+            $input = Design::find($id);
+            $input->status =  $status;
+            $input->update();
+
+            return response()->json([
+                'success' => 1,
+                'message' => "Design Status has been Changed Successfully..",
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            dd($th);
+            return response()->json([
+                'success' => 0,
+                'message' => "Internal Server Error!",
+            ]);
+        }
     }
 
     /**

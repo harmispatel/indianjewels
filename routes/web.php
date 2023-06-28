@@ -66,7 +66,12 @@ Route::group(['prefix' => 'admin'], function ()
 
         // Design
         Route::get('designs',[DesignController::class,'index'])->name('designs');
+        Route::get('designs/load',[DesignController::class,'loaddesigns'])->name('designs.load');
         Route::get('designs/create',[DesignController::class,'create'])->name('designs.create');
         Route::post('designs/store',[DesignController::class,'store'])->name('designs.store');
+        Route::get('designs/edit/{id}',[DesignController::class,'edit'])->name('designs.edit');
+        Route::post('designs/status',[DesignController::class,'status'])->name('designs.status');
+        Route::post('designs/destroy',[DesignController::class,'destroy'])->name('designs.destroy');
+
     });
 });
