@@ -85,7 +85,7 @@ class SliderController extends Controller
         }
         try
         {
-            $slider = Slider::create($input);
+            $slider = Slider::insert($input);
             return redirect()->route('sliders')->with('message','Slider created successfully.');
         }
         catch (\Throwable $th)

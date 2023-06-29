@@ -96,7 +96,7 @@
                                             @endif
                                         </div>
                                     </div>
-                                    <div class="col-md-6 mb-3">
+                                    <!-- <div class="col-md-6 mb-3">
                                         <div class="form-group">
                                         <label for="status" class="form-label">Status</label>
                                             <select class="form-control" name="status">
@@ -104,7 +104,7 @@
                                                 <option {{ ($data->status) == '0' ? 'selected' : '' }}  value="0">InActive</option>
                                             </select>
                                         </div>
-                                    </div>
+                                    </div> -->
                                     <div class="card-footer">
                                         <button class="btn btn-success">Update</button>
                                     </div>

@@ -25,7 +25,7 @@ class SlidersRequest extends FormRequest
     {
         return 
         [
-            'iamge' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'iamge' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }
 }

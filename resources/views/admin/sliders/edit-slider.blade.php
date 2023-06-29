@@ -65,7 +65,7 @@
                                         <div class="form-group">
                                         <label for="image" class="form-label">Image <span
                                             class="text-danger">*</span></label>
-                                            <input type="file" name="image" class="form-control @error('iamge') is-invalid @enderror" placeholder="image">
+                                            <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" placeholder="image">
                                             @if($data->image)
                                             <img src="{{ asset('public/images/slider_image/'.$data->image) }}" width="50px" height="50px">
                                             @else
@@ -79,7 +79,7 @@
                                             <textarea name="banner_text" id="banner_text" value="{{ $data->banner_text }}" class="form-control" placeholder="Enter Banner Text"></textarea>
                                         </div>
                                     </div>
-                                    <div class="col-md-6 mb-3">
+                                    <!-- <div class="col-md-6 mb-3">
                                         <div class="form-group">
                                         <label for="status" class="form-label">Status</label>
                                             <select class="form-control" name="status">
@@ -87,7 +87,7 @@
                                                 <option {{ ($data->status) == '0' ? 'selected' : '' }}  value="0">InActive</option>
                                             </select>
                                         </div>
-                                    </div>
+                                    </div> -->
                                     <div class="card-footer">
                                         <button class="btn btn-success">Update</button>
                                     </div>

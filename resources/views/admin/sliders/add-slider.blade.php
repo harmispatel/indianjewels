@@ -68,7 +68,7 @@
                                 <div class="form-group">
                                     <label for="image" class="form-label">Image <span
                                         class="text-danger">*</span></label>
-                                    <input type="file" name="image" id= "image" class="form-control @error('iamge') is-invalid @enderror" placeholder="image">
+                                    <input type="file" name="image" id= "image" class="form-control @error('image') is-invalid @enderror" placeholder="image">
                                     @if ($errors->has('image'))
                                         <div class="invalid-feedback">
                                             {{ $errors->first('image') }}
@@ -82,14 +82,14 @@
                                     <textarea name="banner_text" id="banner_text" class="form-control" placeholder="Enter Banner Text"></textarea>
                                 </div>
                             </div>
-                            <div class="col-md-6 mb-3">
+                            <!-- <div class="col-md-6 mb-3">
                                 <label for="status" class="form-label">Status</label>
                                 <select name="status" class="form-control @error('status') is-invalid @enderror"
                                     id="status-select">
                                     <option value="1">Active</option>
                                     <option value="2">InActive</option>
                                 </select>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                     <div class="card-footer">
