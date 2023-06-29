@@ -9,4 +9,9 @@ class Design extends Model
 {
     use HasFactory;
     protected $guarded = [];
+
+    public function designImages()
+    {
+        return $this->hasMany(Design_image::class);
+    }
 }

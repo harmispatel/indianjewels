@@ -23,7 +23,6 @@ class TagRequest extends FormRequest
      */
     public function rules()
     {
-        // dd($this);
         if($this->id)
         {
             $rules = [

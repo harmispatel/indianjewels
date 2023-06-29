@@ -137,7 +137,7 @@
             })
         }
         // Function for Delete Table
-        function deleteTag(designId) {
+        function deleteDesign(designId) {
             swal({
                     title: "Are you sure You want to Delete It ?",
                     icon: "warning",

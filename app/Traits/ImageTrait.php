@@ -50,7 +50,6 @@ trait ImageTrait {
     public function addSingleImage($path,$file,$oldImage = null,$dim)
     {
     
-
         // remove Single image
         if ($oldImage != null) 
         {
@@ -67,20 +66,21 @@ trait ImageTrait {
         {
             $filename = date('YmdHi').$file->getClientOriginalName();
             $filename = str_replace(' ','_',$filename);
-             // Image Upload Path
+            // Image Upload Path
             $image_path = public_path().'/images/'.$path;
-
-              // Image Dimension Array
-                $dim_array = explode('*',$dim);
-
-                // Get Image Path
-                 $image = Image::make($file->path());
-
-                 // Resize Image & Upload in Storage
-        $image->resize($dim_array[0],$dim_array[1], function ($constraint)
-        {
-        })->save($image_path.'/'.$filename);
-
+            
+            // Image Dimension Array
+            $dim_array = explode('*',$dim);
+            
+            // Get Image Path
+            $image = Image::make($file->path());
+            
+            // Resize Image & Upload in Storage
+            $image->resize($dim_array[0],$dim_array[1], function ($constraint)
+            {
+            })->save($image_path.'/'.$filename);
+            
+            
             
             return $filename;
         }

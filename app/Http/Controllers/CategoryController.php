@@ -95,7 +95,6 @@ class CategoryController extends Controller
         }
         catch (\Throwable $th)
         {
-            
             return redirect()->route('admin.categories')->with('error','Something with wrong');
         }
         

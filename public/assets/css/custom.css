@@ -1,0 +1,25 @@
+.mult-img-box{
+    position: relative;
+    margin-right:10px;
+    width: 100px;
+    height: 100px;
+    margin-bottom: 10px;
+    border: 2px solid #ccc;
+}
+
+.mult-img-box img{
+    height: 100%;
+    width:100%;
+}
+
+.img-delete{
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: #ccc;
+    padding:2px 5px;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}

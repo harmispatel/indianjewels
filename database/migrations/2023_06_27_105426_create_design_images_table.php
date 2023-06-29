@@ -15,7 +15,7 @@ class CreateDesignImagesTable extends Migration
     {
         Schema::create('design_images', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('design_id')->nullable()->after('id');
+            $table->unsignedBigInteger('design_id')->nullable() ;
             $table->string('image')->nullable();
             $table->timestamps();
         });

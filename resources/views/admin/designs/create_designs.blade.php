@@ -41,7 +41,8 @@
                                             <div class="form-group">
                                                 <label for="name" class="form-label">
                                                     Item Name
-                                                    <span class="text-danger">*</span></label>
+                                                    <span class="text-danger">*</span>
+                                                </label>
                                                 <input type="text" name="name" id="name"
                                                     class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}"
                                                     placeholder="Enter Item Name">
@@ -54,8 +55,10 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label for="code" class="form-label">Item Code<span
-                                                        class="text-danger">*</span></label>
+                                                <label for="code" class="form-label">
+                                                    Item Code
+                                                    <span class="text-danger">*</span>
+                                                </label>
                                                 <input type="text" name="code" id="code"
                                                     class="form-control {{ $errors->has('code') ? 'is-invalid' : '' }}"
                                                     placeholder="Enter Item Code">
@@ -87,76 +90,93 @@
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <label for="gender_id" class="form-label">Gender Types<span
-                                                    class="text-danger">*</span></label>
-                                            <select name="gender_id" id="gender_id"
-                                                class="form-control {{ $errors->has('gender_id') ? 'is-invalid' : '' }}">
-                                                <option value="">-- Select Gender --</option>
-                                                @foreach ($genders as $gender)
-                                                    <option value="{{ $gender->id }}">{{ $gender->name }}</option>
-                                                @endforeach
-                                            </select>
-                                            @if ($errors->has('gender_id'))
-                                                <div class="invalid-feedback">
-                                                    {{ $errors->first('gender_id') }}
-                                                </div>
-                                            @endif
+                                            <div class="form-group">
+                                                <label for="gender_id" class="form-label">
+                                                    Gender Types
+                                                    <span class="text-danger">*</span></label>
+                                                <select name="gender_id" id="gender_id"
+                                                    class="form-control {{ $errors->has('gender_id') ? 'is-invalid' : '' }}">
+                                                    <option value="">-- Select Gender --</option>
+                                                    @foreach ($genders as $gender)
+                                                        <option value="{{ $gender->id }}">{{ $gender->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                                @if ($errors->has('gender_id'))
+                                                    <div class="invalid-feedback">
+                                                        {{ $errors->first('gender_id') }}
+                                                    </div>
+                                                @endif
+                                            </div>
                                         </div>
                                         <div class="col-md-6 mb-3">
-                                            <label for="metal_id" class="form-label">Metal Types<span
-                                                    class="text-danger">*</span></label>
-                                            <select name="metal_id" id="metal_id"
-                                                class="form-control {{ $errors->has('metal_id') ? 'is-invalid' : '' }}">
-                                                <option value="">-- Select Metal --</option>
-                                                @foreach ($metals as $metal)
-                                                    <option value="{{ $metal->id }}">{{ $metal->name }}</option>
-                                                @endforeach
-                                            </select>
-                                            @if ($errors->has('metal_id'))
-                                                <div class="invalid-feedback">
-                                                    {{ $errors->first('metal_id') }}
-                                                </div>
-                                            @endif
+                                            <div class="form-group">
+                                                <label for="metal_id" class="form-label">
+                                                    Metal Types
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <select name="metal_id" id="metal_id"
+                                                    class="form-control {{ $errors->has('metal_id') ? 'is-invalid' : '' }}">
+                                                    <option value="">-- Select Metal --</option>
+                                                    @foreach ($metals as $metal)
+                                                        <option value="{{ $metal->id }}">{{ $metal->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                                @if ($errors->has('metal_id'))
+                                                    <div class="invalid-feedback">
+                                                        {{ $errors->first('metal_id') }}
+                                                    </div>
+                                                @endif
+                                            </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <label for="tags" class="form-label">Tags<span
-                                                    class="text-danger">*</span></label>
-                                            <select name="tags[]" id="tags"
-                                                class="select2 form-control {{ $errors->has('tags') ? 'is-invalid' : '' }}"
-                                                multiple>
-                                                @if (count($tags) > 0)
-                                                    @foreach ($tags as $tag)
-                                                        <option value="{{ $tag->id }}">{{ $tag->name }}</option>
-                                                    @endforeach
+                                            <div class="form-group">
+                                                <label for="tags" class="form-label">
+                                                    Tags
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <select name="tags[]" id="tags"
+                                                    class="select2 form-control form-select {{ $errors->has('tags') ? 'is-invalid' : '' }}"
+                                                    multiple>
+                                                    @if (count($tags) > 0)
+                                                        @foreach ($tags as $tag)
+                                                            <option value="{{ $tag->id }}">{{ $tag->name }}</option>
+                                                        @endforeach
+                                                    @endif
+                                                </select>
+                                                @if ($errors->has('tags'))
+                                                    <div class="invalid-feedback">
+                                                        {{ $errors->first('tags') }}
+                                                    </div>
                                                 @endif
-                                            </select>
-                                            @if ($errors->has('tags'))
-                                                <div class="invalid-feedback">
-                                                    {{ $errors->first('tags') }}
-                                                </div>
-                                            @endif
+                                            </div>
                                         </div>
                                         <div class="col-md-6 mb-3">
-                                            <label for="description" class="form-label">description</label>
-                                            <textarea name="description" id="description"
-                                                class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}" cols="20" rows="5"></textarea>
-                                            @if ($errors->has('description'))
-                                                <div class="invalid-feedback">
-                                                    {{ $errors->first('description') }}
-                                                </div>
-                                            @endif
-                                        </div>
-                                        <div class="col-md-3 mb-3">
-                                            <label for="is_flash">Is Flash Show?</label>
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" name="is_flash"
-                                                    role="switch" id="is_flash" value="1">
+                                            <div class="form-group">
+                                                <label for="description" class="form-label">description</label>
+                                                <textarea name="description" id="description"
+                                                    class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}" cols="20" rows="5"></textarea>
+                                                @if ($errors->has('description'))
+                                                    <div class="invalid-feedback">
+                                                        {{ $errors->first('description') }}
+                                                    </div>
+                                                @endif
                                             </div>
                                         </div>
                                         <div class="col-md-3 mb-3">
-                                            <label for="highest_selling">Highest Selling Item</label>
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" name="highest_selling" role="switch" id="highest_selling" value="1">
+                                            <div class="form-group">
+                                                <label for="is_flash">Is Flash Show?</label>
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" name="is_flash"
+                                                        role="switch" id="is_flash" value="1">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <div class="form-group">
+                                                <label for="highest_selling">Highest Selling Item</label>
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" name="highest_selling" role="switch" id="highest_selling" value="1">
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -166,16 +186,18 @@
                                     <h3>Company Selection Information</h3>
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
-                                            <label for="company" class="form-label">
-                                                Company
-                                                <span class="text-danger">*</span>
-                                            </label>
-                                            <select name="company[]" id="company" class="select2 form-control" multiple>
-                                                <option value="">--Select company--</option>
-                                                <option value="1">Indian Jewelcast Pvt. Ltd.</option>
-                                                <option value="2">Indian Art Cating</option>
-                                                <option value="3">Impel Jewelley</option>
-                                            </select>
+                                            <div class="form-group">
+                                                <label for="company" class="form-label">
+                                                    Company
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <select name="company[]" id="company" class="select2 form-control form-select {{$errors->has('company') ? 'is-invalid' : ''  }}" multiple>
+                                                    <option value="">--Select company--</option>
+                                                    <option value="1">Indian Jewelcast Pvt. Ltd.</option>
+                                                    <option value="2">Indian Art Cating</option>
+                                                    <option value="3">Impel Jewelley</option>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -184,15 +206,22 @@
                                     <h3>Item Image Information</h3>
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
-                                            <label for="image" class="form-label">Main Image<span
-                                                    class="text-danger">*</span></label>
-                                            <input type="file" name="image" id="image" class="form-control">
+                                            <div class="form-group">
+                                                <label for="image" class="form-label">Main Image<span
+                                                        class="text-danger">*</span></label>
+                                                <input type="file" name="image" id="image" class="form-control {{ $errors->has('image') ? 'is-invalid' : '' }}">
+                                                @if ($errors->has('image'))
+                                                    <div class="invalid-feedback">
+                                                        {{ $errors->first('image') }}
+                                                    </div>
+                                                @endif
+                                            </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <label for="images" class="form-label">Image<span
-                                                    class="text-danger">*</span></label>
-                                            <input type="file" name="multiImage[]" id="images" class="form-control"
-                                                multiple>
+                                            <div class="form-group">
+                                                <label for="images" class="form-label">Multiple Image</label>
+                                                <input type="file" name="multiImage[]" id="images" class="form-control"  multiple>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -212,10 +241,13 @@
 @section('page-js')
     <script type="text/javascript">
         $('#tags').select2({
-            placeholder: "-- select tags --"
+            placeholder: "-- select tags --",
+            allowClear: true
+
         });
         $('#company').select2({
-            placeholder: "-- select company --"
+            placeholder: "-- select company --",
+            allowClear: true
         });
     </script>
 @endsection

@@ -22,6 +22,7 @@
 
 <!-- Template Main CSS File -->
 <link href="{{ asset('public/assets/css/style.css') }}" rel="stylesheet">
+<link href="{{ asset('public/assets/css/custom.css') }}" rel="stylesheet">
 
 {{-- sweetAlert 2 --}}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.min.css">
@@ -48,9 +49,9 @@
         z-index: 9999;
     }
       /* select 2 css */
-      .select2 {
+      /* .select2 {
         width: 100%!important;
-    }
+    } */
     .select2-selection{
         min-height: 37px!important;
     }
