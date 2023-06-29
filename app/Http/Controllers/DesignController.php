@@ -75,12 +75,12 @@ class DesignController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\DesignRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(DesignRequest $request)
     {
-    
+        
         try {
             $input = $request->except('_token','tags','company','image','multiImage');
             $input['tags'] = json_encode($request->tags);

@@ -53,46 +53,43 @@
                     <form action="{{ route('sliders.update-slider') }}" method="POST" enctype="multipart/form-data"> 
                         <div class="card-body">
                         @csrf
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <h3>Sliders Details</h3>
-                                    </div>
+                        <div class="form_box">
+                            <div class="form_box_inr">
+                                <div class="box_title">
+                                    <h2>Sliders Details</h2>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <input type="hidden" name="id" value="{{encrypt($data->id)}}">
-                                        <div class="form-group">
-                                        <label for="image" class="form-label">Image <span
-                                            class="text-danger">*</span></label>
-                                            <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" placeholder="image">
-                                            @if($data->image)
-                                            <img src="{{ asset('public/images/slider_image/'.$data->image) }}" width="50px" height="50px">
-                                            @else
-                                            <img src="{{ asset('public/images/slider_image/not-found4.png') }}" width="50px" height="50px">
-                                            @endif
+                                <div class="form_box_info">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <input type="hidden" name="id" value="{{encrypt($data->id)}}">
+                                            <div class="form-group">
+                                            <label for="image" class="form-label">Image <span
+                                                class="text-danger">*</span></label>
+                                                <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" placeholder="image">
+                                                <div class="mt-2">
+                                                @if($data->image)
+                                                <img src="{{ asset('public/images/slider_image/'.$data->image) }}" width="100" height="100">
+                                                @else
+                                                <img src="{{ asset('public/images/slider_image/not-found4.png') }}" width="100" height="100">
+                                                @endif
+                                                </div>
+                                            </div>
                                         </div>
+                                            <div class="col-md-6 mb-3">
+                                                <div class="form-group">
+                                                <label for="banner_text" class="form-label">Banner Text </label>
+                                                    <textarea name="banner_text" id="banner_text" value="{{ $data->banner_text }}" class="form-control" placeholder="Enter Banner Text"></textarea>
+                                                </div>
+                                            </div>
                                     </div>
-                                    <div class="col-md-6 mb-3">
-                                        <div class="form-group">
-                                        <label for="banner_text" class="form-label">Banner Text </label>
-                                            <textarea name="banner_text" id="banner_text" value="{{ $data->banner_text }}" class="form-control" placeholder="Enter Banner Text"></textarea>
+                                        <div class="card-footer text-center">
+                                            <button class="btn btn-success">Update</button>
                                         </div>
-                                    </div>
-                                    <!-- <div class="col-md-6 mb-3">
-                                        <div class="form-group">
-                                        <label for="status" class="form-label">Status</label>
-                                            <select class="form-control" name="status">
-                                                <option {{ ($data->status) == '1' ? 'selected' : '' }} value="1">Active</option>
-                                                <option {{ ($data->status) == '0' ? 'selected' : '' }}  value="0">InActive</option>
-                                            </select>
-                                        </div>
-                                    </div> -->
-                                    <div class="card-footer">
-                                        <button class="btn btn-success">Update</button>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                            
                         </div>     
                     </form>
                 </div>

@@ -57,42 +57,36 @@
             <form action="{{ route('sliders.store-slider') }}" method="POST" enctype="multipart/form-data">
                 <div class="card-body">
                     @csrf
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <h3>Sliders Details</h3>
+                    <div class="form_box">
+                        <div class="form_box_inr">
+                            <div class="box_title">
+                                <h2>Sliders Details</h2>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <div class="form-group">
-                                    <label for="image" class="form-label">Image <span
-                                        class="text-danger">*</span></label>
-                                    <input type="file" name="image" id= "image" class="form-control @error('image') is-invalid @enderror" placeholder="image">
-                                    @if ($errors->has('image'))
-                                        <div class="invalid-feedback">
-                                            {{ $errors->first('image') }}
+                            <div class="form_box_info">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-group">
+                                            <label for="image" class="form-label">Image <span
+                                                class="text-danger">*</span></label>
+                                            <input type="file" name="image" id= "image" class="form-control @error('image') is-invalid @enderror" placeholder="image">
+                                            @if ($errors->has('image'))
+                                                <div class="invalid-feedback">
+                                                    {{ $errors->first('image') }}
+                                                </div>
+                                            @endif<br>
                                         </div>
-                                    @endif<br>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-group">
+                                            <label for="banner_text" class="form-label">Banner Text </label>
+                                            <textarea name="banner_text" id="banner_text" class="form-control" placeholder="Enter Banner Text"></textarea>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <div class="form-group">
-                                    <label for="banner_text" class="form-label">Banner Text </label>
-                                    <textarea name="banner_text" id="banner_text" class="form-control" placeholder="Enter Banner Text"></textarea>
-                                </div>
-                            </div>
-                            <!-- <div class="col-md-6 mb-3">
-                                <label for="status" class="form-label">Status</label>
-                                <select name="status" class="form-control @error('status') is-invalid @enderror"
-                                    id="status-select">
-                                    <option value="1">Active</option>
-                                    <option value="2">InActive</option>
-                                </select>
-                            </div> -->
                         </div>
                     </div>
-                    <div class="card-footer">
+                    <div class="card-footer text-center">
                         <button class="btn btn-success">{{ __('Save') }}</button>
                     </div>
                 </div>
