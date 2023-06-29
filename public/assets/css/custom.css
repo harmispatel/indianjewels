@@ -23,3 +23,25 @@
     justify-content: center;
     border-radius: 50%;
 }
+
+.form_box_inr{
+    border: 1px solid #bfbfbf;
+    margin-bottom: 15px;
+}
+.form_box .form_box_inr:last-child{
+    margin: 0 !important;
+}
+.box_title {
+background-color: #2a2931;
+border-bottom: 1px solid #bfbfbf;
+padding: 10px 15px;
+}
+.box_title h2 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+    color: #c7a42e;
+}
+.form_box_info {
+    padding: 15px;
+}

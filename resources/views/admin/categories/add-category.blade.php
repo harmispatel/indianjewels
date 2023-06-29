@@ -96,14 +96,6 @@
                                     <input type="file" name="image" class="form-control @error('iamge') is-invalid @enderror" placeholder="image">
                                 </div>
                             </div>
-                            <!-- <div class="col-md-6">
-                                <label for="status" class="form-label">Status</label>
-                                <select name="status" class="form-control @error('status') is-invalid @enderror"
-                                    id="status-select">
-                                    <option value="1">Active</option>
-                                    <option value="2">InActive</option>
-                                </select>
-                            </div> -->
                         </div>
                     </div>
                     <div class="card-footer">

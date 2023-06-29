@@ -27,6 +27,19 @@ class CreateDesignsTable extends Migration
             $table->tinyInteger('is_flash')->default('0');
             $table->tinyInteger('highest_selling')->default('0');
             $table->text('description')->nullable();
+            $table->float('weight1',8,2)->nullable();
+            $table->float('weight2',8,2)->nullable();
+            $table->float('weight3',8,2)->nullable();
+            $table->float('weight4',8,2)->nullable();
+            $table->float('gweight1',8,2)->nullable();
+            $table->float('gweight2',8,2)->nullable();
+            $table->float('gweight3',8,2)->nullable();
+            $table->float('gweight4',8,2)->nullable();
+            $table->float('wastage1',8,2)->nullable();
+            $table->float('wastage2',8,2)->nullable();
+            $table->float('wastage3',8,2)->nullable();
+            $table->float('wastage4',8,2)->nullable();
+            $table->float('iaj_weight',8,2)->nullable();
             $table->timestamps();
         });
     }
