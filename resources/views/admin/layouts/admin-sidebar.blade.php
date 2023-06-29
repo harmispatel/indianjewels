@@ -26,7 +26,8 @@
                 <li>
                     <a href="{{ route('sliders') }}">
                         <i class="bi bi-circle"></i><span>Sliders</span>
-                    </li> 
+                    </a>
+                </li> 
                     <li>  
                     <a href="{{ route('designs') }}">
                         <i class="bi bi-circle"></i><span>Designs</span>
