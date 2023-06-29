@@ -81,14 +81,14 @@
                                                     <textarea name="banner_text" id="banner_text" value="{{ $data->banner_text }}" class="form-control" placeholder="Enter Banner Text"></textarea>
                                                 </div>
                                             </div>
+                                        </div>
                                     </div>
+                                </div>
                                         <div class="card-footer text-center">
                                             <button class="btn btn-success">Update</button>
                                         </div>
                                     </div>
-                                </div>
                             </div>
-                        </div>
                             
                         </div>     
                     </form>
