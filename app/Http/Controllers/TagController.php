@@ -7,23 +7,18 @@ use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use App\Http\Requests\TagRequest;
 
+
 class TagController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    // Display a listing of the resource.
     public function index()
     {
         return view('admin.tags.tags');
     }
 
-     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
+    
+    // Display a listing Tags.
     public function loadtags(Request $request)
     {
         if ($request->ajax())
@@ -40,10 +35,10 @@ class TagController extends Controller
             })
             ->addColumn('actions',function($row)
             {
-                $tag_id = isset($row->id) ? $row->id : '';
+                $tag_id = isset($row->id) ? encrypt($row->id) : '';
                 $action_html = '';
                 $action_html .= '<a href="'.route('tags.edit',$tag_id).'" class="btn btn-sm btn-primary me-1"><i class="bi bi-pencil"></i></a>';
-                $action_html .= '<a   onclick="deleteTag('.$tag_id.')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
+                $action_html .= '<a   onclick="deleteTag(\''.$tag_id.'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
                 return $action_html;
             })
             ->rawColumns(['changestatus','actions'])
@@ -51,24 +46,24 @@ class TagController extends Controller
         }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
+
+    // Show the form for creating a new Tags.
     public function create()
     {
         return view('admin.tags.create_tags');  
     }
 
+
     /**
-     * Store a newly created resource in storage.
+     * Store a Tags created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\TagRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(TagRequest $request)
     {
+        
         try {
             $input = $request->except('_token');
 
@@ -82,12 +77,9 @@ class TagController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Tag  $tag
-     * @return \Illuminate\Http\Response
-     */
+
+
+    // Store a Tags status Changes resource in storage..    
     public function status(Request $request)
     {
         $status = $request->status;
@@ -110,53 +102,50 @@ class TagController extends Controller
         }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Tag  $tag
-     * @return \Illuminate\Http\Response
-     */
+    
+    // Show the form for editing the specified Tags.
     public function edit(Tag $tag,$id)
     {
-        
-         $data = Tag::where('id',$id)->first();
-        return view('admin.tags.edit_tags', compact('data'));
+        try {
+            $id = decrypt($id);
+            $data = Tag::where('id',$id)->first();
+           return view('admin.tags.edit_tags', compact('data'));
+        } catch (\Throwable $th) {
+            
+            return redirect()->route('tags')->with('error','Something with wrong');
+        }
     }
 
+
     /**
-     * Update the specified resource in storage.
+     * Update the specified Tags in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\TagRequest  $request
      * @param  \App\Models\Tag  $tag
      * @return \Illuminate\Http\Response
      */
     public function update(TagRequest $request, Tag $tag)
     {
+        
         try {
             $input = $request->except('_token','id');
      
-            $tags = Tag::find($request->id);
+            $tags = Tag::find(decrypt($request->id));
             $tags->update($input);
-            return redirect()->route('tags')->with('message','Tags added Successfully');
+            return redirect()->route('tags')->with('message','Tags Updated Successfully');
         } catch (\Throwable $th) {
             
             return redirect()->route('tags')->with('error','Something with wrong');
 
         }
-        //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Tag  $tag
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Request $request)
+    
+        //  Remove the specified tags from storage.
+        public function destroy(Request $request)
         {
-            
             try {
-                $tags = Tag::where('id',$request->id)->delete();
+                $tags = Tag::where('id',decrypt($request->id))->delete();
                 return response()->json([
                     'success' => 1,
                     'message' => "Tag delete Successfully..",
@@ -168,6 +157,6 @@ class TagController extends Controller
                 ]);
             }   
 
-            //
+            
         }
 }

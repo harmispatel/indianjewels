@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\{AuthController,DashboardController,CategoryController,TagController,SliderController};
+use App\Http\Controllers\{AuthController,DashboardController,CategoryController,TagController, DesignController, SliderController};
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
@@ -75,6 +75,16 @@ Route::group(['prefix' => 'admin'], function ()
         Route::post('sliders/destroy',[SliderController::class,'destroy'])->name('sliders.destroy');
 
 
+        // Design
+        Route::get('designs',[DesignController::class,'index'])->name('designs');
+        Route::get('designs/load',[DesignController::class,'loaddesigns'])->name('designs.load');
+        Route::get('designs/create',[DesignController::class,'create'])->name('designs.create');
+        Route::post('designs/store',[DesignController::class,'store'])->name('designs.store');
+        Route::get('designs/edit/{id}',[DesignController::class,'edit'])->name('designs.edit');
+        Route::post('designs/update',[DesignController::class,'update'])->name('designs.update');
+        Route::post('designs/status',[DesignController::class,'status'])->name('designs.status');
+        Route::post('designs/image/destroy',[DesignController::class,'imagedestroy'])->name('designs-image.destroy');
+        Route::post('designs/destroy',[DesignController::class,'destroy'])->name('designs.destroy');
 
     });
 });
