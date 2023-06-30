@@ -17,13 +17,38 @@
                 </nav>
             </div>
             <div class="col-md-4" style="text-align: right;">
-                <a href="{{ route('tags.create') }}" class="btn btn-sm new-category btn-primary">
+                <a class="btn btn-sm btn-primary" id="addTags">
                     <i class="bi bi-plus-lg"></i>
+                </a>
+                <a class="btn btn-sm btn-danger" id="removeTags" style="display:none">
+                    <i class="bi bi-x"></i>
                 </a>
             </div>
         </div>
     </div>
 
+    {{-- New Clients add Section --}}
+    <section class="section dashboard">
+        <div class="row">
+            {{-- Error Message Section --}}
+            @if (session()->has('errors'))
+                <div class="col-md-12">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ session('errors') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+            @endif
+
+            {{-- Success Message Section --}}
+            @if (session()->has('success'))
+                <div class="col-md-12">
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+            @endif
 
     {{-- Category Section --}}
     <section class="section dashboard">
@@ -33,8 +58,30 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="card-title">
+                        <div class="card-title">                        
                         </div>
+                        <form class="form" action="{{ route('tags.store') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <div class="row" style="display: none;" id="tags">
+                                <div class="col-md-6 mb-4">
+                                    <div class="form-group">
+                                        <label for="name" class="form-label">Name <span
+                                        class="text-danger">*</span></label>
+                                        <input type="text" name="name" id="name"
+                                        class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}"
+                                        placeholder="Enter Name" value="{{old('name')}}">
+                                        @if ($errors->has('name'))
+                                            <div class="invalid-feedback">
+                                                {{ $errors->first('name') }}
+                                            </div>
+                                        @endif
+                                    </div>                                    
+                                </div>
+                                <div class="col-md-3">
+                                <button class="btn btn-success">{{ __('Save') }}</button>
+                                </div>
+                            </div>
+                        </form>
                         <div class="table-responsive">
                             <table class="table table-striped w-100" id="TagsTable">
                                 <thead>
@@ -63,6 +110,20 @@
 
 
     <script type="text/javascript">
+
+        $('#addTags').on('click',function(){
+            $('#tags').show();
+            $('#removeTags').show();
+            $('#addTags').hide();
+        });
+
+        $('#removeTags').on('click',function(){
+            $('#tags').hide();
+            $('#removeTags').hide();
+            $('#addTags').show();
+        });
+
+
         $(function() {
 
             var table = $('#TagsTable').DataTable({
@@ -114,6 +175,8 @@
                 }
             })
         }
+
+        
         // Function for Delete Tags
         function deleteTag(tagId) {
 
@@ -148,6 +211,7 @@
                     }
                 });
         }
+
     </script>
 
 @endsection
