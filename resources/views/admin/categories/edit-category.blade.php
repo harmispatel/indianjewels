@@ -78,7 +78,7 @@
                                         <div class="form-group">
                                         <label for = "parent_category" class="form-label">Perent Category</label>
                                             <select name="parent_category" id="parent_category" class="form-control">
-                                                <option value="">Select Perent Categories  </option>
+                                                <option value="0">Select Perent Categories  </option>
                                                 @foreach ($categories as $category)
                                                 <option value="{{ $category->id }}" @if($data->parent_category== $category->id) selected='selected' @endif>{{ $category->name }}</option>
                                             @endforeach
