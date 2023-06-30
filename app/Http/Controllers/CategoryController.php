@@ -123,7 +123,7 @@ class CategoryController extends Controller
      */
     public function update(CategoriesRequest $request, Category $category)
     {
-        $input = $request->except('_token');
+        $input = $request->except('_token','id');
         try
         {
             $id = decrypt($request->id);

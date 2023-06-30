@@ -88,8 +88,7 @@
                                             <button class="btn btn-success">Update</button>
                                         </div>
                                     </div>
-                            </div>
-                            
+                            </div>                            
                         </div>     
                     </form>
                 </div>
