@@ -27,7 +27,7 @@
                     <a href="{{ route('tags')}}" class="{{(Route::currentRouteName() == 'tags'|| Route::currentRouteName() == 'tags.edit' || Route::currentRouteName() == 'tags.create') ? 'active' : '' }}">
                         <i class="{{ (Route::currentRouteName() == 'tags' || Route::currentRouteName() == 'tags.edit' || Route::currentRouteName() == 'tags.create') ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Tags</span>
                     </a>
-                </li>
+                </li> 
                 <li>
                     <a href="{{ route('sliders') }}" class="{{(Route::currentRouteName() == 'sliders'|| Route::currentRouteName() == 'sliders.add-slider' || Route::currentRouteName() == 'sliders.edit-slider') ? 'active' : '' }}">
                         <i class="{{ (Route::currentRouteName() == 'sliders' || Route::currentRouteName() == 'sliders.add-slider' || Route::currentRouteName() == 'sliders.edit-slider') ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Sliders</span>
