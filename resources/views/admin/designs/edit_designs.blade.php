@@ -18,7 +18,7 @@
                 </nav>
             </div>
             <div class="col-md-4" style="text-align: right;">
-                <a href="{{ route('designs') }}" class="btn btn-sm new-amenity btn-primary">
+                <a href="{{ route('designs') }}" class="btn btn-sm new-amenity form_button">
                     <i class="bi bi-arrow-left"></i>
                 </a>
             </div>
@@ -392,7 +392,7 @@
                             </div>    
                             </div>
                             <div class="card-footer text-center">
-                                <button class="btn btn-success">Update</button>
+                                <button class="btn form_button">Update</button>
                             </div>
                     </form>
                 </div>

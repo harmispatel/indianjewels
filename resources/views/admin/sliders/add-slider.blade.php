@@ -19,7 +19,7 @@
                 </nav>
             </div>
             <div class="col-md-4" style="text-align: right;">
-                <a href="{{ route('sliders') }}" class="btn btn-sm new-sliders btn-primary">
+                <a href="{{ route('sliders') }}" class="btn btn-sm new-sliders form_button">
                     <i class="bi bi-arrow-left"></i>
                 </a>
             </div>
@@ -30,26 +30,7 @@
     {{-- New Clients add Section --}}
     <section class="section dashboard">
         <div class="row">
-            {{-- Error Message Section --}}
-            @if (session()->has('error'))
-                <div class="col-md-12">
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        {{ session('error') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                </div>
-            @endif
-
-            {{-- Success Message Section --}}
-            @if (session()->has('success'))
-                <div class="col-md-12">
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('success') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                </div>
-            @endif
-
+        
 
     {{-- Clients Card --}}
     <div class="col-md-12">
@@ -87,7 +68,7 @@
                         </div>
                     </div>
                     <div class="card-footer text-center">
-                        <button class="btn btn-success">{{ __('Save') }}</button>
+                        <button class="btn form_button">{{ __('Save') }}</button>
                     </div>
                 </div>
             </form>
