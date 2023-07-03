@@ -81,9 +81,26 @@
                                                 <label for = "parent_category" class="form-label">Perent Category</label>
                                                 <select name="parent_category" id="parent_category" class="form-control">
                                                     <option value="0">Select Perent Categories </option>
-                                                    @foreach ($categories as $category)
+                                                    @if($categories)
+                                                        @foreach($categories as $item)
+                                                        <?php $dash=''; ?>
+                                                        <option value="{{ $item->id }}" @if($data->parent_category == $item->id) selected @endif>{{ $item->name }}</option>
+                                                        @if(count($item->subcategory))
+                                                            @include('admin.categories.edit_category_child',['subcategories' => $item->subcategory])
+                                                        @endif
+                                                        @endforeach
+                                                    @endif
+                                                    {{-- @if($categories)
+                                                    @foreach($categories as $category)
+                                                        <option value="{{$category->id}}" @if($data->parent_category== $category->id) selected='selected' @endif>{{$category->name}}</option>
+                                                        @if(count($category->subcategory))
+                                                            @include('admin.categories.edit_category_child',['subcategories' => $category->subcategory, 'datas' => $data->parent_category])
+                                                        @endif
+                                                    @endforeach
+                                                @endif --}}
+                                                    {{-- @foreach ($categories as $category)
                                                     <option value="{{ $category->id }}" @if($data->parent_category== $category->id) selected='selected' @endif>{{ $category->name }}</option>
-                                                     @endforeach
+                                                     @endforeach --}}
                                                 </select>
                                             </div>
                                         </div>

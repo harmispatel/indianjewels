@@ -84,9 +84,15 @@
                                             <label for = "parent_category" class="form-label">Perent Category</label>
                                             <select name="parent_category" id="parent_category" class="form-control">
                                                 <option value="0">Select Perent Categories </option>
-                                                    @foreach ($categories as $category)
-                                                        <option value="{{ $category->id }}" >{{ $category->name }}</option>
-                                                    @endforeach
+                                                @if($categories)
+                                            @foreach($categories as $category)
+                                                <?php $dash=''; ?>
+                                                <option value="{{$category->id}}">{{$category->name}}</option>
+                                                @if(count($category->subcategory))
+                                                    @include('admin.categories.category_child',['subcategories' => $category->subcategory])
+                                                @endif
+                                            @endforeach
+                                        @endif
                                             </select>
                                         </div>
                                     </div>
