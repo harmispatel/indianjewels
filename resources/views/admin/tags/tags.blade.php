@@ -60,16 +60,20 @@
                     <div class="card-body">
                         <div class="card-title">                        
                         </div>
-                        <form class="form" action="{{ route('tags.store') }}" method="POST" enctype="multipart/form-data">
+                        @if (isset($data))
+                            <form method="POST" action="{{ route('tags.update') }}" enctype="multipart/form-data">
                             @csrf
+                        @else
+                            <form method="POST" action="{{ route('tags.store') }}" enctype="multipart/form-data">
+                            @csrf
+                        @endif
+                        <input type="hidden" name="id" id="id" value="">
                             <div class="row" style="display: none;" id="tags">
                                 <div class="col-md-6 mb-4">
                                     <div class="form-group">
                                         <label for="name" class="form-label">Name <span
                                         class="text-danger">*</span></label>
-                                        <input type="text" name="name" id="name"
-                                        class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}"
-                                        placeholder="Enter Name" value="{{old('name')}}">
+                                        <input type="text" name="name" id="name" class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" placeholder="Enter Name" value="{{ isset($data->name) ? $data->name : '' }}">
                                         @if ($errors->has('name'))
                                             <div class="invalid-feedback">
                                                 {{ $errors->first('name') }}
@@ -78,7 +82,7 @@
                                     </div>                                    
                                 </div>
                                 <div class="col-md-3">
-                                <button class="btn btn-success">{{ __('Save') }}</button>
+                                <button class="btn btn-success" id="saveupdatebtn">{{ __('Save') }}</button>
                                 </div>
                             </div>
                         </form>
@@ -115,6 +119,8 @@
             $('#tags').show();
             $('#removeTags').show();
             $('#addTags').hide();
+            $('#saveupdatebtn').html('');
+            $('#saveupdatebtn').append('Save');
         });
 
         $('#removeTags').on('click',function(){
@@ -176,6 +182,35 @@
             })
         }
 
+        function editTag(tagId)
+        {
+            $('#tags').show();
+            $('#removeTags').show();
+            $('#saveupdatebtn').html('');
+            $('#saveupdatebtn').append('Update');
+            $.ajax({
+                type: "POST",
+                url :"{{ route('tags.edit') }}",
+                dataType: 'JSON',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    'id': tagId,
+                },
+                success: function(response) 
+                {
+                    if (response.success == 1) 
+                    {
+                        // const tags = response.data;
+                        $('#name').val(tags.name);
+                        // toastr.success(response.message);
+                    } 
+                    else 
+                    {
+                        swal(response.message, "", "error");
+                    }
+                }
+            });
+        }
         
         // Function for Delete Tags
         function deleteTag(tagId) {

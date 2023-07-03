@@ -37,8 +37,8 @@ class TagController extends Controller
             {
                 $tag_id = isset($row->id) ? encrypt($row->id) : '';
                 $action_html = '';
-                $action_html .= '<a href="'.route('tags.edit',$tag_id).'" class="btn btn-sm btn-primary me-1"><i class="bi bi-pencil"></i></a>';
-                $action_html .= '<a   onclick="deleteTag(\''.$tag_id.'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
+                $action_html .= '<a onclick="editTag(\''.$tag_id.'\')" class="btn btn-sm btn-primary me-1" id="editTags"><i class="bi bi-pencil"></i></a>';
+                $action_html .= '<a onclick="deleteTag(\''.$tag_id.'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
                 return $action_html;
             })
             ->rawColumns(['changestatus','actions'])
@@ -104,16 +104,27 @@ class TagController extends Controller
 
     
     // Show the form for editing the specified Tags.
-    public function edit(Tag $tag,$id)
+    public function edit(Request $request)
     {
         try {
-            $id = decrypt($id);
+            $id = decrypt($request->id);
             $data = Tag::where('id',$id)->first();
-           return view('admin.tags.edit_tags', compact('data'));
-        } catch (\Throwable $th) {
-            
+            // dd($data);
+               return view('admin.tags.tags', compact('data'));
+            } catch (\Throwable $th) {
+                    dd($th);
             return redirect()->route('tags')->with('error','Something with wrong');
         }
+    //     return response()->json([
+    //         'success' => 1,
+    //         'message' => "Tag edit Successfully..",
+    //     ]);
+    // } catch (\Throwable $th) {
+    //     return response()->json([
+    //         'success' => 0,
+    //         'message' => "Something with wrong",
+    //     ]);
+    // } 
     }
 
 
