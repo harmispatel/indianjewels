@@ -26,7 +26,8 @@ class TagController extends Controller
             $tags= Tag::get();
             return DataTables::of($tags)
             ->addIndexColumn()
-            ->addColumn('changestatus', function ($row){
+            ->addColumn('changestatus', function ($row)
+            {
                 $status = $row->status;
                 $checked = ($status == 1) ? 'checked' : '';
                 $checkVal = ($status == 1) ? 0 : 1;
@@ -64,14 +65,14 @@ class TagController extends Controller
     public function store(TagRequest $request)
     {
         
-        try {
+        try 
+        {
             $input = $request->except('_token');
-
             Tag::create($input);
-
             return redirect()->route('tags')->with('message','Tags added Successfully');
-        } catch (\Throwable $th) {
-            //throw $th;
+        } 
+        catch (\Throwable $th) 
+        {
             return redirect()->route('tags')->with('error','Something with wrong');
             
         }
@@ -84,18 +85,22 @@ class TagController extends Controller
     {
         $status = $request->status;
         $id = $request->id;
-        try {
+        try 
+        {
             $input = Tag::find($id);
             $input->status =  $status;
             $input->update();
 
-            return response()->json([
+            return response()->json(
+            [
                 'success' => 1,
                 'message' => "Tag Status has been Changed Successfully..",
             ]);
-        } catch (\Throwable $th) {
-            //throw $th;
-            return response()->json([
+        } 
+        catch (\Throwable $th) 
+        {
+            return response()->json(
+            [
                 'success' => 0,
                 'message' => "Internal Server Error!",
             ]);
@@ -106,25 +111,33 @@ class TagController extends Controller
     // Show the form for editing the specified Tags.
     public function edit(Request $request)
     {
-        try {
+        try 
+        {
             $id = decrypt($request->id);
             $data = Tag::where('id',$id)->first();
             // dd($data);
-               return view('admin.tags.tags', compact('data'));
-            } catch (\Throwable $th) {
-                    dd($th);
-            return redirect()->route('tags')->with('error','Something with wrong');
+            //    return view('admin.tags.tags', compact('data'));
+            // } 
+            // catch (\Throwable $th) 
+            // {
+            //     dd($th);
+            //     return redirect()->route('tags')->with('error','Something with wrong');
+            // }
+            return response()->json(
+            [
+                'success' => 1,
+                'data' => $data,
+                'message' => "Tag edit Successfully..",
+            ]);
         }
-    //     return response()->json([
-    //         'success' => 1,
-    //         'message' => "Tag edit Successfully..",
-    //     ]);
-    // } catch (\Throwable $th) {
-    //     return response()->json([
-    //         'success' => 0,
-    //         'message' => "Something with wrong",
-    //     ]);
-    // } 
+        catch (\Throwable $th)
+        {
+            return response()->json(
+            [
+                'success' => 0,
+                'message' => "Something with wrong",
+            ]);
+        } 
     }
 
 
@@ -135,39 +148,52 @@ class TagController extends Controller
      * @param  \App\Models\Tag  $tag
      * @return \Illuminate\Http\Response
      */
-    public function update(TagRequest $request, Tag $tag)
+    public function update(TagRequest $request)
     {
-        
-        try {
-            $input = $request->except('_token','id');
-     
-            $tags = Tag::find(decrypt($request->id));
+        $input = $request->except('_token','id');
+        // dd($input);
+        try 
+        {
+            $tags = Tag::find($request->id);
+            if($tags)
+            {
             $tags->update($input);
             return redirect()->route('tags')->with('message','Tags Updated Successfully');
-        } catch (\Throwable $th) {
-            
+            }
+            else
+            {
+                $input = $request->except('_token');
+                Tag::create($input);
+                return redirect()->route('tags')->with('message','Tags inserted Successfully');
+            }
+        } 
+        catch (\Throwable $th) 
+        { 
+            dd($th);
             return redirect()->route('tags')->with('error','Something with wrong');
-
         }
     }
 
     
-        //  Remove the specified tags from storage.
-        public function destroy(Request $request)
+    //  Remove the specified tags from storage.
+    public function destroy(Request $request)
+    {
+        try 
         {
-            try {
-                $tags = Tag::where('id',decrypt($request->id))->delete();
-                return response()->json([
-                    'success' => 1,
-                    'message' => "Tag delete Successfully..",
-                ]);
-            } catch (\Throwable $th) {
-                return response()->json([
-                    'success' => 0,
-                    'message' => "Something with wrong",
-                ]);
-            }   
-
-            
-        }
+            $tags = Tag::where('id',decrypt($request->id))->delete();
+            return response()->json(
+            [
+                'success' => 1,
+                'message' => "Tag delete Successfully..",
+            ]);
+        } 
+        catch (\Throwable $th) 
+        {
+            return response()->json(
+            [
+                'success' => 0,
+                'message' => "Something with wrong",
+            ]);
+        }   
+    }
 }
