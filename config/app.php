@@ -52,7 +52,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'https://192.168.1.78/indianjewel/'),
+    'url' => env('APP_URL', 'https://192.168.1.73/indianjewel/'),
 
     'asset_url' => env('ASSET_URL', null),
 
@@ -162,7 +162,7 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
-        
+
 
         /*
          * Package Service Providers...
