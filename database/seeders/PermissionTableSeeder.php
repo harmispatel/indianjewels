@@ -23,9 +23,17 @@ class PermissionTableSeeder extends Seeder
             'tags',
             'tags.create',
             'tags.edit',
-            'tags.destroy'
+            'tags.destroy',
+            'designs',
+            'designs.create',
+            'designs.edit',
+            'designs.destroy',
+            'admin.categories',
+            'categories.add-category',
+            'categories.edit-category',
+            'categories.destroy',
          ];
-      
+
          foreach ($permissions as $permission) {
               Permission::create(['name' => $permission]);
          }
