@@ -23,10 +23,20 @@ class CategoriesRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'name' => 'required',
-            // 'iamge' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            // 'perent_category' => 'required',
+        if($this->id)
+        {
+        $rules = [
+            'name' => 'required|unique:categories,name,'.decrypt($this->id),
+            'iamge' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
+    }
+        else 
+        {
+            $rules = [
+                'name' => 'required|unique:categories,name',
+                'iamge' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            ];
+        }
+        return $rules;
     }
 }

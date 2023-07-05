@@ -22,8 +22,12 @@
 
 <!-- Template Main CSS File -->
 <link href="{{ asset('public/assets/css/style.css') }}" rel="stylesheet">
+<link href="{{ asset('public/assets/css/custom.css') }}" rel="stylesheet">
 
+{{-- sweetAlert 2 --}}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.min.css">
+
+<link rel="stylesheet" href="//cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 
 <style>
     
@@ -40,5 +44,20 @@
     {
         width: 45px!important;
         height: 25px!important;
+    }
+
+    /* AutoComplete */
+    .pac-container {
+        z-index: 9999;
+    }
+      /* select 2 css */
+      /* .select2 {
+        width: 100%!important;
+    } */
+    .select2-selection{
+        min-height: 37px!important;
+    }
+    .select2-container--default .select2-selection--multiple{
+        border: 1px solid #ced4da!important;
     }
 </style>

@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\{AuthController,DashboardController,CategoryController,TagController};
+use App\Http\Controllers\{AuthController,DashboardController,CategoryController,TagController, DesignController, SliderController, RoleController};
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
@@ -49,6 +49,17 @@ Route::group(['prefix' => 'admin'], function ()
         Route::get('categories/edit/category/{id}',[CategoryController::class,'edit'])->name('categories.edit-category');
         Route::post('categories/update/category',[CategoryController::class,'update'])->name('categories.update-category');
 
+        Route::post('categories/status',[CategoryController::class,'status'])->name('categories.status');
+        Route::post('categories/destroy',[CategoryController::class,'destroy'])->name('categories.destroy');
+
+        // Roles
+        Route::get('roles',[RoleController::class,'index'])->name('roles');
+        Route::get('roles/create',[RoleController::class,'create'])->name('roles.create');
+        Route::post('roles/store',[RoleController::class,'store'])->name('roles.store');
+        Route::get('roles/edit/{id}',[RoleController::class,'edit'])->name('roles.edit');
+        Route::post('roles/update',[RoleController::class,'update'])->name('roles.update');
+        Route::post('roles/destroy',[RoleController::class,'destroy'])->name('roles.destroy');
+
         // Tag
         Route::get('tags',[TagController::class,'index'])->name('tags');
         Route::get('tags/load',[TagController::class,'loadtags'])->name('tags.load');
@@ -61,5 +72,27 @@ Route::group(['prefix' => 'admin'], function ()
 
         // Logout Route
         Route::get('logout', [AuthController::class,'AdminLogout'])->name('admin.logout');
+        // Sliders
+        Route::get('sliders',[SliderController::class,'index'])->name('sliders');
+        Route::get('sliders/load-sliders',[SliderController::class,'loadSliders'])->name('sliders.load-sliders');
+        Route::get('sliders/add/slider',[SliderController::class,'create'])->name('sliders.add-slider');
+        Route::post('sliders/store/slider',[SliderController::class,'store'])->name('sliders.store-slider');
+        Route::get('sliders/edit/slider/{id}',[SliderController::class,'edit'])->name('sliders.edit-slider');
+        Route::post('sliders/update/slider',[SliderController::class,'update'])->name('sliders.update-slider');
+        Route::post('sliders/status',[SliderController::class,'status'])->name('sliders.status');
+        Route::post('sliders/destroy',[SliderController::class,'destroy'])->name('sliders.destroy');
+
+
+        // Design
+        Route::get('designs',[DesignController::class,'index'])->name('designs');
+        Route::get('designs/load',[DesignController::class,'loaddesigns'])->name('designs.load');
+        Route::get('designs/create',[DesignController::class,'create'])->name('designs.create');
+        Route::post('designs/store',[DesignController::class,'store'])->name('designs.store');
+        Route::get('designs/edit/{id}',[DesignController::class,'edit'])->name('designs.edit');
+        Route::post('designs/update',[DesignController::class,'update'])->name('designs.update');
+        Route::post('designs/status',[DesignController::class,'status'])->name('designs.status');
+        Route::post('designs/image/destroy',[DesignController::class,'imagedestroy'])->name('designs-image.destroy');
+        Route::post('designs/destroy',[DesignController::class,'destroy'])->name('designs.destroy');
+
     });
 });

@@ -50,40 +50,33 @@
             {{-- Clients Card --}}
             <div class="col-md-12">
                 <div class="card">
-                    
+
                     <form class="form" action="{{ route('tags.update') }}" method="POST" enctype="multipart/form-data">
-                        
+
                         <div class="card-body">
-                        @csrf
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <h3>Tags Details</h3>
+                            @csrf
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <h3>Tags Details</h3>
+                                    </div>
                                 </div>
-                            </div>
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                        <input type="hidden" name="id" value="{{$data->id}}">
+                                        <input type="hidden" name="id" value="{{ encrypt($data->id) }}">
                                         <div class="form-group">
                                             <label for="firstname" class="form-label">Name <span
                                                     class="text-danger">*</span></label>
                                             <input type="text" name="name" id="name"
                                                 class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}"
-                                                placeholder="Enter Name" value="{{isset($data->name)?$data->name : ''}}">
+                                                placeholder="Enter Name"
+                                                value="{{ isset($data->name) ? $data->name : '' }}">
                                             @if ($errors->has('name'))
                                                 <div class="invalid-feedback">
                                                     {{ $errors->first('name') }}
                                                 </div>
                                             @endif
                                         </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="status" class="form-label">Status</label>
-                                        <select name="status" class="form-control @error('status') is-invalid @enderror"
-                                            id="status-select">
-                                            <option value="1"{{ $data->status == 1 ? 'selected' : '' }}>Active</option>
-                                            <option value="2"{{ $data->status == 2 ? 'selected' : '' }}>InActive</option>
-                                        </select>
                                     </div>
                                 </div>
                             </div>

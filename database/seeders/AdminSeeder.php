@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use App\Models\Admin;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class AdminSeeder extends Seeder
 {
@@ -15,17 +17,22 @@ class AdminSeeder extends Seeder
      */
     public function run()
     {
-        $admins = [
-            [
-                'firstname' =>      'Hasan',
-                'lastname' =>       'Karadiya',
-                'email'     =>      'admin@gmail.com',
-                'user_type' =>      1,
-                'password'  =>      Hash::make(123456),
-                'status'    =>      1,
-            ],
-        ];
 
-        Admin::insert($admins);
+        $user = Admin::create([
+            'firstname' => 'Hasan',
+            'lastname' => 'Karadiya',
+            'email'  => 'admin@gmail.com',
+            'user_type' => 1,
+            'password' => Hash::make(123456),
+            'status' => 1
+        ]);
+
+        $role = Role::create(['name' => 'Admin']);
+     
+        $permissions = Permission::pluck('id','id')->all();
+   
+        $role->syncPermissions($permissions);
+     
+        $user->assignRole([$role->id]);
     }
 }

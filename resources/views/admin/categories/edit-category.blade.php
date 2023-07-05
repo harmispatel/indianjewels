@@ -4,76 +4,137 @@
 
 @section('content')
 
-<div class="pagetitle">
-        <h1> Categories </h1>
+    {{-- Page Title --}}
+    <div class="pagetitle">
+        <h1>Categories</h1>
         <div class="row">
             <div class="col-md-8">
                 <nav>
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item active">Categories</li>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
+                        <li class="breadcrumb-item "><a href="{{ route('admin.categories') }}">Categories</a></li>
                     </ol>
                 </nav>
+            </div>
+            <div class="col-md-4" style="text-align: right;">
+                <a href="{{ route('admin.categories') }}" class="btn btn-sm new-categories form_button">
+                    <i class="bi bi-arrow-left"></i>
+                </a>
             </div>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-lg-12 margin-tb">
-            <div class="pull-left">
-                <h2>Edit Category</h2>
-            </div>
-        </div>
-    </div>
-     
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <strong>Whoops!</strong> There were some problems with your input.<br><br>
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+    {{-- New Clients add Section --}}
+    <section class="section dashboard">
+        <div class="row">
+            {{-- Error Message Section --}}
+            @if (session()->has('error'))
+                <div class="col-md-12">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ session('error') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+            @endif
+
+            {{-- Success Message Section --}}
+            @if (session()->has('success'))
+                <div class="col-md-12">
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+            @endif
     
-    <form action="{{ route('categories.update-category',$categories->id) }}" method="POST" enctype="multipart/form-data"> 
-        @csrf
-         <div class="row">
-            <div class="col-md-12 mb-2">
-                <div class="form-group">
-                    <strong>Name</strong>
-                    <input type="text" name="name" value="{{ $categories->name }}" class="form-control" placeholder="Name">
+            {{-- Clients Card --}}
+            <div class="col-md-12">
+                <div class="card">
+                    <form action="{{ route('categories.update-category') }}" method="POST" enctype="multipart/form-data"> 
+                        <div class="card-body">
+                        @csrf
+                        <div class="form_box">
+                            <div class="form_box_inr">
+                                <div class="box_title">
+                                    <h2>Categories Details</h2> 
+                                </div>
+                                <div class="form_box_info">
+                                    <div class="row">
+                                        <input type="hidden" name="id" value="{{encrypt($data->id)}}">
+                                        <div class="col-md-6 mb-3">
+                                            <div class="form-group">
+                                                <label for="firstname" class="form-label">Name <span
+                                                        class="text-danger">*</span></label>
+                                                <input type="text" name="name" value="{{ $data->name }}" id="name"
+                                                    class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}"
+                                                    placeholder="Enter Name">
+                                                @if ($errors->has('name'))
+                                                    <div class="invalid-feedback">
+                                                        {{ $errors->first('name') }}
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6 mb-3">
+                                            <div class="form-group">
+                                                <label for = "parent_category" class="form-label">Perent Category</label>
+                                                <select name="parent_category" id="parent_category" class="form-control">
+                                                    <option value="0">Select Perent Categories </option>
+                                                    @if($categories)
+                                                        @foreach($categories as $item)
+                                                        <?php $dash=''; ?>
+                                                        <option value="{{ $item->id }}" @if($data->parent_category == $item->id) selected @endif>{{ $item->name }}</option>
+                                                        @if(count($item->subcategory))
+                                                            @include('admin.categories.edit_category_child',['subcategories' => $item->subcategory])
+                                                        @endif
+                                                        @endforeach
+                                                    @endif
+                                                </select>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+
+                                </div>
+                                
+
+                            </div>
+                            <div class="form_box_inr">
+                                <div class="box_title">
+                                    <h2>Categories Image</h2>
+                                </div>
+                                <div class="form_box_info">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <div class="form_group">
+                                                <label for="image" class="form-label">Image</label>
+                                                <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" placeholder="image">
+                                                <div class="mt-2">
+                                                    @if($data->image)
+                                                        <img src="{{ asset('public/images/category_image/'.$data->image) }}" width="100" height="100">
+                                                    @else
+                                                        <img src="{{ asset('public/images/category_image/not-found1.png') }}" width="100" height="100">
+                                                    @endif
+                                                </div>
+                                                @if ($errors->has('image'))
+                                                <div class="invalid-feedback">
+                                                    {{ $errors->first('image') }}
+                                                </div>
+                                            @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <button class="btn form_button">Udpate</button>
+                        </div>
+                        </div>     
+                    </form>
                 </div>
-            </div>
-            <div class="col-md-12 mb-2 status-div">
-                <div class="form-group">
-                    <strong>Perent Categories </strong>
-                    <select name="parent_category" id="parent_category" class="form-control">
-                        <option value="">Select Perent Categories  </option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-md-12 mb-2">
-                <div class="form-group">
-                    <strong>Image</strong>
-                    <input type="file" name="image" class="form-control" placeholder="image">
-                    <img src="public/images/category_image/{{ $categories->image }}" width="50px" height="50px">
-                </div>
-            </div>
-            <div class="col-md-12 mb-2">
-                <div class="form-group">
-                    <strong>Status</strong>
-                    <select class="form-control" name="status">
-                        <option {{ ($categories->status) == '1' ? 'selected' : '' }} value="1">Active</option>
-                        <option {{ ($categories->status) == '0' ? 'selected' : '' }}  value="0">InActive</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-md-12 mb-2 text-center">
-              <button type="submit" class="btn btn-primary">Submit</button>
             </div>
         </div>
-     
-    </form>
+    </section>
 @endsection

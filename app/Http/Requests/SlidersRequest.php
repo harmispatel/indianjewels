@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class TagRequest extends FormRequest
+class SlidersRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,20 +23,9 @@ class TagRequest extends FormRequest
      */
     public function rules()
     {
-        if($this->id)
-        {
-            $rules = [
-                'name' => 'required|unique:tags,name,'.decrypt($this->id),
-                              
-            ];
-        }
-        else
-        {
-            $rules = [
-                'name' => 'required|unique:tags,name',
-                              
-            ];
-        }
-        return $rules;
+        return 
+        [
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
+        ];
     }
 }
