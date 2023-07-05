@@ -11,6 +11,19 @@ use App\Http\Requests\TagRequest;
 
 class TagController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    function __construct()
+    {
+         $this->middleware('permission:tags|tags.create|tags.edit|tags.destroy', ['only' => ['index','store']]);
+         $this->middleware('permission:tags.create', ['only' => ['create','store']]);
+         $this->middleware('permission:tags.edit', ['only' => ['edit','update']]);
+         $this->middleware('permission:tags.destroy', ['only' => ['destroy']]);
+    }
+
     // Display a listing of the resource.
     public function index()
     {

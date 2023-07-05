@@ -17,6 +17,20 @@ class DesignController extends Controller
 {
     use ImageTrait;
 
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    function __construct()
+    {
+         $this->middleware('permission:designs|designs.create|designs.edit|designs.destroy', ['only' => ['index','store']]);
+         $this->middleware('permission:designs.create', ['only' => ['create','store']]);
+         $this->middleware('permission:designs.edit', ['only' => ['edit','update']]);
+         $this->middleware('permission:designs.destroy', ['only' => ['destroy']]);
+         
+    }
     /**
      * Display a listing of the resource.
      *
@@ -48,7 +62,7 @@ class DesignController extends Controller
             {
                 $tag_id = isset($row->id) ? encrypt($row->id) : '';
                 $action_html = '';
-                $action_html .= '<a href="'.route('designs.edit',$tag_id).'" class="btn btn-sm btn-primary me-1"><i class="bi bi-pencil"></i></a>';
+                $action_html .= '<a href="'.route('designs.edit',$tag_id).'" class="btn btn-sm edit_bt me-1"><i class="bi bi-pencil"></i></a>';
                 $action_html .= '<a onclick="deleteDesign(\''.$tag_id.'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
                 return $action_html;
             })

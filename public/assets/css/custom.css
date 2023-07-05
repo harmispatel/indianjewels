@@ -25,27 +25,35 @@
 }
 
 .form_box_inr{
-    border: 1px solid #bfbfbf;
+    border: 1px solid #012970;
     margin-bottom: 15px;
 }
 .form_box .form_box_inr:last-child{
     margin: 0 !important;
 }
 .box_title {
-background-color: #2a2931;
-border-bottom: 1px solid #bfbfbf;
+background-color: #012970;
+border-bottom: 1px solid #012970;
 padding: 10px 15px;
 }
 .box_title h2 {
     font-size: 16px;
     font-weight: 600;
     margin: 0;
-    color: #c7a42e;
+    color: #fff;
 }
 .form_box_info {
     padding: 15px;
 }
 .form_button{
-    color: #E5E4E2;
-    background-color: #212529;
+    color: #fff;
+    background-color: #012970;
+}
+.form_button:hover{
+    border-color: #012970;
+    color: #012970;
+}
+.edit_bt, .edit_bt:hover{
+    background-color: #012970;
+    color: #fff;
 }

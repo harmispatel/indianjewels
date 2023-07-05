@@ -17,7 +17,7 @@
                 </nav>
             </div>
             <div class="col-md-4" style="text-align: right;">
-                <a href="{{ route('designs.create') }}" class="btn btn-sm new-category btn-primary">
+                <a href="{{ route('designs.create') }}" class="btn btn-sm new-category edit_bt">
                     <i class="bi bi-plus-lg"></i>
                 </a>
             </div>

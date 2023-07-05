@@ -84,9 +84,15 @@
                                             <label for = "parent_category" class="form-label">Perent Category</label>
                                             <select name="parent_category" id="parent_category" class="form-control">
                                                 <option value="0">Select Perent Categories </option>
-                                                    @foreach ($categories as $category)
-                                                        <option value="{{ $category->id }}" >{{ $category->name }}</option>
-                                                    @endforeach
+                                                @if($categories)
+                                            @foreach($categories as $category)
+                                                <?php $dash=''; ?>
+                                                <option value="{{$category->id}}">{{$category->name}}</option>
+                                                @if(count($category->subcategory))
+                                                    @include('admin.categories.category_child',['subcategories' => $category->subcategory])
+                                                @endif
+                                            @endforeach
+                                        @endif
                                             </select>
                                         </div>
                                     </div>
@@ -94,28 +100,30 @@
                                 </div>
 
                             </div>
-                            <div class="form_box_inr">
-                                <div class="box_title">
-                                    <h2>Categories Image</h2>
-                                </div>
-                                <div class="form_box_info">
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <div class="form_group">
-                                                <label for="image" class="form-label">Image</label>
-                                                <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" placeholder="image">
-                                                @if ($errors->has('image'))
-                                                <div class="invalid-feedback">
-                                                    {{ $errors->first('image') }}
-                                                </div>
-                                            @endif
+                            
+                        </div>
+                        <div class="form_box_inr">
+                            <div class="box_title">
+                                <h2>Categories Image</h2>
+                            </div>
+                            <div class="form_box_info">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form_group">
+                                            <label for="image" class="form-label">Image</label>
+                                            <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" placeholder="image">
+                                            @if ($errors->has('image'))
+                                            <div class="invalid-feedback">
+                                                {{ $errors->first('image') }}
                                             </div>
+                                        @endif
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    
                     <div class="card-footer text-center">
                         <button class="btn form_button">{{ __('Save') }}</button>
                     </div>

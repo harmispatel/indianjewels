@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\{AuthController,DashboardController,CategoryController,TagController, DesignController, SliderController};
+use App\Http\Controllers\{AuthController,DashboardController,CategoryController,TagController, DesignController, SliderController, RoleController};
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
@@ -53,6 +53,14 @@ Route::group(['prefix' => 'admin'], function ()
         Route::post('categories/update/category',[CategoryController::class,'update'])->name('categories.update-category');
         Route::post('categories/status',[CategoryController::class,'status'])->name('categories.status');
         Route::post('categories/destroy',[CategoryController::class,'destroy'])->name('categories.destroy');
+
+        // Roles
+        Route::get('roles',[RoleController::class,'index'])->name('roles');
+        Route::get('roles/create',[RoleController::class,'create'])->name('roles.create');
+        Route::post('roles/store',[RoleController::class,'store'])->name('roles.store');
+        Route::get('roles/edit/{id}',[RoleController::class,'edit'])->name('roles.edit');
+        Route::post('roles/update',[RoleController::class,'update'])->name('roles.update');
+        Route::post('roles/destroy',[RoleController::class,'destroy'])->name('roles.destroy');
         
         // Tag
         Route::get('tags',[TagController::class,'index'])->name('tags');
