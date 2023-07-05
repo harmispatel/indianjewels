@@ -17,7 +17,7 @@
                 </nav>
             </div>
             <div class="col-md-4" style="text-align: right;">
-                <a href="{{ route('categories.add-category') }}" class="btn btn-sm new-category btn-primary">
+                <a href="{{ route('categories.add-category') }}" class="btn btn-sm new-category edit_bt">
                     <i class="bi bi-plus-lg"></i>
                 </a>
             </div>
@@ -70,7 +70,7 @@
                                                             id="statusBtn" {{ $checked }}></div>
                                                 </td>
                                                 <td><a href="{{ route('categories.edit-category', encrypt($category_id)) }}"
-                                                        class="btn btn-sm btn-primary me-1"><i class="bi bi-pencil"></i></a>
+                                                        class="btn btn-sm edit_bt me-1"><i class="bi bi-pencil"></i></a>
                                                     <a onclick="deleteCategories('{{ encrypt($category_id) }}')"
                                                         class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>
                                                 </td>
@@ -146,12 +146,15 @@
                                     },
                                     dataType: 'JSON',
                                     success: function(response) {
+                                        console.log(response);
                                         if (response.success == 1) {
                                             toastr.success(response.message);
                                             setTimeout(() => {
                                                 location.reload();
                                             }, 1300);
-                                        } else {
+                                        } else if(response.success == 2)  {
+                                            swal(response.message, "", "error");
+                                        } else if(response.success == 3){
                                             swal(response.message, "", "error");
                                         }
                                     }

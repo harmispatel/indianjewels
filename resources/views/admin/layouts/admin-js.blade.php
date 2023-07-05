@@ -60,5 +60,6 @@ $('.select2bs4').select2({
   }
   		toastr.error("{{ session('error') }}");
   @endif   
+  
 
 </script>

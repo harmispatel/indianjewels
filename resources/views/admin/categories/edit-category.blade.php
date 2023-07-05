@@ -90,17 +90,6 @@
                                                         @endif
                                                         @endforeach
                                                     @endif
-                                                    {{-- @if($categories)
-                                                    @foreach($categories as $category)
-                                                        <option value="{{$category->id}}" @if($data->parent_category== $category->id) selected='selected' @endif>{{$category->name}}</option>
-                                                        @if(count($category->subcategory))
-                                                            @include('admin.categories.edit_category_child',['subcategories' => $category->subcategory, 'datas' => $data->parent_category])
-                                                        @endif
-                                                    @endforeach
-                                                @endif --}}
-                                                    {{-- @foreach ($categories as $category)
-                                                    <option value="{{ $category->id }}" @if($data->parent_category== $category->id) selected='selected' @endif>{{ $category->name }}</option>
-                                                     @endforeach --}}
                                                 </select>
                                             </div>
                                         </div>
@@ -108,36 +97,36 @@
                                     </div>
 
                                 </div>
-                                <div class="form_box_inr">
-                                    <div class="box_title">
-                                        <h2>Categories Image</h2>
-                                    </div>
-                                    <div class="form_box_info">
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <div class="form_group">
-                                                    <label for="image" class="form-label">Image</label>
-                                                    <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" placeholder="image">
-                                                    <div class="mt-2">
-                                                        @if($data->image)
-                                                            <img src="{{ asset('public/images/category_image/'.$data->image) }}" width="100" height="100">
-                                                        @else
-                                                            <img src="{{ asset('public/images/category_image/not-found1.png') }}" width="100" height="100">
-                                                        @endif
-                                                    </div>
-                                                    @if ($errors->has('image'))
-                                                    <div class="invalid-feedback">
-                                                        {{ $errors->first('image') }}
-                                                    </div>
-                                                @endif
+                                
+
+                            </div>
+                            <div class="form_box_inr">
+                                <div class="box_title">
+                                    <h2>Categories Image</h2>
+                                </div>
+                                <div class="form_box_info">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <div class="form_group">
+                                                <label for="image" class="form-label">Image</label>
+                                                <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" placeholder="image">
+                                                <div class="mt-2">
+                                                    @if($data->image)
+                                                        <img src="{{ asset('public/images/category_image/'.$data->image) }}" width="100" height="100">
+                                                    @else
+                                                        <img src="{{ asset('public/images/category_image/not-found1.png') }}" width="100" height="100">
+                                                    @endif
                                                 </div>
+                                                @if ($errors->has('image'))
+                                                <div class="invalid-feedback">
+                                                    {{ $errors->first('image') }}
+                                                </div>
+                                            @endif
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
-
                         </div>
                         <div class="card-footer text-center">
                             <button class="btn form_button">Udpate</button>

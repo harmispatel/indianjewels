@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
+use App\Models\{Category, Design};
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Requests\CategoriesRequest;
@@ -15,6 +15,18 @@ class CategoryController extends Controller
 {
     use ImageTrait;
 
+     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    function __construct()
+    {
+         $this->middleware('permission:admin.categories|categories.add-category|categories.edit-category|categories.destroy', ['only' => ['index','store']]);
+         $this->middleware('permission:categories.add-category', ['only' => ['create','store']]);
+         $this->middleware('permission:categories.edit-category', ['only' => ['edit','update']]);
+         $this->middleware('permission:categories.destroy', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      */
@@ -96,7 +108,7 @@ class CategoryController extends Controller
         {
             $id = decrypt($request->id);
             $category = Category::find($id);
-
+            
             // Save Image if exists and Delete old Image
             if ($request->has('image'))
             {
@@ -160,8 +172,33 @@ class CategoryController extends Controller
     {
         try
         {
+
             $id = decrypt($request->id);
             $category = Category::where('id',$id)->first();
+            
+            $child_exists = Category::where('parent_category', $id)->count();
+            $design_exists = Design::where('category_id',$id)->count();
+
+            
+            
+            if ($child_exists > 0) 
+            {
+                return response()->json(
+                    [
+                        'success' => 2,
+                        'message' => "This category will not be deleted until it has a design or has a child category!",
+                    ]);
+            }
+            else if($design_exists > 0)
+            {
+                return response()->json(
+                    [
+                        'success' => 2,
+                        'message' => "This category will not be deleted until it has a design or has a child category!",
+                    ]);
+            }
+                
+
             // Delete old Image
             $oldImage = isset($category->image) ? $category->image : '';
             if (!empty($oldImage) && file_exists('public/images/category_image/'.$oldImage))
