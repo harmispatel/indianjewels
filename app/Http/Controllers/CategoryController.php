@@ -55,7 +55,7 @@ class CategoryController extends Controller
             {
                 $category_id = isset($row->id) ? $row->id : '';
                 $action_html = '';
-                $action_html .= '<a href="'.route('categories.edit-category',encrypt($category_id)).'" class="btn btn-sm btn-primary me-1"><i class="bi bi-pencil"></i></a>';
+                $action_html .= '<a onclick="editCategory(\''.$category_id.'\')" class="btn btn-sm btn-primary me-1" id="editCategories"><i class="bi bi-pencil"></i></a>';
                 $action_html .= '<a onclick="deleteCategories(\''.encrypt($category_id).'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
                 return $action_html;
             })
@@ -91,12 +91,19 @@ class CategoryController extends Controller
         try
         {
             $category = Category::insert($input);
-            return redirect()->route('admin.categories')->with('message','Category created successfully.');
+            return response()->json(
+            [
+                'success' => 1,
+                'message' => "Category has been inserted Successfully..",
+            ]);
         }
         catch (\Throwable $th)
         {
-        
-            return redirect()->route('admin.categories')->with('error','Something with wrong');
+            return response()->json(
+            [
+                'success' => 0,
+                'message' => "Something with wrong",
+            ]);
         } 
     }
 
@@ -111,12 +118,28 @@ class CategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Category $category,$id)
+    public function edit(Request $request)
     {
-        $id =  decrypt($id);
-        $data = Category::where('id',$id)->first();
-        $categories = Category::where('id','!=',$id)->get();
-        return view('admin.categories.edit-category', compact('categories','data'));
+        try
+        {
+            $id = $request->id;
+            $data = Category::where('id',$id)->first();
+            // $categories = Category::where('id','!=',$id)->get();
+            return response()->json(
+            [
+                'success' => 1,
+                'data' => $data,
+                'message' => "Category edit Successfully..",
+            ]);
+        }
+        catch (\Throwable $th)
+        {
+            return response()->json(
+            [
+                'success' => 0,
+                'message' => "Something with wrong",
+            ]);
+        } 
     }
 
     /**
@@ -124,16 +147,16 @@ class CategoryController extends Controller
      */
     public function update(CategoriesRequest $request, Category $category)
     {
+        $category_id = isset($request->id) ? $request->id : '';
         $input = $request->except('_token','id');
         try
         {
-            $id = decrypt($request->id);
-            $category = Category::find($id);
+            $category = Category::find($category_id);
             
             // Save Image if exists and Delete old Image
             if ($request->has('image'))
             {
-                $cimg = Category::where('id',$id)->first();
+                $cimg = Category::where('id',$category_id)->first();
                 
                 // Delete old Image
                 $old_image = isset($cimg->image) ? $cimg->image : '';
@@ -148,11 +171,19 @@ class CategoryController extends Controller
             {
                 $category->update($input);
             }
-            return redirect()->route('admin.categories')->with('message','Category updated successfully');
+            return response()->json(
+            [
+                'success' => 1,
+                'message' => "Category updated Successfully..",
+            ]);
         }
         catch (\Throwable $th) 
         {
-            return redirect()->route('admin.categories')->with('error','Something went wrong');
+            return response()->json(
+            [
+                'success' => 0,
+                'message' => "Something with wrong",
+            ]);
         }
     }
 
@@ -176,8 +207,7 @@ class CategoryController extends Controller
             ]);
         } 
         catch (\Throwable $th) 
-        {
-            
+        { 
             return response()->json(
             [
                 'success' => 0,

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Tag;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use Yajra\DataTables\Facades\DataTables;
 use App\Http\Requests\TagRequest;
 
@@ -17,7 +18,6 @@ class TagController extends Controller
     }
 
 
-    
     // Display a listing Tags.
     public function loadtags(Request $request)
     {
@@ -48,7 +48,6 @@ class TagController extends Controller
     }
 
     
-
     // Show the form for creating a new Tags.
     public function create()
     {
@@ -64,20 +63,27 @@ class TagController extends Controller
      */
     public function store(TagRequest $request)
     {
-        
+        $input = $request->except('_token');
+        $input['created_at'] = Carbon::now();
+
         try 
         {
-            $input = $request->except('_token');
-            Tag::create($input);
-            return redirect()->route('tags')->with('message','Tags added Successfully');
+            $tags = Tag::insert($input);
+            return response()->json(
+            [
+                'success' => 1,
+                'message' => "Tag has been created Successfully..",
+            ]);
         } 
         catch (\Throwable $th) 
         {
-            return redirect()->route('tags')->with('error','Something with wrong');
-            
+            return response()->json(
+            [
+                'success' => 0,
+                'message' => "Something with wrong",
+            ]);
         }
     }
-
 
 
     // Store a Tags status Changes resource in storage..    
@@ -115,14 +121,7 @@ class TagController extends Controller
         {
             $id = decrypt($request->id);
             $data = Tag::where('id',$id)->first();
-            // dd($data);
-            //    return view('admin.tags.tags', compact('data'));
-            // } 
-            // catch (\Throwable $th) 
-            // {
-            //     dd($th);
-            //     return redirect()->route('tags')->with('error','Something with wrong');
-            // }
+            
             return response()->json(
             [
                 'success' => 1,
@@ -148,29 +147,29 @@ class TagController extends Controller
      * @param  \App\Models\Tag  $tag
      * @return \Illuminate\Http\Response
      */
-    public function update(TagRequest $request)
+    public function update(TagRequest $request, Tag $tag)
     {
+        $tag_id = isset($request->id) ? $request->id : '';
         $input = $request->except('_token','id');
-        // dd($input);
+
         try 
         {
-            $tags = Tag::find($request->id);
-            if($tags)
-            {
+            $tags = Tag::find($tag_id);
+         
             $tags->update($input);
-            return redirect()->route('tags')->with('message','Tags Updated Successfully');
-            }
-            else
-            {
-                $input = $request->except('_token');
-                Tag::create($input);
-                return redirect()->route('tags')->with('message','Tags inserted Successfully');
-            }
+            return response()->json(
+            [
+                'success' => 1,
+                'message' => "Tag updated Successfully..",
+            ]);
         } 
         catch (\Throwable $th) 
         { 
-            dd($th);
-            return redirect()->route('tags')->with('error','Something with wrong');
+            return response()->json(
+            [
+                'success' => 0,
+                'message' => "Something with wrong",
+            ]);
         }
     }
 

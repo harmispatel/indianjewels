@@ -4,7 +4,41 @@
 
 @section('content')
 
-    {{-- Page Title --}}
+    {{-- Modal for Add New Tag & Edit Tag --}}
+    <div class="modal fade" id="tagModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="tagModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="tagModalLabel">New Tag</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" class="form" id="TagForm" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" name="id" id="id" value="">
+                        <div class="row">
+                            {{-- Name --}}
+                            <div class="col-md-12 mb-2">
+                                <div class="form-group">
+                                    <label for="name" class="form-label">Name
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" id="name" name="name" class="form-control" placeholder="Enter Tags Name">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <a onclick="saveUpdateTag('add')" class="btn btn-success" id="saveupdatebtn">Save</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+        {{-- Page Title --}}
     <div class="pagetitle">
         <h1>Tags</h1>
         <div class="row">
@@ -17,48 +51,41 @@
                 </nav>
             </div>
             <div class="col-md-4" style="text-align: right;">
-                <a class="btn btn-sm btn-primary" id="addTags">
+                <a data-bs-toggle="modal" data-bs-target="#tagModal" class="btn btn-sm new-tag btn-primary">
                     <i class="bi bi-plus-lg"></i>
-                </a>
-                <a class="btn btn-sm btn-danger" id="removeTags" style="display:none">
-                    <i class="bi bi-x"></i>
                 </a>
             </div>
         </div>
     </div>
 
-    {{-- Category Section --}}
+        {{-- Tags Section --}}
     <section class="section dashboard">
         <div class="row">
+            {{-- Error Message Section --}}
+            @if (session()->has('error'))
+                <div class="col-md-12">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ session('error') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+            @endif
 
-            {{-- Categories Card --}}
+            {{-- Success Message Section --}}
+            @if (session()->has('success'))
+                <div class="col-md-12">
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+            @endif
+
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="card-title">                        
-                            </div>
-                            <form method="POST" action="{{ route('tags.update') }}" enctype="multipart/form-data" id="edit-form" style="display:none;">
-                        <form method="POST" action="{{ route('tags.store') }}" enctype="multipart/form-data" id="store-form">                
-                                @csrf
-                            <input type="hidden" name="id" id="id" value="">
-                            <div class="row" style="display: none;" id="tags">
-                                <div class="col-md-6 mb-4">
-                                    <div class="form-group">
-                                        <label for="name" class="form-label">Name <span
-                                        class="text-danger">*</span></label>
-                                        <input type="text" name="name" id="name" class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" placeholder="Enter Name" value="{{ isset($data->name) ? $data->name : '' }}" required>
-                                        @if ($errors->has('name'))
-                                            <div class="invalid-feedback">
-                                                {{ $errors->first('name') }}
-                                            </div>
-                                        @endif
-                                    </div>                                    
-                                </div>
-                                <div class="col-md-3">
-                                <button class="btn btn-success" id="saveupdatebtn">{{ __('Save') }}</button>
-                                </div>
-                            </div>
-                            </form>
+                        <div class="card-title">
+                        </div>
                         <div class="table-responsive">
                             <table class="table table-striped w-100" id="TagsTable">
                                 <thead>
@@ -85,48 +112,59 @@
 {{-- Custom Script --}}
 @section('page-js')
 
-
     <script type="text/javascript">
-
-        $(document).ready(function() 
+        // Dcoument
+        $(document).ready(function()
         {
-            $('#store-form').submit(function(e) 
-            {
-                e.preventDefault();
-                var name = $('#name').val();
-                $(".error").remove();
+            // Toastr Options
+            toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                timeOut: 10000
+            }
+        });
 
-                if (name.length < 1) 
-                {
-                    $('#name').after('<span class="error">This Name field is required</span>');
-                }
-            });
-        });        
-
-        $('#addTags').on('click',function()
+          // Reset Tag Modal
+        $('.new-tag').on('click', function()
         {
-            $('#tags').show();
-            $('#removeTags').show();
-            $('#addTags').hide();
-            $('editTags').hide();
+            // Reset TagForm
+            $('#TagForm').trigger('reset');
+
+            // Empty Tag ID
+            $('#id').val('');
+
+            // Remove Validation Class
+            $('#name').removeClass('is-invalid');
+
+            // Clear all Toastr Messages
+            toastr.clear();
+
+            // Change Modal Title
+            $('#tagModalLabel').html('');
+            $('#tagModalLabel').append('New Tag');
+
+            // Chage Button Name
             $('#saveupdatebtn').html('');
             $('#saveupdatebtn').append('Save');
-            $('#store-form').show();
-            $('#edit-form').show();
-        });
-        
-        $('#removeTags').on('click',function()
-        {
-            $('#tags').hide();
-            $('#removeTags').hide();
-            $('#addTags').show();
+
+            // Change Button Value
+            $('#saveupdatebtn').attr('onclick', "saveUpdateTag('add')");
+
         });
 
-
-        $(function() 
+                // Load all Tags Records
+        loadTags();
+        // Function for get all Tags Records.
+        function loadTags()
         {
-            var table = $('#TagsTable').DataTable(
-            {
+            // Assign Tags Table to Variable;
+            var tagsTable = $('#TagsTable').DataTable();
+
+            // Destroy old Data
+            tagsTable.destroy();
+
+            // ReGenerate Tags Table
+            tagsTable = $('#TagsTable').DataTable({
                 processing: true,
                 serverSide: true,
                 pageLength: 100,
@@ -155,83 +193,85 @@
                     },
                 ]
             });
-
-        });
-
-        function changeStatus(status, id) 
-        {
-            $.ajax(
-            {
-                type: "POST",
-                url: '{{ route('tags.status') }}',
-                data: 
-                {
-                    "_token": "{{ csrf_token() }}",
-                    "status": status,
-                    "id": id
-                },
-                dataType: 'JSON',
-                success: function(response) 
-                {
-                    if (response.success == 1) 
-                    {
-                        toastr.success(response.message);
-                    } 
-                    else 
-                    {
-                        toastr.error(response.message);
-                    }
-                }
-            })
         }
 
-        // function editTag(tagId)
-        // {
-        //     $('#tags').show();
-        //     $('#removeTags').show();
-        //     $('#saveupdatebtn').html('');
-        //     $('#saveupdatebtn').append('Update');
-        //     $('#store-form').hide();
-        //     $('#edit-form').show();
-        //     $('#addTags').hide();
-        //     $.ajax(
-        //     {
-        //         type: "POST",
-        //         url :"{{ route('tags.edit') }}",
-        //         dataType: 'JSON',
-        //         data: 
-        //         {
-        //             "_token": "{{ csrf_token() }}",
-        //             'id': tagId,
-        //         },
-        //         success: function(response) 
-        //         {
-        //             if (response.success == 1) 
-        //             {
-        //                 // console.log(response.data.name);
-        //                 $('#id').val(response.data.id);
-        //                 $('#name').val(response.data.name);
-        //                 // toastr.success(response.message);
-        //             } 
-        //             else 
-        //             {
-        //                 swal(response.message, "", "error");
-        //             }
-        //         }
-        //     });
-        // }
-
-        // Function for Get Edit Vendor Data's
-        function editTag(tagId)
+               // Function for Save & Update Tags
+               function saveUpdateTag(type)
         {
-            // $('#edit-form').trigger('reset');
-            $('#tags').show();
-            $('#removeTags').show();
-            $('#saveupdatebtn').html('');
-            $('#saveupdatebtn').append('Update');
-            $('#store-form').hide();
-            $('#edit-form').show();
-            $('#addTags').hide();
+            // Data Type (Save/Update)
+            var dType = type;
+            if (dType == 'add')
+            {
+                var redirectUrl = "{{ route('tags.store') }}";
+            }
+            else
+            {
+                var redirectUrl = "{{ route('tags.update') }}";
+            }
+
+            // Get all form data from TagForm
+            myFormData = new FormData(document.getElementById('TagForm'));
+
+            // Remove Validation Class
+            $('#name').removeClass('is-invalid');
+
+            // Clear all Toastr Messages
+            toastr.clear();
+
+            $.ajax({
+                type: "POST",
+                url: redirectUrl,
+                data: myFormData,
+                contentType: false,
+                cache: false,
+                processData: false,
+                dataType: "JSON",
+                success: function(response)
+                {
+                    if (response.success == 1)
+                    {
+                        $('#TagForm').trigger('reset');
+                        $('#tagModal').modal('hide');
+                        toastr.success(response.message);
+                        loadTags();
+                    }
+                    else
+                    {
+                        $('#TagForm').trigger('reset');
+                        $('#tagModal').modal('hide');
+                        toastr.error(response.message);
+                    }
+                },
+                error: function(response)
+                {
+                    // All Validation Errors
+                    const validationErrors = (response?.responseJSON?.errors) ? response.responseJSON.errors : '';
+
+                    if (validationErrors != '')
+                    {
+                        // Name Error
+                        var nameError = (validationErrors.name) ? validationErrors.name : '';
+                        if (nameError != '')
+                        {
+                            $('#name').addClass('is-invalid');
+                            toastr.error(nameError);
+                        }
+                    }
+                }
+            });
+        }
+
+        // Function for Get Edit Tags Data's
+        function editTag(tagID)
+        {
+            // Reset TagForm
+            $('#TagForm').trigger('reset');
+
+            // Remove Validation Class
+            $('#name').removeClass('is-invalid');
+
+            // Clear all Toastr Messages
+            toastr.clear();
 
             $.ajax({
                 type: "POST",
@@ -239,23 +279,41 @@
                 dataType: "JSON",
                 data: {
                     '_token': "{{ csrf_token() }}",
-                    'id': tagId,
+                    'id': tagID,
                 },
                 success: function(response)
                 {
-                    if (response.success == 1) 
+                    if (response.success)
                     {
-                        $('#id').val(response.data.id);
-                        $('#name').val(response.data.name);
+                        // Tags Data's
+                        const tags = response.data;
+
+                        // Add values in TagForm
+                        $('#name').val(tags.name);
+                        $('#id').val(tags.id);
+
+                        // Change Modal Title
+                        $('#tagModalLabel').html('');
+                        $('#tagModalLabel').append('Edit Tag');
+
+                        // Chage Button Name
+                        $('#saveupdatebtn').html('');
+                        $('#saveupdatebtn').append('Update');
+
+                        // Show Modal
+                        $('#tagModal').modal('show');
+
+                        // Change Button Value
+                        $('#saveupdatebtn').attr('onclick', "saveUpdateTag('edit')");
                     }
-                    else 
+                    else
                     {
-                        swal(response.message, "", "error");
+                        toastr.error(response.message);
                     }
                 }
             });
         }
-        
+
         // Function for Delete Tags
         function deleteTag(tagId) 
         {
@@ -301,6 +359,35 @@
             });
         }
 
+
+        function changeStatus(status, id) 
+        {
+            $.ajax(
+            {
+                type: "POST",
+                url: '{{ route('tags.status') }}',
+                data: 
+                {
+                    "_token": "{{ csrf_token() }}",
+                    "status": status,
+                    "id": id
+                },
+                dataType: 'JSON',
+                success: function(response) 
+                {
+                    if (response.success == 1) 
+                    {
+                        toastr.success(response.message);
+                    } 
+                    else 
+                    {
+                        toastr.error(response.message);
+                    }
+                }
+            })
+        }
+
     </script>
+
 
 @endsection
