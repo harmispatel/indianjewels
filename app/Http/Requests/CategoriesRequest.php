@@ -26,7 +26,7 @@ class CategoriesRequest extends FormRequest
         if($this->id)
         {
         $rules = [
-            'name' => 'required|unique:categories,name,'.decrypt($this->id),
+            'name' => 'required|unique:categories,name,'.$this->id,
             'iamge' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }

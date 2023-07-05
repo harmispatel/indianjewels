@@ -50,37 +50,36 @@
             {{-- Clients Card --}}
             <div class="col-md-12">
                 <div class="card">
-
                     <form class="form" action="{{ route('tags.store') }}" method="POST" enctype="multipart/form-data">
-
                         <div class="card-body">
                             @csrf
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <h3>Tags Details</h3>
+                            <div class="form_box">
+                                <div class="form_box_inr">
+                                    <div class="box_title">
+                                        <h2>Tags Details</h2>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <div class="form-group">
-                                            <label for="firstname" class="form-label">Name <span
+                                    <div class="form_box_info">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <div class="form-group">
+                                                    <label for="firstname" class="form-label">Name <span
                                                     class="text-danger">*</span></label>
-                                            <input type="text" name="name" id="name"
-                                                class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}"
-                                                placeholder="Enter Name">
-                                            @if ($errors->has('name'))
-                                                <div class="invalid-feedback">
-                                                    {{ $errors->first('name') }}
+                                                    <input type="text" name="name" id="name" class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" placeholder="Enter Name">
+                                                    @if ($errors->has('name'))
+                                                        <div class="invalid-feedback">
+                                                            {{ $errors->first('name') }}
+                                                        </div>
+                                                    @endif
                                                 </div>
-                                            @endif
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="card-footer">
+                            <div class="card-footer text-center">
                                 <button class="btn btn-success">{{ __('Save') }}</button>
                             </div>
+                        </div>
                     </form>
                 </div>
             </div>

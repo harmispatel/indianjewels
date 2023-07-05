@@ -71,7 +71,11 @@ class CategoryController extends Controller
         try
         {
             $category = Category::insert($input);
-            return redirect()->route('admin.categories')->with('message','Category created successfully.');
+            return response()->json(
+            [
+                'success' => 1,
+                'message' => "Category has been inserted Successfully..",
+            ]);
         }
         catch (\Throwable $th)
         {
@@ -90,7 +94,7 @@ class CategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Category $category,$id)
+    public function edit(Request $request)
     {
         $id =  decrypt($id);
         $data = Category::where('id',$id)->first();
@@ -103,11 +107,11 @@ class CategoryController extends Controller
      */
     public function update(CategoriesRequest $request, Category $category)
     {
+        $category_id = isset($request->id) ? $request->id : '';
         $input = $request->except('_token','id');
         try
         {
-            $id = decrypt($request->id);
-            $category = Category::find($id);
+            $category = Category::find($category_id);
             
             // Save Image if exists and Delete old Image
             if ($request->has('image'))
@@ -127,11 +131,19 @@ class CategoryController extends Controller
             {
                 $category->update($input);
             }
-            return redirect()->route('admin.categories')->with('message','Category updated successfully');
+            return response()->json(
+            [
+                'success' => 1,
+                'message' => "Category updated Successfully..",
+            ]);
         }
         catch (\Throwable $th)
         {
-            return redirect()->route('admin.categories')->with('error','Something went wrong');
+            return response()->json(
+            [
+                'success' => 0,
+                'message' => "Something with wrong",
+            ]);
         }
     }
 

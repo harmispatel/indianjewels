@@ -46,7 +46,7 @@ Route::group(['prefix' => 'admin'], function ()
         Route::get('categories/load-categories',[CategoryController::class,'loadCategories'])->name('categories.load-categories');
         Route::get('categories/add/category',[CategoryController::class,'create'])->name('categories.add-category');
         Route::post('categories/store/category',[CategoryController::class,'store'])->name('categories.store-category');
-        Route::get('categories/edit/category/{id}',[CategoryController::class,'edit'])->name('categories.edit-category');
+        Route::post('categories/edit/category',[CategoryController::class,'edit'])->name('categories.edit-category');
         Route::post('categories/update/category',[CategoryController::class,'update'])->name('categories.update-category');
 
         Route::post('categories/status',[CategoryController::class,'status'])->name('categories.status');
@@ -65,7 +65,7 @@ Route::group(['prefix' => 'admin'], function ()
         Route::get('tags/load',[TagController::class,'loadtags'])->name('tags.load');
         Route::get('tags/create',[TagController::class,'create'])->name('tags.create');
         Route::post('tags/store',[TagController::class,'store'])->name('tags.store');
-        Route::get('tags/edit/{id}',[TagController::class,'edit'])->name('tags.edit');
+        Route::post('tags/edit',[TagController::class,'edit'])->name('tags.edit');
         Route::post('tags/update',[TagController::class,'update'])->name('tags.update');
         Route::post('tags/status',[TagController::class,'status'])->name('tags.status');
         Route::post('tags/destroy',[TagController::class,'destroy'])->name('tags.destroy');
