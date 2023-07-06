@@ -38,17 +38,21 @@ Route::group(['prefix' => 'admin'], function ()
     // If Auth Login
     Route::group(['middleware' => ['is_admin']], function ()
     {
+
+        Route::get('/', function () {
+            return redirect()->route('admin.dashboard');
+        });
+
         // Dashboard
         Route::get('dashboard', [DashboardController::class,'index'])->name('admin.dashboard');
 
-        //Categories Route
-        Route::get('/categories',[CategoryController::class,'index'])->name('admin.categories');
-        Route::get('categories/load-categories',[CategoryController::class,'loadCategories'])->name('categories.load-categories');
-        Route::get('categories/add/category',[CategoryController::class,'create'])->name('categories.add-category');
-        Route::post('categories/store/category',[CategoryController::class,'store'])->name('categories.store-category');
-        Route::post('categories/edit/category',[CategoryController::class,'edit'])->name('categories.edit-category');
-        Route::post('categories/update/category',[CategoryController::class,'update'])->name('categories.update-category');
-
+        // Categories
+        Route::get('/categories',[CategoryController::class,'index'])->name('categories');
+        Route::get('categories/load',[CategoryController::class,'loadCategories'])->name('categories.load');
+        Route::get('categories/add',[CategoryController::class,'create'])->name('categories.add');
+        Route::post('categories/store',[CategoryController::class,'store'])->name('categories.store');
+        Route::get('categories/edit/{id}',[CategoryController::class,'edit'])->name('categories.edit');
+        Route::post('categories/update',[CategoryController::class,'update'])->name('categories.update');
         Route::post('categories/status',[CategoryController::class,'status'])->name('categories.status');
         Route::post('categories/destroy',[CategoryController::class,'destroy'])->name('categories.destroy');
 

@@ -1,90 +1,48 @@
 <?php
-  
+
 namespace App\Traits;
-  
+
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Intervention\Image\Facades\Image;
-  
-trait ImageTrait {
-  
-      /**
-     * add/remove Multi image from sotage.
-     * @return $this|false|string
-     */
-    public function addMultiImage($path,$files,$oldImage = null)
+
+trait ImageTrait
+{
+    // Upload Single Image
+    public function addSingleImage($image_name,$path,$file,$old_image = null,$dim)
     {
-        // remove multi image.
-        if ($oldImage != '') 
+        // Delete old Image if Exists
+        if ($old_image != null && file_exists('public/images/uploads/'.$path.'/'.$old_image))
         {
-            $images = explode(' ,', $oldImage);
-            foreach ($images as $img) 
-            {
-                $oldimage_path = public_path().'/'. $path .'/'.$img;
-                if (file_exists($oldimage_path)) 
-                {
-                    unlink($oldimage_path);
-                }
-            }
+            unlink('public/images/uploads/'.$path.'/'.$old_image);
         }
 
-        // add multi image.
-        if ($files != '') 
+        // Upload New Image
+        if ($file != null)
         {
-            
-            foreach ($files as $file)        
-            {
-                $multiImage = date('YmdHi').$file->getClientOriginalName();
-                $file->move(public_path($path), $multiImage);
-                $imgData[] = $multiImage;
-            }
-            // $multiImage = implode(" ,", $imgData);
-            
+            $filename = $image_name."_".time().".".$file->getClientOriginalExtension();
 
-            return $imgData;
-        }
-        return null;
-    }
-
-
-    public function addSingleImage($path,$file,$oldImage = null,$dim)
-    {
-    
-        // remove Single image
-        if ($oldImage != null) 
-        {
-            $oldimage_path = public_path().'/images/'.$path.'/'.$oldImage;
-            
-            if (file_exists($oldimage_path)) 
-            {
-                unlink($oldimage_path);
-            }
-        }
-        
-        // add Single image
-        if ($file != null) 
-        {
-            $filename = date('YmdHi').$file->getClientOriginalName();
-            $filename = str_replace(' ','_',$filename);
             // Image Upload Path
-            $image_path = public_path().'/images/'.$path;
-            
-            // Image Dimension Array
-            $dim_array = explode('*',$dim);
-            
+            $image_path = public_path().'/images/uploads/'.$path;
+
             // Get Image Path
             $image = Image::make($file->path());
-            
-            // Resize Image & Upload in Storage
-            $image->resize($dim_array[0],$dim_array[1], function ($constraint)
+
+            if($dim == 'default')
             {
-            })->save($image_path.'/'.$filename);
-            
-            
-            
+                $image->save($image_path.'/'.$filename);
+            }
+            else
+            {
+                // Image Dimension Array
+                $dim_array = explode('*',$dim);
+
+                // Resize Image & Upload in Storage
+                $image->resize($dim_array[0],$dim_array[1], function ()
+                {
+                })->save($image_path.'/'.$filename);
+            }
             return $filename;
         }
-        return null;
     }
-  
 }

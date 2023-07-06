@@ -28,9 +28,9 @@ class PermissionTableSeeder extends Seeder
             'designs.create',
             'designs.edit',
             'designs.destroy',
-            'admin.categories',
-            'categories.add-category',
-            'categories.edit-category',
+            'categories',
+            'categories.add',
+            'categories.edit',
             'categories.destroy',
          ];
 

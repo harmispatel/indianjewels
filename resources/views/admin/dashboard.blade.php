@@ -1,17 +1,17 @@
 @extends('admin.layouts.admin-layout')
 
-@section('title', __('Dashboard'))
+@section('title', 'Dashboard')
 
 @section('content')
 
     {{-- Page Title --}}
     <div class="pagetitle">
-        <h1>{{ __('Dashboard') }}</h1>
+        <h1>Dashboard</h1>
         <div class="row">
             <div class="col-md-8">
                 <nav>
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item active">{{ __('Dashboard') }}</li>
+                        <li class="breadcrumb-item active">Dashboard</li>
                     </ol>
                 </nav>
             </div>

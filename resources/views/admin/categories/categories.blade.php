@@ -1,6 +1,6 @@
 @extends('admin.layouts.admin-layout')
 
-@section('title', __('Categories'))
+@section('title', 'Categories')
 
 @section('content')
 
@@ -17,12 +17,13 @@
                 </nav>
             </div>
             <div class="col-md-4" style="text-align: right;">
-                <a href="{{ route('categories.add-category') }}" class="btn btn-sm new-category edit_bt">
+                <a href="{{ route('categories.add') }}" class="btn btn-sm new-category custom-btn">
                     <i class="bi bi-plus-lg"></i>
                 </a>
             </div>
         </div>
     </div>
+
 
     {{-- Category Section --}}
     <section class="section dashboard">
@@ -46,39 +47,35 @@
                                 <tbody>
                                     @if (isset($categories))
                                         @foreach ($categories as $category)
-                                            <tr>
-                                                <?php
-                                                $dash = '';
+                                            @php
                                                 $status = $category->status;
                                                 $checked = $status == 1 ? 'checked' : '';
                                                 $checkVal = $status == 1 ? 0 : 1;
-                                                $category_id = isset($category->id) ? $category->id : '';
-                                                ?>
+                                                $quote = "";
+                                            @endphp
+                                            <tr>
                                                 <td>{{ $category->id }}</td>
                                                 <td>{{ $category->name }}</td>
-                                                @if ($category->image)
-                                                    <td><img src="{{ asset('public/images/category_image/' . $category->image) }}"
-                                                            alt="" width="100" height="100"></td>
-                                                @else
-                                                    <td><img src="{{ asset('public/images/category_image/not-found1.png') }}"
-                                                            alt="" width="100" height="100"></td>
-                                                @endif
                                                 <td>
-                                                    <div class="form-check form-switch"><input class="form-check-input"
-                                                            type="checkbox" role="switch"
-                                                            onchange="changeStatus('{{ $checkVal }}','{{ $category->id }}')"
-                                                            id="statusBtn" {{ $checked }}></div>
+                                                    @if(!empty($category->image) && file_exists('public/images/uploads/category_images/'.$category->image))
+                                                        <img src="{{ asset('public/images/uploads/category_images/'.$category->image) }}" width="60">
+                                                    @else
+                                                        <img src="{{ asset('public/images/demo_others/no_image_2.png') }}" width="60">
+                                                    @endif
                                                 </td>
-                                                <td><a href="{{ route('categories.edit-category', encrypt($category_id)) }}"
-                                                        class="btn btn-sm edit_bt me-1"><i class="bi bi-pencil"></i></a>
-                                                    <a onclick="deleteCategories('{{ encrypt($category_id) }}')"
-                                                        class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>
+                                                <td>
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus('{{ $checkVal }}','{{ encrypt($category->id) }}')" id="statusBtn" {{ $checked }}>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <a href="{{ route('categories.edit', encrypt( $category->id)) }}" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>
+
+                                                    <a onclick="deleteCategory('{{ encrypt($category->id) }}')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>
                                                 </td>
                                             </tr>
-                                            @if (count($category->subcategory))
-                                                @include('admin.categories.sub-category-list', [
-                                                    'subcategories' => $category->subcategory,
-                                                ])
+                                            @if (count($category->subcategories))
+                                                @include('admin.categories.sub_categories', ['subcategories' => $category->subcategories,])
                                             @endif
                                         @endforeach
                                     @endif
@@ -88,82 +85,115 @@
                     </div>
                 </div>
             </div>
-        @endsection
+        </div>
+    </section>
 
-        {{-- Custom Script --}}
-        @section('page-js')
+@endsection
 
-            <script type="text/javascript">
-                // Dcoument
-                $(document).ready(function() {
-                    $('#categoriesTable').DataTable({
-                        "ordering": false,
-                    });
-                    // Toastr Options
-                    toastr.options = {
-                        "closeButton": true,
-                        "progressBar": true,
-                        timeOut: 10000
+{{-- Custom Script --}}
+@section('page-js')
+
+    <script type="text/javascript">
+
+        $(document).ready(function()
+        {
+            $('#categoriesTable').DataTable({
+                "ordering": false,
+            });
+
+            // Toastr Options
+            toastr.options =
+            {
+                "closeButton": true,
+                "progressBar": true,
+                "timeOut": 10000
+            }
+
+            @if (Session::has('success'))
+                toastr.success('{{ Session::get('success') }}')
+            @endif
+
+            @if (Session::has('error'))
+                toastr.error('{{ Session::get('error') }}')
+            @endif
+
+        });
+
+
+        // Function for Change Status of Category
+        function changeStatus(status, catId)
+        {
+            $.ajax({
+                type: "POST",
+                url: "{{ route('categories.status') }}",
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "status": status,
+                    "id": catId
+                },
+                dataType: 'JSON',
+                success: function(response)
+                {
+                    if (response.success == 1)
+                    {
+                        toastr.success(response.message);
                     }
-                });
+                    else
+                    {
+                        toastr.error(response.message);
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1000);
+                    }
+                }
+            });
+        }
 
-                function changeStatus(status, id) {
+
+        // Function for Delete Category
+        function deleteCategory(catId)
+        {
+            swal({
+                title: "Are you sure You want to Delete It ?",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((deleteCategory) =>
+            {
+                if (deleteCategory)
+                {
                     $.ajax({
                         type: "POST",
-                        url: '{{ route('categories.status') }}',
+                        url: "{{ route('categories.destroy') }}",
                         data: {
                             "_token": "{{ csrf_token() }}",
-                            "status": status,
-                            "id": id
+                            'id': catId,
                         },
                         dataType: 'JSON',
-                        success: function(response) {
-                            if (response.success == 1) {
-                                toastr.success(response.message);
-                            } else {
-                                toastr.error(response.message);
+                        success: function(response)
+                        {
+                            if (response.success == 1)
+                            {
+                                swal(response.message, "", "success");
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 1300);
+                            }
+                            else
+                            {
+                                swal(response.message, "", "error");
                             }
                         }
-                    })
+                    });
                 }
-
-                // Function for Delete Table
-                function deleteCategories(categoriesID) {
-                    swal({
-                            title: "Are you sure You want to Delete It ?",
-                            icon: "warning",
-                            buttons: true,
-                            dangerMode: true,
-                        })
-                        .then((willDeleteCategories) => {
-                            if (willDeleteCategories) {
-                                $.ajax({
-                                    type: "POST",
-                                    url: '{{ route('categories.destroy') }}',
-                                    data: {
-                                        "_token": "{{ csrf_token() }}",
-                                        'id': categoriesID,
-                                    },
-                                    dataType: 'JSON',
-                                    success: function(response) {
-                                        console.log(response);
-                                        if (response.success == 1) {
-                                            toastr.success(response.message);
-                                            setTimeout(() => {
-                                                location.reload();
-                                            }, 1300);
-                                        } else if(response.success == 2)  {
-                                            swal(response.message, "", "error");
-                                        } else if(response.success == 3){
-                                            swal(response.message, "", "error");
-                                        }
-                                    }
-                                });
-                            } else {
-                                swal("Cancelled", "", "error");
-                            }
-                        });
+                else
+                {
+                    swal("Cancelled", "", "error");
                 }
-            </script>
+            });
+        }
 
-        @endsection
+    </script>
+
+@endsection

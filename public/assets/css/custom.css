@@ -53,7 +53,7 @@ padding: 10px 15px;
     border-color: #012970;
     color: #012970;
 }
-.edit_bt, .edit_bt:hover{
+.custom-btn, .custom-btn:hover{
     background-color: #012970;
     color: #fff;
 }
