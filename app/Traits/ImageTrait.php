@@ -21,19 +21,20 @@ trait ImageTrait
         if ($file != null)
         {
             $filename = $image_name."_".time().".".$file->getClientOriginalExtension();
-
+            
             // Image Upload Path
             $image_path = public_path().'/images/uploads/'.$path;
-
+            
             // Get Image Path
-            $image = Image::make($file->path());
-
+            
             if($dim == 'default')
             {
-                $image->save($image_path.'/'.$filename);
+                // $image->save($image_path.'/'.$filename);
+                $file->move($image_path, $filename);
             }
             else
             {
+                $image = Image::make($file->path());    
                 // Image Dimension Array
                 $dim_array = explode('*',$dim);
 
@@ -42,7 +43,9 @@ trait ImageTrait
                 {
                 })->save($image_path.'/'.$filename);
             }
+            // dd($filename);
             return $filename;
         }
     }
+
 }

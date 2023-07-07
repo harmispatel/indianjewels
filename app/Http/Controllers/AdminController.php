@@ -117,7 +117,7 @@ class AdminController extends Controller
     
     }
 
-     // Store a Tags status Changes resource in storage..    
+     // Store a Users status Changes resource in storage..    
      public function status(Request $request)
      {
          $status = $request->status;

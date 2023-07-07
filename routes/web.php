@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\{AuthController,DashboardController,CategoryController,TagController, DesignController, SliderController, RoleController, AdminController};
+use App\Http\Controllers\{AuthController,DashboardController,CategoryController,TagController, DesignController, SliderController, RoleController, AdminController, DealerController};
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
@@ -87,8 +87,6 @@ Route::group(['prefix' => 'admin'], function ()
         Route::post('tags/status',[TagController::class,'status'])->name('tags.status');
         Route::post('tags/destroy',[TagController::class,'destroy'])->name('tags.destroy');
 
-        // Logout Route
-        Route::get('logout', [AuthController::class,'AdminLogout'])->name('admin.logout');
         // Sliders
         Route::get('sliders',[SliderController::class,'index'])->name('sliders');
         Route::get('sliders/load-sliders',[SliderController::class,'loadSliders'])->name('sliders.load-sliders');
@@ -111,5 +109,19 @@ Route::group(['prefix' => 'admin'], function ()
         Route::post('designs/image/destroy',[DesignController::class,'imagedestroy'])->name('designs-image.destroy');
         Route::post('designs/destroy',[DesignController::class,'destroy'])->name('designs.destroy');
 
+        // Dealers
+        Route::get('dealers',[DealerController::class,'index'])->name('dealers');
+        Route::get('dealers/load',[DealerController::class,'loaddealers'])->name('dealers.load');
+        Route::get('dealers/create',[DealerController::class,'create'])->name('dealers.create');
+        Route::post('dealers/Store',[DealerController::class,'store'])->name('dealers.store');
+        Route::get('dealers/edit/{id}',[DealerController::class,'edit'])->name('dealers.edit');
+        Route::post('dealers/status',[DealerController::class,'status'])->name('dealers.status');
+        Route::post('dealers/update',[DealerController::class,'update'])->name('dealers.update');
+        Route::post('dealers/destroy',[DealerController::class,'destroy'])->name('dealers.destroy');
+
+
+        
+        // Logout Route
+        Route::get('logout', [AuthController::class,'AdminLogout'])->name('admin.logout');
     });
 });

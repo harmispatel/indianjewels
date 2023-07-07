@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDesignImagesTable extends Migration
+class CreateDealerDocumentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateDesignImagesTable extends Migration
      */
     public function up()
     {
-        Schema::create('design_images', function (Blueprint $table) {
+        Schema::create('dealer_documents', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('design_id')->nullable();
-            $table->string('image')->nullable();
+            $table->unsignedBigInteger('dealer_id')->nullable();
+            $table->string('document')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ class CreateDesignImagesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('design_images');
+        Schema::dropIfExists('dealer_documents');
     }
 }
