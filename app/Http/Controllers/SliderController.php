@@ -51,7 +51,7 @@ class SliderController extends Controller
             {
                 $slider_id = isset($row->id) ? $row->id : '';
                 $action_html = '';
-                $action_html .= '<a href="'.route('sliders.edit-slider',encrypt($slider_id)).'" class="btn btn-sm edit_bt me-1"><i class="bi bi-pencil"></i></a>';
+                $action_html .= '<a href="'.route('sliders.edit-slider',encrypt($slider_id)).'" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>';
                 $action_html .= '<a onclick="deleteSliders(\''.encrypt($slider_id).'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
                 return $action_html;
             })

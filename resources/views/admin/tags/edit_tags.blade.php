@@ -17,11 +17,7 @@
                     </ol>
                 </nav>
             </div>
-            <div class="col-md-4" style="text-align: right;">
-                <a href="{{ route('tags') }}" class="btn btn-sm new-amenity btn-primary">
-                    <i class="bi bi-arrow-left"></i>
-                </a>
-            </div>
+            
         </div>
     </div>
     {{-- New Clients add Section --}}

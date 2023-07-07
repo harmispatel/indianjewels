@@ -17,7 +17,7 @@
                 </nav>
             </div>
             <div class="col-md-4" style="text-align: right;">
-                <a href="{{ route('sliders.add-slider') }}" class="btn btn-sm new-slider edit_bt">
+                <a href="{{ route('sliders.add-slider') }}" class="btn btn-sm new-slider custom-btn">
                     <i class="bi bi-plus-lg"></i>
                 </a>
             </div>

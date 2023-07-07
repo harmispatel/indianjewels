@@ -18,4 +18,7 @@ class Admin extends Authenticatable
 
     protected $guarded = [];
 
+    
+    
+    
 }

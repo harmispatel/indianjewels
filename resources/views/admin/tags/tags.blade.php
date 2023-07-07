@@ -4,6 +4,15 @@
 
 @section('content')
 
+@php
+ $tag_add = Spatie\Permission\Models\Permission::where('name','tags.create')->first();
+ $user_type =  Auth::guard('admin')->user()->user_type;
+ $roles = App\Models\RoleHasPermissions::where('role_id',$user_type)->pluck('permission_id');
+ foreach ($roles as $key => $value) {
+     $val[] = $value;
+    }    
+@endphp
+
     {{-- Modal for Add New Tag & Edit Tag --}}
     <div class="modal fade" id="tagModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="tagModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -50,11 +59,14 @@
                     </ol>
                 </nav>
             </div>
+            @if(in_array($tag_add->id,$val))
+
             <div class="col-md-4" style="text-align: right;">
-                <a data-bs-toggle="modal" data-bs-target="#tagModal" class="btn btn-sm new-tag btn-primary">
+                <a data-bs-toggle="modal" data-bs-target="#tagModal" class="btn btn-sm new-tag custom-btn">
                     <i class="bi bi-plus-lg"></i>
                 </a>
             </div>
+            @endif
         </div>
     </div>
 
@@ -145,6 +157,7 @@
 
             // Chage Button Name
             $('#saveupdatebtn').html('');
+            $('#saveupdatebtn').addClass('custom-btn');
             $('#saveupdatebtn').append('Save');
 
             // Change Button Value

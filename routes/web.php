@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\{AuthController,DashboardController,CategoryController,TagController, DesignController, SliderController, RoleController};
+use App\Http\Controllers\{AuthController,DashboardController,CategoryController,TagController, DesignController, SliderController, RoleController, AdminController};
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
@@ -45,6 +45,19 @@ Route::group(['prefix' => 'admin'], function ()
 
         // Dashboard
         Route::get('dashboard', [DashboardController::class,'index'])->name('admin.dashboard');
+
+        // User
+        Route::get('users',[AdminController::class,'index'])->name('users');
+        Route::get('users/load',[AdminController::class,'loadUsers'])->name('users.load');
+        Route::get('users/create',[AdminController::class,'create'])->name('users.create');
+        Route::post('users/store',[AdminController::class,'store'])->name('users.store');
+        Route::post('users/status',[AdminController::class,'status'])->name('users.status');
+        Route::post('users/update',[AdminController::class,'update'])->name('users.update');
+        Route::get('users/edit/{id}',[AdminController::class,'edit'])->name('users.edit');
+        Route::post('users/destroy',[AdminController::class,'destroy'])->name('users.destroy');
+
+        
+
 
         // Categories
         Route::get('/categories',[CategoryController::class,'index'])->name('categories');

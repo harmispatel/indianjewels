@@ -19,14 +19,7 @@ class isAdmin
     {
         if(Auth::guard('admin')->user())
         {
-            if(Auth::guard('admin')->user()->user_type == 1)
-            {
-                return $next($request);
-            }
-            else
-            {
-                return redirect('/admin/login')->with('error',"You don't have Admin access.");
-            }
+            return $next($request);
         }
         else
         {

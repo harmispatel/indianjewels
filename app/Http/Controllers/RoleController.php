@@ -39,7 +39,7 @@ class RoleController extends Controller
             {
                 $role_id = isset($row->id) ? encrypt($row->id) : '';
                 $action_html = '';
-                $action_html .= '<a href="'.route('roles.edit',$role_id).'" class="btn btn-sm edit_bt me-1 "><i class="bi bi-pencil"></i></a>';
+                $action_html .= '<a href="'.route('roles.edit',$role_id).'" class="btn btn-sm custom-btn me-1 "><i class="bi bi-pencil"></i></a>';
                 $action_html .= '<a   onclick="deleteRole(\''.$role_id.'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
                 return $action_html;
             })

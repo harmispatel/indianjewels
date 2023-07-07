@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Tag;
+use App\Models\{Tag,RoleHasPermissions};
+use Spatie\Permission\Models\Permission;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Yajra\DataTables\Facades\DataTables;
 use App\Http\Requests\TagRequest;
+use Auth;
 
 
 class TagController extends Controller
@@ -50,9 +52,22 @@ class TagController extends Controller
             ->addColumn('actions',function($row)
             {
                 $tag_id = isset($row->id) ? encrypt($row->id) : '';
+                 $tag_edit = Permission::where('name','tags.edit')->first();
+                 $tag_delete = Permission::where('name','tags.destroy')->first();
+                 $user_type =  Auth::guard('admin')->user()->user_type;
+                 $roles = RoleHasPermissions::where('role_id',$user_type)->pluck('permission_id');
+                 foreach ($roles as $key => $value) {
+                    $val[] = $value;
+                   }
                 $action_html = '';
-                $action_html .= '<a onclick="editTag(\''.$tag_id.'\')" class="btn btn-sm btn-primary me-1" id="editTags"><i class="bi bi-pencil"></i></a>';
-                $action_html .= '<a onclick="deleteTag(\''.$tag_id.'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
+                if(in_array($tag_edit->id,$val)){
+
+                    $action_html .= '<a onclick="editTag(\''.$tag_id.'\')" class="btn btn-sm custom-btn me-1" id="editTags"><i class="bi bi-pencil"></i></a>';
+                }
+                if(in_array($tag_delete->id,$val)){
+
+                    $action_html .= '<a onclick="deleteTag(\''.$tag_id.'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
+                }
                 return $action_html;
             })
             ->rawColumns(['changestatus','actions'])

@@ -62,7 +62,7 @@ class DesignController extends Controller
             {
                 $tag_id = isset($row->id) ? encrypt($row->id) : '';
                 $action_html = '';
-                $action_html .= '<a href="'.route('designs.edit',$tag_id).'" class="btn btn-sm edit_bt me-1"><i class="bi bi-pencil"></i></a>';
+                $action_html .= '<a href="'.route('designs.edit',$tag_id).'" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>';
                 $action_html .= '<a onclick="deleteDesign(\''.$tag_id.'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
                 return $action_html;
             })
@@ -306,7 +306,7 @@ class DesignController extends Controller
     
              return response()->json([
                 'success' => 1,
-                'message' => "Image delete Successfully..",
+                'message' => "Design delete Successfully..",
             ]);
         } catch (\Throwable $th) {
             //throw $th;
