@@ -83,7 +83,26 @@ padding: 10px 15px;
 .prmission_box .accordion-item {
     border: 1px solid #012970;
 }  
-  
+
+.info_card{
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+}
+
+.info_card_inr h5{
+    font-size: 18px;
+    color: #012970;
+}
+
+.info_card_inr h4{
+    font-size: 25px;
+}
+
+.info_card_inr .card-icon{ 
+    background-color: rgb(1 41 112 / 40%);
+    color: #fff;
+}
 @media (max-width:767px) {
     .custom_dt_table .table th,.custom_dt_table .table td{
         white-space: nowrap;
