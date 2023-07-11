@@ -187,14 +187,14 @@
                                                                                 class="mr-3"
                                                                                 {{ in_array($value->id, $rolePermissions) ? 'checked' : '' }}>
                                                                             @if ($value->name == 'categories')
-                                                                                View
+                                                                                View 
                                                                             @elseif($value->name == 'categories.add')
                                                                                 Add
                                                                             @elseif($value->name == 'categories.edit')
                                                                                 Update
                                                                             @else
                                                                                 Delete
-                                                                            @endif
+                                                                            @endif 
                                                                         </label>
                                                                     </div>
                                                                 @endforeach
