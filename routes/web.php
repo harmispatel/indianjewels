@@ -39,6 +39,7 @@ Route::group(['prefix' => 'admin'], function ()
     Route::group(['middleware' => ['is_admin']], function ()
     {
         Route::get('/', function () {
+            
             return redirect()->route('admin.dashboard');
         });
 
