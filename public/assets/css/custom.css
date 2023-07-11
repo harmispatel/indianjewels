@@ -82,8 +82,8 @@ padding: 10px 15px;
 
 .prmission_box .accordion-item {
     border: 1px solid #012970;
-}
-
+}  
+  
 @media (max-width:767px) {
     .custom_dt_table .table th,.custom_dt_table .table td{
         white-space: nowrap;
