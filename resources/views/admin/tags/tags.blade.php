@@ -96,10 +96,10 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="card-title">
-                        </div>
-                        <div class="table-responsive">
-                            <table class="table table-striped w-100" id="TagsTable">
+                        {{-- <div class="card-title">
+                        </div> --}}
+                        <div class="table-responsive custom_dt_table">
+                            <table class="table w-100" id="TagsTable">
                                 <thead>
                                     <tr>
                                         <th>Id</th>
@@ -190,7 +190,8 @@
                     },
                     {
                         data: 'name',
-                        name: 'name'
+                        name: 'name',
+                        
                     },
                     {
                         data: 'changestatus',
@@ -301,6 +302,7 @@
                         // Tags Data's
                         const tags = response.data;
 
+                        
                         // Add values in TagForm
                         $('#name').val(tags.name);
                         $('#id').val(tags.id);

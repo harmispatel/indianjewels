@@ -62,11 +62,15 @@ class CategoryController extends Controller
             // Insert Category
             Category::insert($input);
 
-            return redirect()->route('categories')->with('success','Category has been Inserted SuccessFully..');
+            // return redirect()->route('categories')->with('success','Category has been Inserted SuccessFully..');
+            return $this->sendResponse(true, "Category has been Inserted SuccessFully....");
+
         }
         catch (\Throwable $th)
         {
-            return redirect()->route('categories')->with('error','Internal Server Error!');
+            // return redirect()->route('categories')->with('error','Internal Server Error!');
+            return $this->sendResponse(false, "500, Internal Server Error!");
+
         }
     }
 
@@ -81,26 +85,35 @@ class CategoryController extends Controller
 
 
     // Show the form for editing the specified resource.
-    public function edit($id)
+    public function edit(Request $request)
     {
-        $category_id =  decrypt($id);
+        
+        $category_id =  decrypt($request->id);
+try {
+    //code...
+    // Existing Category Details
+    $category_details = Category::where('id',$category_id)->first();
 
-        // Existing Category Details
-        $category_details = Category::where('id',$category_id)->first();
+    // Get All Parent Categories
+    // $categories = Category::where('parent_category',0)->where('id','!=',$category_id)->get();
 
-        // Get All Parent Categories
-        $categories = Category::where('parent_category',0)->where('id','!=',$category_id)->get();
+    return $this->sendResponse(true,"Category has been Retrive SuccessFully...",$category_details);
+} catch (\Throwable $th) {
+    //throw $th;
+    return $this->sendResponse(false, "500, Internal Server Error!");
+}
 
-        return view('admin.categories.edit_category', compact('categories','category_details'));
     }
 
 
-
+    // CategoriesRequest
     // Update the specified resource in storage.
     public function update(CategoriesRequest $request)
     {
-        $category_id = isset($request->category_id) ? decrypt($request->category_id) : '';
+        // dd($request->all());
 
+        // $category_id = isset($request->category_id) ? decrypt($request->category_id) : '';
+        $category_id = isset($request->id) ? $request->id : '';
         $input = $request->except('_token','category_id','image','parent_category');
 
         try
@@ -131,12 +144,15 @@ class CategoryController extends Controller
                 $category->update($input);
             }
 
-            return redirect()->route('categories')->with('success','Category has been Updated SuccessFully..');
+            // return redirect()->route('categories')->with('success','Category has been Updated SuccessFully..');
+            return $this->sendResponse(true, "Category has been Upadated SuccessFully....");
 
         }
         catch (\Throwable $th)
         {
-            return redirect()->route('categories')->with('error','Internal Server Error!');
+            return $this->sendResponse(false, "500, Internal Server Error!");
+
+            // return redirect()->route('categories')->with('error','Internal Server Error!');
         }
     }
 

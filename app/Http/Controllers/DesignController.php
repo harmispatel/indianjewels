@@ -102,7 +102,7 @@ class DesignController extends Controller
             if ($request->hasfile('image'))
         {
             $file = $request->image;
-            $singleFile = $this->addSingleImage('item_image',$file, $oldImage = '',"300*300");
+            $singleFile = $this->addSingleImage('item','item_image',$file, $oldImage = '',"300*300");
             $input['image'] = $singleFile;
         }
               $data = Design::create($input);
@@ -114,9 +114,10 @@ class DesignController extends Controller
                   
                 foreach($mulitple as $key => $value)
                 {
+                    
                     $designImage = new Design_image;
                     $designImage->design_id	= $id;
-                    $multiFile = $this->addSingleImage('item_image',$value, $oldImage = '',"300*300");
+                    $multiFile = $this->addSingleImage('item','item_image',$value, $oldImage = '',"300*300");
                     $designImage->image = $multiFile;
                     $designImage->save();
 
@@ -127,6 +128,7 @@ class DesignController extends Controller
             return redirect()->route('designs')->with('message','Design added Successfully');
 
         } catch (\Throwable $th) {
+            dd($th);
             
             return redirect()->route('designs')->with('error','Something with wrong');
         }
@@ -210,27 +212,29 @@ class DesignController extends Controller
                 $old_image = isset($cimg->image) ? $cimg->image : '';
                 
                 $file = $request->image;
-                $singleFile = $this->addSingleImage('item_image',$file, $oldImage = '',"300*300");
+                $singleFile = $this->addSingleImage('item','item_image',$file, $oldImage = '',"300*300");
                 $input['image'] = $singleFile;
             }
                 
             $data = Design::find($id);
             $data->update($input);
-            
+
             if ($request->hasfile('multiImage')) 
             {
                 $mulitple = $request->file('multiImage');
                 
-                
-                  foreach($mulitple as $key => $value)
-                  {
-                      $designImage = new Design_image;
-                      $designImage->design_id = $id;
-                      $multiFile = $this->addSingleImage('item_image',$value, $oldImage = '',"300*300");
+                foreach($mulitple as $key => $value)
+                {
+                    $designImage = new Design_image;
+                    $designImage->design_id = $id;
+                    
+                    $multiFile = $this->addSingleImage('item','item_image',$value, $oldImage = '',"300*300");
                       $designImage->image = $multiFile;
                       $designImage->save();
-  
                   }
+                  
+
+                
             }
                 
             return redirect()->route('designs')->with('message','Design updated Successfully');
@@ -297,9 +301,9 @@ class DesignController extends Controller
     
              $img = isset($deleteImage->image) ? $deleteImage->image : '';
     
-             if (!empty($img) && file_exists('public/images/item_image/'.$img)) 
+             if (!empty($img) && file_exists('public/images/uploads/item_image/'.$img)) 
              {
-                unlink('public/images/item_image/'.$img);
+                unlink('public/images/uploads/item_image/'.$img);
              
              }
              Design_image::find($id)->delete();

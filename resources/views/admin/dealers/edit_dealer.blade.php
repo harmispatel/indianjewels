@@ -274,16 +274,18 @@
                                                     @endif
                                                     @if ($documents)
                                                         <div class="mt-2">
-                                                            <div class="d-flex aline-item-center flex-wrap">
+                                                            
                                                                 @foreach ($documents as $document)
                                                                     @php
                                                                         $name = $document->document;
                                                                     @endphp
-                                                                    <a href="{{ asset('public/images/upoads/documents/' . $name) }}"
-                                                                        target="_blank">{{ $name }}</a>
-                                                                    <br>
+                                                                   
+                                                                        <a href="{{ asset('public/images/uploads/documents/' . $name) }}"
+                                                                            target="_blank" class="d-block text-dark">{{ $name }}</a>
+                                                                    
+                                                                    
                                                                 @endforeach
-                                                            </div>
+                                                            
                                                         </div>
                                                     @endif
                                                 </div>

@@ -28,34 +28,12 @@
     {{-- Category Section --}}
     <section class="section dashboard">
         <div class="row">
-            {{-- Error Message Section --}}
-            @if (session()->has('error'))
-                <div class="col-md-12">
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        {{ session('error') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                </div>
-            @endif
-
-            {{-- Success Message Section --}}
-            @if (session()->has('success'))
-                <div class="col-md-12">
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('success') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                </div>
-            @endif
-
             {{-- Categories Card --}}
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="card-title">
-                        </div>
-                        <div class="table-responsive">
-                            <table class="table table-striped w-100" id="DesignTable">
+                        <div class="table-responsive custom_dt_table">
+                            <table class="table w-100" id="DesignTable">
                                 <thead>
                                     <tr>
                                         <th>Id</th>
@@ -104,7 +82,9 @@
                     },
                     {
                         data: 'changestatus',
-                        name: 'changestatus'
+                        name: 'changestatus',
+                        orderable: false,
+                        searchable: false
                     },
                     {
                         data: 'actions',

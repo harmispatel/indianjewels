@@ -352,7 +352,7 @@
                                                 <input type="file" name="image" id="image"
                                                     class="form-control">
                                                 <div class="mt-2">
-                                                    <img src="{{ asset('public/images/item_image/' . $data->image) }}"
+                                                    <img src="{{ asset('public/images/uploads/item_image/' . $data->image) }}"
                                                         alt="" width="100" height="100">
                                                 </div>
                                             </div>
@@ -374,7 +374,7 @@
                                                                         class="img-delete"><i
                                                                             class="bi bi-trash text-danger"></i></a>
                                                                     <img class="ml-2"
-                                                                        src="{{ asset('public/images/item_image/' . $img->image) }}"
+                                                                        src="{{ asset('public/images/uploads/item_image/' . $img->image) }}"
                                                                         alt="" width="100" height="100">
                                                                 </div>
                                                             @endforeach

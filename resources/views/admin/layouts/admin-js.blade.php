@@ -22,7 +22,10 @@
 <!-- Select 2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="//cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-
+    
+    @php
+    $route = Route::current()->getName();
+    @endphp
 
 {{-- Common Script --}}
 <script type="text/javascript">
@@ -40,8 +43,11 @@ $('.select2bs4').select2({
         "progressBar": true,
         "positionClass": "toast-top-right",
         timeOut: 4000
-    }
-
+      }
+      
+      @if($route == 'designs.create' || $route == 'designs.edit' || $route == 'dealers.create' || $route == 'dealers.edit' || $route == 'sliders.add-slider' || $route == 'sliders.edit-slider' || $route == 'categories.add' || $route == 'categories.edit' || $route == 'users.create' || $route == 'users.edit' || $route == 'roles.create' || $route == 'roles.edit')
+        $('body').addClass('toggle-sidebar');
+      @endif
 
     @if(Session::has('message'))
   toastr.options =
