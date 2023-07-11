@@ -54,7 +54,7 @@ class AdminController extends Controller
             ->addColumn('image', function ($row)
             {
                 // dd($row->image);
-                $default_image = asset("public/images/uploads/user_images/no_image.jpg");
+                $default_image = asset("public/images/uploads/user_images/not-found4.png");
                 $image = ($row->image) ? asset('public/images/uploads/user_images/'.$row->image) : $default_image;
                 $image_html = '';
                 $image_html .= '<img class="me-2" src="'.$image.'" width="50" height="50">';

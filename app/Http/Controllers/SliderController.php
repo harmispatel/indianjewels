@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Slider;
 use Illuminate\Http\Request;
 use App\Http\Requests\SlidersRequest;
+use Carbon\Carbon;
 use Yajra\DataTables\Facades\DataTables;
 use App\Traits\ImageTrait;
 
@@ -33,8 +34,8 @@ class SliderController extends Controller
             ->addIndexColumn()
             ->addColumn('image', function ($row)
             {
-                $default_image = asset("public/images/slider_image/not-found4.png");
-                $image = ($row->image) ? asset('public/images/slider_image/'.$row->image) : $default_image;
+                $default_image = asset("public/images/uploads/slider_image/no_image.jpg");
+                $image = ($row->image) ? asset('public/images/uploads/slider_image/'.$row->image) : $default_image;
                 $image_html = '';
                 $image_html .= '<img class="me-2" src="'.$image.'" width="50" height="50">';
                 return $image_html;
@@ -51,7 +52,7 @@ class SliderController extends Controller
             {
                 $slider_id = isset($row->id) ? $row->id : '';
                 $action_html = '';
-                $action_html .= '<a href="'.route('sliders.edit-slider',encrypt($slider_id)).'" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>';
+                $action_html .= '<a onclick="editSlider(\''.encrypt($slider_id).'\')" class="btn btn-sm custom-btn me-1" id="editSlider"><i class="bi bi-pencil"></i></a>';
                 $action_html .= '<a onclick="deleteSliders(\''.encrypt($slider_id).'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
                 return $action_html;
             })
@@ -74,24 +75,32 @@ class SliderController extends Controller
      */
     public function store(SlidersRequest $request)
     {
-        $input = $request->except('_token');
+        $input = $request->except('_token', 'id');
+        $input['created_at'] = Carbon::now();
  
         // Upload new Image
+        try
+        {
         if ($request->has('image'))
         {
             $file = $request->image;
-            $singleFile = $this->addSingleImage('slider_image',$file, $oldImage = '',"1200*500");
+            $singleFile = $this->addSingleImage('slider','slider_image',$file, $oldImage = '',"1200*500");
             $input['image'] = $singleFile;
         }
-        try
-        {
             $slider = Slider::insert($input);
-            return redirect()->route('sliders')->with('message','Slider created successfully.');
+            return response()->json(
+            [
+                'success' => 1,
+                'message' => "Slider has been created Successfully..",
+            ]);
         }
-        catch (\Throwable $th)
+        catch (\Throwable $th) 
         {
-            dd($th);
-            return redirect()->route('sliders')->with('error','Something with wrong');
+            return response()->json(
+            [
+                'success' => 0,
+                'message' => "Something with wrong",
+            ]);
         }
     }
 
@@ -106,11 +115,28 @@ class SliderController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Slider $slider,$id)
+    public function edit(Request $request)
     {
-        $id =  decrypt($id);
-        $data = Slider::where('id',$id)->first();
-        return view('admin.sliders.edit-slider', compact('data'));
+        try
+        {
+            $id = decrypt($request->id);
+            $data = Slider::where('id',$id)->first();
+            
+            return response()->json(
+            [
+                'success' => 1,
+                'data' => $data,
+                'message' => "Slider edit Successfully..",
+            ]);
+        }
+        catch (\Throwable $th)
+        {
+            return response()->json(
+            [
+                'success' => 0,
+                'message' => "Something with wrong",
+            ]);
+        } 
     }
 
     /**
@@ -118,35 +144,41 @@ class SliderController extends Controller
      */
     public function update(SlidersRequest $request, Slider $slider)
     {
+        $slider_id = isset($request->id) ? $request->id : '';
         $input = $request->except('_token','id');
         try
         {
-            $id = decrypt($request->id);
-            $slider = Slider::find($id);
+            $slider = Slider::find($slider_id);
             
             // Save Image if exists and Delete old Image
             if ($request->has('image'))
             {
-                $cimg = Slider::where('id',$id)->first();
-                
                 // Delete old Image
-                $old_image = isset($cimg->image) ? $cimg->image : '';
-        
+                $old_image = isset($slider->image) ? $slider->image : '';
+                
                 // Upload new Image
                 $file = $request->image;
-                $singleFile = $this->addSingleImage('slider_image',$file, $old_image,"1200*500");
+                $singleFile = $this->addSingleImage('slider','slider_image',$file, $old_image,"1200*500");
                 $input['image'] = $singleFile; 
+            
             }
-
             if ($slider) 
             {
                 $slider->update($input);
             }
-            return redirect()->route('sliders')->with('message','Slider updated successfully');
+            return response()->json(
+            [
+                'success' => 1,
+                'message' => "Slider updated Successfully..",
+            ]);
         }
         catch (\Throwable $th) 
         {
-            return redirect()->route('sliders')->with('error','Something went wrong');
+            return response()->json(
+            [
+                'success' => 0,
+                'message' => "Something with wrong",
+            ]);
         }
     }
 
@@ -191,9 +223,9 @@ class SliderController extends Controller
             $slider = Slider::where('id',$id)->first();
             // Delete old Image
             $oldImage = isset($slider->image) ? $slider->image : '';
-            if (!empty($oldImage) && file_exists('public/images/slider_image/'.$oldImage))
+            if (!empty($oldImage) && file_exists('public/images/uploads/slider_image/'.$oldImage))
             {
-                unlink('public/images/slider_image/'.$oldImage);
+                unlink('public/images/uploads/slider_image/'.$oldImage);
             }
             
              Slider::where('id',$id)->delete();

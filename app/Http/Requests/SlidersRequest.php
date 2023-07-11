@@ -23,9 +23,20 @@ class SlidersRequest extends FormRequest
      */
     public function rules()
     {
-        return 
-        [
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
-        ];
+        if($this->id)
+        {
+            $rules =  
+            [
+                'image' => 'mimes:jpeg,png,jpg,gif,svg',
+            ];
+        }
+        else
+        {
+            $rules =
+            [
+                'image' => 'required|mimes:jpeg,png,jpg,gif,svg',
+            ];
+        }
+        return $rules;
     }
 }

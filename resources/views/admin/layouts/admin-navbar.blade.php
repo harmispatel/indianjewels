@@ -5,6 +5,9 @@
         $userID = encrypt(auth()->guard('admin')->user()->id);
         $userName = auth()->guard('admin')->user()->firstname." ".auth()->guard('admin')->user()->lastname;
         $userImage = auth()->guard('admin')->user()->image;
+        $userType = auth()->guard('admin')->user()->user_type;
+        $typeName= Spatie\Permission\Models\Role::where('id',$userType)->first();
+        $userTypeName = $typeName->name;
         $logo = "";
     }
     else
@@ -35,7 +38,7 @@
             <li class="nav-item dropdown pe-3">
                 <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
                     @if (!empty($userImage) || $userImage != null)
-                        <img src="{{ asset($userImage) }}" alt="Profile" class="rounded-circle">
+                        <img src="{{ asset('public/images/uploads/user_images/'.$userImage) }}" alt="Profile" class="rounded-circle">
                     @else
                         <img src="{{ asset('public/images/demo_profiles/profile1.jpg') }}" alt="Profile" class="rounded-circle">
                     @endif
@@ -45,7 +48,7 @@
                 <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                     <li class="dropdown-header">
                         <h6>{{ $userName }}</h6>
-                        <span>Super Admin</span>
+                        <span>{{ $userTypeName }}</span>
                     </li>
                     <li>
                         <hr class="dropdown-divider">

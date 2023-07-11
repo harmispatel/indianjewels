@@ -87,19 +87,16 @@ Route::group(['prefix' => 'admin'], function ()
         Route::post('tags/status',[TagController::class,'status'])->name('tags.status');
         Route::post('tags/destroy',[TagController::class,'destroy'])->name('tags.destroy');
 
-        // Logout Route
-        Route::get('logout', [AuthController::class,'AdminLogout'])->name('admin.logout');
         // Sliders
         Route::get('sliders',[SliderController::class,'index'])->name('sliders');
         Route::get('sliders/load-sliders',[SliderController::class,'loadSliders'])->name('sliders.load-sliders');
-        Route::get('sliders/add/slider',[SliderController::class,'create'])->name('sliders.add-slider');
-        Route::post('sliders/store/slider',[SliderController::class,'store'])->name('sliders.store-slider');
-        Route::get('sliders/edit/slider/{id}',[SliderController::class,'edit'])->name('sliders.edit-slider');
-        Route::post('sliders/update/slider',[SliderController::class,'update'])->name('sliders.update-slider');
+        Route::get('sliders/add',[SliderController::class,'create'])->name('sliders.add-slider');
+        Route::post('sliders/store',[SliderController::class,'store'])->name('sliders.store-slider');
+        Route::post('sliders/edit',[SliderController::class,'edit'])->name('sliders.edit-slider');
+        Route::post('sliders/update',[SliderController::class,'update'])->name('sliders.update-slider');
         Route::post('sliders/status',[SliderController::class,'status'])->name('sliders.status');
         Route::post('sliders/destroy',[SliderController::class,'destroy'])->name('sliders.destroy');
-
-
+        
         // Design
         Route::get('designs',[DesignController::class,'index'])->name('designs');
         Route::get('designs/load',[DesignController::class,'loaddesigns'])->name('designs.load');
@@ -110,6 +107,9 @@ Route::group(['prefix' => 'admin'], function ()
         Route::post('designs/status',[DesignController::class,'status'])->name('designs.status');
         Route::post('designs/image/destroy',[DesignController::class,'imagedestroy'])->name('designs-image.destroy');
         Route::post('designs/destroy',[DesignController::class,'destroy'])->name('designs.destroy');
+        
+        // Logout Route
+        Route::get('logout', [AuthController::class,'AdminLogout'])->name('admin.logout');
 
     });
 });

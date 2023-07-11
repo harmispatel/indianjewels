@@ -102,7 +102,7 @@ class DesignController extends Controller
             if ($request->hasfile('image'))
         {
             $file = $request->image;
-            $singleFile = $this->addSingleImage('item_image',$file, $oldImage = '',"300*300");
+            $singleFile = $this->addSingleImage('item','item_image',$file, $oldImage = '',"300*300");
             $input['image'] = $singleFile;
         }
               $data = Design::create($input);
@@ -116,7 +116,7 @@ class DesignController extends Controller
                 {
                     $designImage = new Design_image;
                     $designImage->design_id	= $id;
-                    $multiFile = $this->addSingleImage('item_image',$value, $oldImage = '',"300*300");
+                    $multiFile = $this->addSingleImage('item','item_image',$value, $oldImage = '',"300*300");
                     $designImage->image = $multiFile;
                     $designImage->save();
 
@@ -127,7 +127,7 @@ class DesignController extends Controller
             return redirect()->route('designs')->with('message','Design added Successfully');
 
         } catch (\Throwable $th) {
-            
+            // dd($th);
             return redirect()->route('designs')->with('error','Something with wrong');
         }
         //
@@ -210,7 +210,7 @@ class DesignController extends Controller
                 $old_image = isset($cimg->image) ? $cimg->image : '';
                 
                 $file = $request->image;
-                $singleFile = $this->addSingleImage('item_image',$file, $oldImage = '',"300*300");
+                $singleFile = $this->addSingleImage('item','item_image',$file, $oldImage = '',"300*300");
                 $input['image'] = $singleFile;
             }
                 
@@ -226,7 +226,7 @@ class DesignController extends Controller
                   {
                       $designImage = new Design_image;
                       $designImage->design_id = $id;
-                      $multiFile = $this->addSingleImage('item_image',$value, $oldImage = '',"300*300");
+                      $multiFile = $this->addSingleImage('item','item_image',$value, $oldImage = '',"300*300");
                       $designImage->image = $multiFile;
                       $designImage->save();
   
@@ -236,7 +236,7 @@ class DesignController extends Controller
             return redirect()->route('designs')->with('message','Design updated Successfully');
 
         } catch (\Throwable $th) {
-            dd($th);
+            // dd($th);
             return redirect()->route('designs')->with('error','Something with wrong');
 
         }
@@ -260,15 +260,15 @@ class DesignController extends Controller
    
             foreach($findMulImage as $value)
             {
-                   if (!empty($value->image) && file_exists('public/images/item_image/'.$value->image)) 
+                   if (!empty($value->image) && file_exists('public/images/uploads/item_image/'.$value->image)) 
                    {
-                       unlink('public/images/item_image/'.$value->image);
+                       unlink('public/images/uploads/item_image/'.$value->image);
                    }
             }
    
-            if (!empty($img) && file_exists('public/images/item_image/'.$img))
+            if (!empty($img) && file_exists('public/images/uploads/item_image/'.$img))
              {
-                   unlink('public/images/item_image/'.$img);
+                   unlink('public/images/uploads/item_image/'.$img);
              }
    
              Design_image::where('design_id',$id)->delete();
@@ -276,7 +276,7 @@ class DesignController extends Controller
 
              return response()->json([
                'success' => 1,
-               'message' => "Image delete Successfully..",
+               'message' => "Design delete Successfully..",
            ]);
         } catch (\Throwable $th) {
             //throw $th;
@@ -297,16 +297,16 @@ class DesignController extends Controller
     
              $img = isset($deleteImage->image) ? $deleteImage->image : '';
     
-             if (!empty($img) && file_exists('public/images/item_image/'.$img)) 
+             if (!empty($img) && file_exists('public/images/uploads/item_image/'.$img)) 
              {
-                unlink('public/images/item_image/'.$img);
+                unlink('public/images/uploads/item_image/'.$img);
              
              }
              Design_image::find($id)->delete();
     
              return response()->json([
                 'success' => 1,
-                'message' => "Design delete Successfully..",
+                'message' => "Image delete Successfully..",
             ]);
         } catch (\Throwable $th) {
             //throw $th;
