@@ -114,6 +114,7 @@ class DesignController extends Controller
                   
                 foreach($mulitple as $key => $value)
                 {
+                    
                     $designImage = new Design_image;
                     $designImage->design_id	= $id;
                     $multiFile = $this->addSingleImage('item','item_image',$value, $oldImage = '',"300*300");
@@ -127,7 +128,8 @@ class DesignController extends Controller
             return redirect()->route('designs')->with('message','Design added Successfully');
 
         } catch (\Throwable $th) {
-            // dd($th);
+            dd($th);
+            
             return redirect()->route('designs')->with('error','Something with wrong');
         }
         //
@@ -216,21 +218,23 @@ class DesignController extends Controller
                 
             $data = Design::find($id);
             $data->update($input);
-            
+
             if ($request->hasfile('multiImage')) 
             {
                 $mulitple = $request->file('multiImage');
                 
-                
-                  foreach($mulitple as $key => $value)
-                  {
-                      $designImage = new Design_image;
-                      $designImage->design_id = $id;
-                      $multiFile = $this->addSingleImage('item','item_image',$value, $oldImage = '',"300*300");
+                foreach($mulitple as $key => $value)
+                {
+                    $designImage = new Design_image;
+                    $designImage->design_id = $id;
+                    
+                    $multiFile = $this->addSingleImage('item','item_image',$value, $oldImage = '',"300*300");
                       $designImage->image = $multiFile;
                       $designImage->save();
-  
                   }
+                  
+
+                
             }
                 
             return redirect()->route('designs')->with('message','Design updated Successfully');

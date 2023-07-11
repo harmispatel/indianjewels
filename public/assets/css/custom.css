@@ -57,3 +57,38 @@ padding: 10px 15px;
     background-color: #012970;
     color: #fff;
 }
+
+.custom_dt_table .dataTables_length{
+    margin-bottom: 20px;
+}
+
+.custom_dt_table .table{
+    border: 2px solid #012970 !important;
+    border-bottom: #012970;
+}
+
+.custom_dt_table .table thead th{
+    background-color: #012970;
+    color: #fff;
+}
+
+.custom_dt_table .table tbody td a {
+    border-radius: 50%;
+}
+
+.desktop_modal{
+    max-width: 900px;
+}
+
+.prmission_box .accordion-item {
+    border: 1px solid #012970;
+}  
+  
+@media (max-width:767px) {
+    .custom_dt_table .table th,.custom_dt_table .table td{
+        white-space: nowrap;
+    }
+    .custom_dt_table .dataTables_filter{
+        margin-bottom: 20px;
+    }
+}

@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\{AuthController,DashboardController,CategoryController,TagController, DesignController, SliderController, RoleController, AdminController};
+use App\Http\Controllers\{AuthController,DashboardController,CategoryController,TagController, DesignController, SliderController, RoleController, AdminController, DealerController};
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
@@ -64,7 +64,7 @@ Route::group(['prefix' => 'admin'], function ()
         Route::get('categories/load',[CategoryController::class,'loadCategories'])->name('categories.load');
         Route::get('categories/add',[CategoryController::class,'create'])->name('categories.add');
         Route::post('categories/store',[CategoryController::class,'store'])->name('categories.store');
-        Route::get('categories/edit/{id}',[CategoryController::class,'edit'])->name('categories.edit');
+        Route::post('categories/edit',[CategoryController::class,'edit'])->name('categories.edit');
         Route::post('categories/update',[CategoryController::class,'update'])->name('categories.update');
         Route::post('categories/status',[CategoryController::class,'status'])->name('categories.status');
         Route::post('categories/destroy',[CategoryController::class,'destroy'])->name('categories.destroy');
@@ -111,5 +111,19 @@ Route::group(['prefix' => 'admin'], function ()
         // Logout Route
         Route::get('logout', [AuthController::class,'AdminLogout'])->name('admin.logout');
 
+        // Dealers
+        Route::get('dealers',[DealerController::class,'index'])->name('dealers');
+        Route::get('dealers/load',[DealerController::class,'loaddealers'])->name('dealers.load');
+        Route::get('dealers/create',[DealerController::class,'create'])->name('dealers.create');
+        Route::post('dealers/Store',[DealerController::class,'store'])->name('dealers.store');
+        Route::get('dealers/edit/{id}',[DealerController::class,'edit'])->name('dealers.edit');
+        Route::post('dealers/status',[DealerController::class,'status'])->name('dealers.status');
+        Route::post('dealers/update',[DealerController::class,'update'])->name('dealers.update');
+        Route::post('dealers/destroy',[DealerController::class,'destroy'])->name('dealers.destroy');
+
+
+        
+        // Logout Route
+        Route::get('logout', [AuthController::class,'AdminLogout'])->name('admin.logout');
     });
 });

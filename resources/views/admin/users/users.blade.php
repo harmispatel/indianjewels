@@ -31,8 +31,10 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-striped w-100" id="UsersTable">
+                    <div class="card-title">
+                    </div>
+                    <div class="table-responsive custom_dt_table">
+                        <table class="table w-100" id="UsersTable">
                             <thead>
                                 <tr>
                                     <th>Id</th>

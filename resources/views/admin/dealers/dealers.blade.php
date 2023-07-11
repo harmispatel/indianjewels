@@ -1,23 +1,23 @@
 @extends('admin.layouts.admin-layout')
 
-@section('title', 'Designs')
+@section('title', 'Dealers')
 
 @section('content')
 
     {{-- Page Title --}}
     <div class="pagetitle">
-        <h1>Designs</h1>
+        <h1>Dealers</h1>
         <div class="row">
             <div class="col-md-8">
                 <nav>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item active">Designs</li>
+                        <li class="breadcrumb-item active">Dealers</li>
                     </ol>
                 </nav>
             </div>
             <div class="col-md-4" style="text-align: right;">
-                <a href="{{ route('designs.create') }}" class="btn btn-sm new-category custom-btn">
+                <a href="{{ route('dealers.create') }}" class="btn btn-sm new-category custom-btn">
                     <i class="bi bi-plus-lg"></i>
                 </a>
             </div>
@@ -28,17 +28,21 @@
     {{-- Category Section --}}
     <section class="section dashboard">
         <div class="row">
+            
+
             {{-- Categories Card --}}
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">
+                        <div class="card-title">
+                        </div>
                         <div class="table-responsive custom_dt_table">
-                            <table class="table w-100" id="DesignTable">
+                            <table class="table w-100" id="DealersTable">
                                 <thead>
                                     <tr>
                                         <th>Id</th>
-                                        <th>Item Name</th>
-                                        <th>Item Code</th>
+                                        <th>Name</th>
+                                        <th>Logo</th>
                                         <th>Status</th>
                                         <th>Actions</th>
                                     </tr>
@@ -63,11 +67,27 @@
     <script type="text/javascript">
         $(function() {
 
-            var table = $('#DesignTable').DataTable({
+            // Toastr Options
+            toastr.options =
+            {
+                "closeButton": true,
+                "progressBar": true,
+                "timeOut": 10000
+            }
+
+            @if (Session::has('success'))
+                toastr.success('{{ Session::get('success') }}')
+            @endif
+
+            @if (Session::has('error'))
+                toastr.error('{{ Session::get('error') }}')
+            @endif
+            
+            var table = $('#DealersTable').DataTable({
                 processing: true,
                 serverSide: true,
                 pageLength: 100,
-                ajax: "{{ route('designs.load') }}",
+                ajax: "{{ route('dealers.load') }}",
                 columns: [{
                         data: 'id',
                         name: 'id'
@@ -77,12 +97,12 @@
                         name: 'name'
                     },
                     {
-                        data: 'code',
-                        name: 'code'
+                        data: 'logo',
+                        name: 'logo'
                     },
                     {
-                        data: 'changestatus',
-                        name: 'changestatus',
+                        data: 'status',
+                        name: 'status',
                         orderable: false,
                         searchable: false
                     },
@@ -100,7 +120,7 @@
         function changeStatus(status, id) {
             $.ajax({
                 type: "POST",
-                url: '{{ route('designs.status') }}',
+                url: '{{ route('dealers.status') }}',
                 data: {
                     "_token": "{{ csrf_token() }}",
                     "status": status,
@@ -117,27 +137,27 @@
             })
         }
         // Function for Delete Table
-        function deleteDesign(designId) {
+        function deleteDealer(dealerId) {
             swal({
                     title: "Are you sure You want to Delete It ?",
                     icon: "warning",
                     buttons: true,
                     dangerMode: true,
                 })
-                .then((willDeleteDesigns) => {
-                    if (willDeleteDesigns) {
+                .then((willDeleteDealer) => {
+                    if (willDeleteDealer) {
                         $.ajax({
                             type: "POST",
-                            url: '{{ route('designs.destroy') }}',
+                            url: '{{ route('dealers.destroy') }}',
                             data: {
                                 "_token": "{{ csrf_token() }}",
-                                'id': designId,
+                                'id': dealerId,
                             },
                             dataType: 'JSON',
                             success: function(response) {
                                 if (response.success == 1) {
                                     toastr.success(response.message);
-                                    $('#DesignTable').DataTable().ajax.reload();
+                                    $('#DealersTable').DataTable().ajax.reload();
                                 } else {
                                     swal(response.message, "", "error");
                                 }

@@ -17,7 +17,7 @@
             @if(!empty($subcategory->image) && file_exists('public/images/uploads/category_images/'.$subcategory->image))
                 <img src="{{ asset('public/images/uploads/category_images/'.$subcategory->image) }}" width="60">
             @else
-                <img src="{{ asset('public/images/demo_others/no_image_2.png') }}" width="60">
+                <img src="{{ asset('public/images/uploads/category_images/no_image.jpg') }}" width="60">
             @endif
         </td>
         <td>
@@ -26,7 +26,7 @@
             </div>
         </td>
         <td>
-            <a href="{{ route('categories.edit', encrypt($subcategory->id)) }}" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>
+            <a onclick="editCategory('{{ encrypt($subcategory->id) }}')" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>
 
             <a onclick="deleteCategory('{{ encrypt($subcategory->id) }}')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a></td>
     </tr>
