@@ -86,8 +86,30 @@ padding: 10px 15px;
     margin-bottom: 20px;
 }  
 
+<<<<<<< HEAD
 
   
+=======
+.info_card{
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+}
+
+.info_card_inr h5{
+    font-size: 18px;
+    color: #012970;
+}
+
+.info_card_inr h4{
+    font-size: 25px;
+}
+
+.info_card_inr .card-icon{ 
+    background-color: rgb(1 41 112 / 40%);
+    color: #fff;
+}
+>>>>>>> 28d2f324bbb400c655ef3608f2bc0aaa6cdd4ad8
 @media (max-width:767px) {
     .custom_dt_table .table th,.custom_dt_table .table td{
         white-space: nowrap;
