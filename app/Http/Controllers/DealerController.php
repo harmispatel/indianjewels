@@ -5,15 +5,31 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use App\Http\Requests\DealerRequest;
-use App\Models\{Dealer, DealerDocument};
+use App\Models\{Dealer, DealerDocument, RoleHasPermissions};
 use App\Traits\ImageTrait;
 use Hash;
+use Auth;
+use Spatie\Permission\Models\Permission;
 
 
 
 class DealerController extends Controller
 {
     use ImageTrait;
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    function __construct()
+    {
+         $this->middleware('permission:dealers|dealers.create|dealers.edit|dealers.destroy', ['only' => ['index','store']]);
+         $this->middleware('permission:dealers.create', ['only' => ['create','store']]);
+         $this->middleware('permission:dealers.edit', ['only' => ['edit','update']]);
+         $this->middleware('permission:dealers.destroy', ['only' => ['destroy']]);
+         
+    }
 
     /**
      * Display a listing of the resource.
@@ -68,10 +84,28 @@ class DealerController extends Controller
             ->addColumn('actions',function($row)
             {
                 $dealer_id = isset($row->id) ? $row->id : '';
+                $dealer_edit = Permission::where('name','dealers.edit')->first();
+                 $dealer_delete = Permission::where('name','dealers.destroy')->first();
+                 $user_type =  Auth::guard('admin')->user()->user_type;
+                 $roles = RoleHasPermissions::where('role_id',$user_type)->pluck('permission_id');
+                 foreach ($roles as $key => $value) {
+                    $val[] = $value;
+                   }
                 $action_html = '';
+                if(in_array($dealer_edit->id,$val)){
+
                 $action_html .= '<a href="'.route('dealers.edit',encrypt($dealer_id)).'" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>';
+                }else{
+                $action_html .= '<a href="'.route('dealers.edit',encrypt($dealer_id)).'" class="btn btn-sm custom-btn me-1 disabled"><i class="bi bi-pencil"></i></a>';
+
+                }
+                if(in_array($dealer_delete->id,$val)){
+
                     $action_html .= '<a onclick="deleteDealer(\''.encrypt($dealer_id).'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
-                
+                }else{
+                    $action_html .= '<a onclick="deleteDealer(\''.encrypt($dealer_id).'\')" class="btn btn-sm btn-danger me-1 disabled"><i class="bi bi-trash"></i></a>';
+
+                }
                 return $action_html;
             })
             ->rawColumns(['status','actions','logo'])

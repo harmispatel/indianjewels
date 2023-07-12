@@ -4,6 +4,16 @@
 
 @section('content')
 
+@php
+$role = Auth::guard('admin')->user()->user_type;
+$design_add = Spatie\Permission\Models\Permission::where('name','designs.create')->first();
+
+$permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('permission_id');  
+    foreach ($permissions as $permission) {
+        $permission_ids[] = $permission;
+    }
+@endphp
+
     {{-- Page Title --}}
     <div class="pagetitle">
         <h1>Designs</h1>
@@ -17,8 +27,13 @@
                 </nav>
             </div>
             <div class="col-md-4" style="text-align: right;">
+                @if((in_array($design_add->id, $permission_ids))) 
                 <a href="{{ route('designs.create') }}" class="btn btn-sm new-category custom-btn">
                     <i class="bi bi-plus-lg"></i>
+                    @else
+                    <a href="{{ route('designs.create') }}" class="btn btn-sm new-category custom-btn disabled">
+                        <i class="bi bi-plus-lg"></i>
+                    @endif
                 </a>
             </div>
         </div>

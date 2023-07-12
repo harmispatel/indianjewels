@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{Design,Category,Gender,Metal,Tag, Design_image};
+use App\Models\{Design,Category,Gender,Metal,Tag, Design_image, RoleHasPermissions};
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use App\Traits\ImageTrait;
 use Illuminate\Support\Str;
 use App\Http\Requests\DesignRequest;
+use Auth;
+use Spatie\Permission\Models\Permission;
+
 
 
 
@@ -31,6 +34,7 @@ class DesignController extends Controller
          $this->middleware('permission:designs.destroy', ['only' => ['destroy']]);
          
     }
+    
     /**
      * Display a listing of the resource.
      *
@@ -61,9 +65,25 @@ class DesignController extends Controller
             ->addColumn('actions',function($row)
             {
                 $tag_id = isset($row->id) ? encrypt($row->id) : '';
+                $design_edit = Permission::where('name','designs.edit')->first();
+                 $design_delete = Permission::where('name','designs.destroy')->first();
+                 $user_type =  Auth::guard('admin')->user()->user_type;
+                 $roles = RoleHasPermissions::where('role_id',$user_type)->pluck('permission_id');
+                 foreach ($roles as $key => $value) {
+                    $val[] = $value;
+                   }
                 $action_html = '';
+                if(in_array($design_edit->id,$val)){
+
                 $action_html .= '<a href="'.route('designs.edit',$tag_id).'" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>';
+                }else{
+                $action_html .= '<a href="'.route('designs.edit',$tag_id).'" class="btn btn-sm custom-btn me-1 disabled"><i class="bi bi-pencil"></i></a>';
+                }
+                if(in_array($design_edit->id,$val)){
                 $action_html .= '<a onclick="deleteDesign(\''.$tag_id.'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
+                }else{
+                $action_html .= '<a onclick="deleteDesign(\''.$tag_id.'\')" class="btn btn-sm btn-danger me-1 disabled"><i class="bi bi-trash"></i></a>';
+                }
                 return $action_html;
             })
             ->rawColumns(['changestatus','actions'])

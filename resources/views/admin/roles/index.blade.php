@@ -3,53 +3,68 @@
 @section('title', 'Roles')
 
 @section('content')
+@php
+$role = Auth::guard('admin')->user()->user_type;
+$role_add = Spatie\Permission\Models\Permission::where('name','roles.create')->first();
 
-<div class="pagetitle">
-    <h1>User Type</h1>
-    <div class="row">
-        <div class="col-md-8">
-            <nav>
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item active">User Type</li>
-                </ol>
-            </nav>
-        </div>
-        <div class="col-md-4" style="text-align: right;">
-            <a href="{{ route('roles.create') }}" class="btn btn-sm new-category custom-btn">
-                <i class="bi bi-plus-lg"></i>
-            </a>
+$permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('permission_id');  
+    foreach ($permissions as $permission) {
+        $permission_ids[] = $permission;
+    }
+@endphp
+
+    <div class="pagetitle">
+        <h1>User Type</h1>
+        <div class="row">
+            <div class="col-md-8">
+                <nav>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item active">User Type</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="col-md-4" style="text-align: right;">
+                @if (in_array($role_add->id, $permission_ids))
+                    <a href="{{ route('roles.create') }}" class="btn btn-sm new-category custom-btn">
+                        <i class="bi bi-plus-lg"></i>
+                    </a>
+                @else
+                    <a href="{{ route('roles.create') }}" class="btn btn-sm new-category custom-btn disabled">
+                        <i class="bi bi-plus-lg"></i>
+                    </a>
+                @endif
+            </div>
         </div>
     </div>
-</div>
 
- {{-- Category Section --}}
- <section class="section dashboard">
-    <div class="row">
+    {{-- Category Section --}}
+    <section class="section dashboard">
+        <div class="row">
 
-        {{-- Categories Card --}}
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-body">
-                    <div class="card-title">
-                    </div>
-                    <div class="table-responsive custom_dt_table">
-                        <table class="table w-100" id="RoleTable">
-                            <thead>
-                                <tr>
-                                    <th>Id</th>
-                                    <th>Name</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
+            {{-- Categories Card --}}
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-title">
+                        </div>
+                        <div class="table-responsive custom_dt_table">
+                            <table class="table w-100" id="RoleTable">
+                                <thead>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Name</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
 
 @endsection

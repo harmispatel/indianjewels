@@ -32,6 +32,18 @@ class PermissionTableSeeder extends Seeder
             'categories.add',
             'categories.edit',
             'categories.destroy',
+            'users',
+            'users.create',
+            'users.edit',
+            'users.destroy',
+            'sliders',
+            'sliders.add-slider',
+            'sliders.edit-slider',
+            'sliders.destroy',
+            'dealers',
+            'dealers.create',
+            'dealers.edit',
+            'dealers.destroy',
          ];
 
          foreach ($permissions as $permission) {

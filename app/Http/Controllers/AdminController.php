@@ -7,10 +7,12 @@ use Spatie\Permission\Models\Role;
 use App\Http\Requests\UserRequest;
 use Yajra\DataTables\Facades\DataTables;
 use App\Traits\ImageTrait;
-use App\Models\Admin;
+use App\Models\{Admin, RoleHasPermissions};
 use Hash;
 use DB;
 use Illuminate\Support\Arr;
+use Auth;   
+use Spatie\Permission\Models\Permission;
 
 
 
@@ -21,6 +23,20 @@ class AdminController extends Controller
 {
     //
     use ImageTrait;
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    function __construct()
+    {
+         $this->middleware('permission:users|users.create|users.edit|users.destroy', ['only' => ['index','store']]);
+         $this->middleware('permission:users.create', ['only' => ['create','store']]);
+         $this->middleware('permission:users.edit', ['only' => ['edit','update']]);
+         $this->middleware('permission:users.destroy', ['only' => ['destroy']]);
+         
+    }
 
 
     public function index()
@@ -54,7 +70,7 @@ class AdminController extends Controller
             ->addColumn('image', function ($row)
             {
                 // dd($row->image);
-                $default_image = asset("public/images/uploads/user_images/not-found4.png");
+                $default_image = asset("public/images/uploads/user_images/no_image.jpg");
                 $image = ($row->image) ? asset('public/images/uploads/user_images/'.$row->image) : $default_image;
                 $image_html = '';
                 $image_html .= '<img class="me-2" src="'.$image.'" width="50" height="50">';
@@ -79,11 +95,31 @@ class AdminController extends Controller
             ->addColumn('actions',function($row)
             {
                 $user_id = isset($row->id) ? $row->id : '';
+                $user_edit = Permission::where('name','users.edit')->first();
+                $user_delete = Permission::where('name','users.destroy')->first();
+                $user_type =  Auth::guard('admin')->user()->user_type;
+                $roles = RoleHasPermissions::where('role_id',$user_type)->pluck('permission_id');
+                foreach ($roles as $key => $value) {
+                   $val[] = $value;
+                  }
                 $action_html = '';
-                $action_html .= '<a href="'.route('users.edit',encrypt($user_id)).'" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>';
-                if($user_id != 1){
-                    $action_html .= '<a onclick="deleteUsers(\''.encrypt($user_id).'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
+                if(in_array($user_edit->id,$val)){
+
+                    $action_html .= '<a href="'.route('users.edit',encrypt($user_id)).'" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>';
+                }else{
+                    $action_html .= '<a href="'.route('users.edit',encrypt($user_id)).'" class="btn btn-sm custom-btn me-1 disabled"><i class="bi bi-pencil"></i></a>';
+
                 }
+                if(in_array($user_delete->id,$val)){
+                    if($user_id != 1){
+                        $action_html .= '<a onclick="deleteUsers(\''.encrypt($user_id).'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
+                    }
+                }else{
+                    $action_html .= '<a onclick="deleteUsers(\''.encrypt($user_id).'\')" class="btn btn-sm btn-danger me-1 disabled"><i class="bi bi-trash"></i></a>';
+                    
+
+                }
+
                 return $action_html;
             })
             ->rawColumns(['status','usertype','actions','image','name'])

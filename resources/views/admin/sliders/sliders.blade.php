@@ -4,6 +4,17 @@
 
 @section('content')
 
+@php
+$role = Auth::guard('admin')->user()->user_type;
+$slider_add = Spatie\Permission\Models\Permission::where('name','sliders.add-slider')->first();
+$slider_edit = Spatie\Permission\Models\Permission::where('name','sliders.edit-slider')->first();
+$slider_delete = Spatie\Permission\Models\Permission::where('name','sliders.destroy')->first();
+$permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('permission_id');  
+    foreach ($permissions as $permission) {
+        $permission_ids[] = $permission;
+    }
+@endphp
+
 {{-- Modal for Add New Slider & Edit Slider --}}
     <div class="modal fade" id="sliderModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="sliderModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -67,8 +78,13 @@
                 </nav>
             </div>
             <div class="col-md-4" style="text-align: right;">
+                @if((in_array($slider_add->id, $permission_ids))) 
                 <a data-bs-toggle="modal" data-bs-target="#sliderModal" class="btn btn-sm new-slider custom-btn">
                     <i class="bi bi-plus-lg"></i>
+                    @else
+                    <a data-bs-toggle="modal" data-bs-target="#sliderModal" class="btn btn-sm new-slider custom-btn disabled">
+                        <i class="bi bi-plus-lg"></i>
+                    @endif
                 </a>
             </div>
         </div>

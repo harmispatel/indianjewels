@@ -4,14 +4,33 @@ namespace App\Http\Controllers;
 
 use App\Models\Slider;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Permission;
 use App\Http\Requests\SlidersRequest;
 use Carbon\Carbon;
 use Yajra\DataTables\Facades\DataTables;
 use App\Traits\ImageTrait;
+use Auth;
+use App\Models\{Tag,RoleHasPermissions};
+
 
 class SliderController extends Controller
 {
     use ImageTrait;
+
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    function __construct()
+    {
+         $this->middleware('permission:sliders|sliders.add-slider|sliders.edit-slider|sliders.destroy', ['only' => ['index','store']]);
+         $this->middleware('permission:sliders.add-slider', ['only' => ['create','store']]);
+         $this->middleware('permission:sliders.edit-slider', ['only' => ['edit','update']]);
+         $this->middleware('permission:sliders.destroy', ['only' => ['destroy']]);
+         
+    }
     /**
      * Display a listing of the resource.
      */
@@ -51,9 +70,31 @@ class SliderController extends Controller
             ->addColumn('actions',function($row)
             {
                 $slider_id = isset($row->id) ? $row->id : '';
+                $slider_edit = Permission::where('name','sliders.edit-slider')->first();
+                 $slider_delete = Permission::where('name','sliders.destroy')->first();
+                 $user_type =  Auth::guard('admin')->user()->user_type;
+                 $roles = RoleHasPermissions::where('role_id',$user_type)->pluck('permission_id');
+                 foreach ($roles as $key => $value) {
+                    $val[] = $value;
+                   }
                 $action_html = '';
-                $action_html .= '<a onclick="editSlider(\''.encrypt($slider_id).'\')" class="btn btn-sm custom-btn me-1" id="editSlider"><i class="bi bi-pencil"></i></a>';
-                $action_html .= '<a onclick="deleteSliders(\''.encrypt($slider_id).'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
+
+                if(in_array($slider_edit->id,$val)){
+
+                    $action_html .= '<a onclick="editSlider(\''.encrypt($slider_id).'\')" class="btn btn-sm custom-btn me-1" id="editSlider"><i class="bi bi-pencil"></i></a>';
+                }else{
+                    $action_html .= '<a onclick="editSlider(\''.encrypt($slider_id).'\')" class="btn btn-sm custom-btn me-1 disabled" id="editSlider"><i class="bi bi-pencil"></i></a>';
+
+                }
+
+                if(in_array($slider_delete->id,$val)){
+
+                    $action_html .= '<a onclick="deleteSliders(\''.encrypt($slider_id).'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
+                }else{
+                    $action_html .= '<a onclick="deleteSliders(\''.encrypt($slider_id).'\')" class="btn btn-sm btn-danger me-1 disabled"><i class="bi bi-trash"></i></a>';
+                    
+
+                }
                 return $action_html;
             })
             ->rawColumns(['status','actions','image'])
@@ -96,6 +137,7 @@ class SliderController extends Controller
         }
         catch (\Throwable $th) 
         {
+            dd($th);
             return response()->json(
             [
                 'success' => 0,

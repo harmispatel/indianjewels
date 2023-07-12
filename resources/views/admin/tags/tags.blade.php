@@ -59,14 +59,17 @@
                     </ol>
                 </nav>
             </div>
-            @if(in_array($tag_add->id,$val))
-
             <div class="col-md-4" style="text-align: right;">
+            @if(in_array($tag_add->id,$val))
                 <a data-bs-toggle="modal" data-bs-target="#tagModal" class="btn btn-sm new-tag custom-btn">
                     <i class="bi bi-plus-lg"></i>
                 </a>
+                @else
+                <a data-bs-toggle="modal" data-bs-target="#tagModal" class="btn btn-sm new-tag custom-btn disabled">
+                    <i class="bi bi-plus-lg"></i>
+                </a>
+                @endif
             </div>
-            @endif
         </div>
     </div>
 

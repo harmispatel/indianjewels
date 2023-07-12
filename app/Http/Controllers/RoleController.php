@@ -9,6 +9,9 @@ use App\Traits\ImageTrait;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use DB;
+use App\Models\{Admin, RoleHasPermissions};
+use Auth;
+
 
 
 
@@ -39,8 +42,25 @@ class RoleController extends Controller
             {
                 $role_id = isset($row->id) ? encrypt($row->id) : '';
                 $action_html = '';
-                $action_html .= '<a href="'.route('roles.edit',$role_id).'" class="btn btn-sm custom-btn me-1 "><i class="bi bi-pencil"></i></a>';
-                $action_html .= '<a   onclick="deleteRole(\''.$role_id.'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
+                $role_edit = Permission::where('name','roles.edit')->first();
+                $role_delete = Permission::where('name','roles.destroy')->first();
+                $user_type =  Auth::guard('admin')->user()->user_type;
+                $roles = RoleHasPermissions::where('role_id',$user_type)->pluck('permission_id');
+                foreach ($roles as $key => $value) {
+                   $val[] = $value;
+                  }
+                if(in_array($role_edit->id,$val)){
+                    $action_html .= '<a href="'.route('roles.edit',$role_id).'" class="btn btn-sm custom-btn me-1 "><i class="bi bi-pencil"></i></a>';
+                }else{
+                    $action_html .= '<a href="'.route('roles.edit',$role_id).'" class="btn btn-sm custom-btn me-1 disabled"><i class="bi bi-pencil"></i></a>';
+
+                }
+                if(in_array($role_delete->id,$val)){
+                    $action_html .= '<a  onclick="deleteRole(\''.$role_id.'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
+                }else{
+                    $action_html .= '<a  onclick="deleteRole(\''.$role_id.'\')" class="btn btn-sm btn-danger me-1 disabled"><i class="bi bi-trash"></i></a>';
+
+                }
                 return $action_html;
             })
             ->rawColumns(['actions'])

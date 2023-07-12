@@ -202,6 +202,119 @@
                                                         </div>
                                                     </div>
                                                 </div>
+
+                                                
+                                                <div class="col-md-3">
+                                                    <div class="accordion" id="accordionFive">
+                                                        <div class="accordion-item">
+                                                            <h2 class="accordion-header" id="headingFive">
+                                                                <button class="accordion-button collapsed" type="button"
+                                                                    data-bs-toggle="collapse"
+                                                                    data-bs-target="#collapseFive" aria-expanded="false"
+                                                                    aria-controls="collapseFive">
+                                                                    Users
+                                                                </button>
+                                                            </h2>
+                                                            <div id="collapseFive" class="accordion-collapse collapse"
+                                                                aria-labelledby="headingFive"
+                                                                data-bs-parent="#accordionFive">
+                                                                @foreach ($permission->slice(16, 4) as $value)
+                                                                    <div class="accordion-body">
+                                                                        <label>
+                                                                            <input type="checkbox" name="permission[]"
+                                                                                value="{{ $value->id }}"
+                                                                                class="mr-3" {{ in_array($value->id, $rolePermissions) ? 'checked' : '' }}>
+                                                                                    @if ($value->name == 'users')
+                                                                                        View
+                                                                                    @elseif($value->name == 'users.create')
+                                                                                        Add
+                                                                                    @elseif($value->name == 'users.edit')
+                                                                                        Update
+                                                                                    @else
+                                                                                        Delete
+                                                                                    @endif
+                                                                        </label>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3">
+                                                    <div class="accordion" id="accordionSix">
+                                                        <div class="accordion-item">
+                                                            <h2 class="accordion-header" id="headingSix">
+                                                                <button class="accordion-button collapsed" type="button"
+                                                                    data-bs-toggle="collapse"
+                                                                    data-bs-target="#collapseSix" aria-expanded="false"
+                                                                    aria-controls="collapseSix">
+                                                                    Sliders
+                                                                </button>
+                                                            </h2>
+                                                            <div id="collapseSix" class="accordion-collapse collapse"
+                                                                aria-labelledby="headingSix"
+                                                                data-bs-parent="#accordionSix">
+                                                                @foreach ($permission->slice(20, 4) as $value)
+                                                                    <div class="accordion-body">
+                                                                        <label>
+                                                                            <input type="checkbox" name="permission[]"
+                                                                                value="{{ $value->id }}"
+                                                                                class="mr-3" {{ in_array($value->id, $rolePermissions) ? 'checked' : '' }}>
+                                                                                
+                                                                                    @if ($value->name == 'sliders')
+                                                                                        View
+                                                                                    @elseif($value->name == 'sliders.add-slider')
+                                                                                        Add
+                                                                                    @elseif($value->name == 'sliders.edit-slider')
+                                                                                        Update
+                                                                                    @else
+                                                                                        Delete
+                                                                                    @endif
+                                                                        </label>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3">
+                                                    <div class="accordion" id="accordionSeven">
+                                                        <div class="accordion-item">
+                                                            <h2 class="accordion-header" id="headingSeven">
+                                                                <button class="accordion-button collapsed" type="button"
+                                                                    data-bs-toggle="collapse"
+                                                                    data-bs-target="#collapseSeven" aria-expanded="false"
+                                                                    aria-controls="collapseSeven">
+                                                                    Dealers
+                                                                </button>
+                                                            </h2>
+                                                            <div id="collapseSeven" class="accordion-collapse collapse"
+                                                                aria-labelledby="headingSeven"
+                                                                data-bs-parent="#accordionSeven">
+                                                                @foreach ($permission->slice(24, 4) as $value)
+                                                                    <div class="accordion-body">
+                                                                        <label>
+                                                                            <input type="checkbox" name="permission[]"
+                                                                                value="{{ $value->id }}"
+                                                                                class="mr-3" {{ in_array($value->id, $rolePermissions) ? 'checked' : '' }}>
+                                                                                    @if ($value->name == 'dealers')
+                                                                                        View
+                                                                                    @elseif($value->name == 'dealers.create')
+                                                                                        Add
+                                                                                    @elseif($value->name == 'dealers.edit')
+                                                                                        Update
+                                                                                    @else
+                                                                                        Delete
+                                                                                    @endif
+                                                                        </label>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

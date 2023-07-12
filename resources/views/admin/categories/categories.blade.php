@@ -4,6 +4,16 @@
 
 @section('content')
 
+@php
+$role = Auth::guard('admin')->user()->user_type;
+$cat_add = Spatie\Permission\Models\Permission::where('name','categories.add')->first();
+$cat_edit = Spatie\Permission\Models\Permission::where('name','categories.edit')->first();
+$cat_delete = Spatie\Permission\Models\Permission::where('name','categories.destroy')->first();
+$permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('permission_id');  
+    foreach ($permissions as $permission) {
+        $permission_ids[] = $permission;
+    }
+@endphp
 
 {{-- Modal for Add New Tag & Edit Tag --}}
 <div class="modal fade" id="categoryModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
@@ -104,9 +114,15 @@
                 </nav>
             </div>
             <div class="col-md-4" style="text-align: right;">
+                @if((in_array($cat_add->id, $permission_ids))) 
                 <a data-bs-toggle="modal" data-bs-target="#categoryModal" class="btn btn-sm new-category custom-btn">
                     <i class="bi bi-plus-lg"></i>
                 </a>
+                @else
+                <a data-bs-toggle="modal" data-bs-target="#categoryModal" class="btn btn-sm new-category custom-btn disabled" >
+                    <i class="bi bi-plus-lg"></i>
+                </a>
+                 @endif
             </div>
         </div>
     </div>
@@ -152,9 +168,17 @@
                                                     </div>
                                                 </td>
                                                 <td>
+                                                @if((in_array($cat_edit->id, $permission_ids))) 
                                                     <a onclick="editCategory('{{ encrypt($category->id) }}')" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>
-
+                                                    @else
+                                                    <a onclick="editCategory('{{ encrypt($category->id) }}')" class="btn btn-sm custom-btn me-1 disabled"><i class="bi bi-pencil"></i></a>
+                                                    @endif
+                                                    @if((in_array($cat_delete->id, $permission_ids)))
                                                     <a onclick="deleteCategory('{{ encrypt($category->id) }}')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>
+                                                    @else
+                                                    <a onclick="deleteCategory('{{ encrypt($category->id) }}')" class="btn btn-sm btn-danger me-1 disabled"><i class="bi bi-trash"></i></a>
+                                                    
+                                                    @endif
                                                 </td>
                                             </tr>
                                             @if (count($category->subcategories))

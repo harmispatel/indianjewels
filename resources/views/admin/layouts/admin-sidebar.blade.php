@@ -1,5 +1,17 @@
 @php
     $currentRouteName = Route::currentRouteName();
+
+    $role = Auth::guard('admin')->user();
+    $role_id = $role->user_type;
+    
+    $permissions = App\Models\RoleHasPermissions::where('role_id',$role_id)->pluck('permission_id');
+    
+    foreach ($permissions as $permission) {
+        $permission_ids[] = $permission;
+    }
+    
+    
+
 @endphp
 
 <aside id="sidebar" class="sidebar">
@@ -24,6 +36,7 @@
                 class="nav-content collapse {{ Route::currentRouteName() == 'tags' || Route::currentRouteName() == 'tags.create' || Route::currentRouteName() == 'tags.edit' || Route::currentRouteName() == 'categories' || Route::currentRouteName() == 'categories.edit-category' || Route::currentRouteName() == 'categories.add-category' || Route::currentRouteName() == 'sliders' || Route::currentRouteName() == 'sliders.add-slider' || Route::currentRouteName() == 'sliders.edit-slider' || Route::currentRouteName() == 'designs' || Route::currentRouteName() == 'designs.create' || Route::currentRouteName() == 'designs.edit' || Route::currentRouteName() == 'dealers' || Route::currentRouteName() == 'dealers.create' || Route::currentRouteName() == 'dealers.edit' ? 'show' : '' }}"
                 data-bs-parent="#sidebar-nav">
 
+                @if(in_array(13, $permission_ids))
                 <li>
                     <a href="{{ route('categories') }}"
                         class="{{ Route::currentRouteName() == 'categories' || Route::currentRouteName() == 'categories.edit-category' || Route::currentRouteName() == 'categories.add-category' ? 'active' : '' }}">
@@ -31,6 +44,8 @@
                             class="{{ Route::currentRouteName() == 'categories' || Route::currentRouteName() == 'categories.edit-category' || Route::currentRouteName() == 'categories.add-category' ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Categories</span>
                     </a>
                 </li>
+                @endif
+                @if(in_array(5, $permission_ids))
                 <li>
                     <a href="{{ route('tags') }}"
                         class="{{ Route::currentRouteName() == 'tags' || Route::currentRouteName() == 'tags.edit' || Route::currentRouteName() == 'tags.create' ? 'active' : '' }}">
@@ -38,6 +53,8 @@
                             class="{{ Route::currentRouteName() == 'tags' || Route::currentRouteName() == 'tags.edit' || Route::currentRouteName() == 'tags.create' ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Tags</span>
                     </a>
                 </li>
+                @endif
+                @if(in_array(21, $permission_ids))
                 <li>
                     <a href="{{ route('sliders') }}"
                         class="{{ Route::currentRouteName() == 'sliders' || Route::currentRouteName() == 'sliders.add-slider' || Route::currentRouteName() == 'sliders.edit-slider' ? 'active' : '' }}">
@@ -45,6 +62,8 @@
                             class="{{ Route::currentRouteName() == 'sliders' || Route::currentRouteName() == 'sliders.add-slider' || Route::currentRouteName() == 'sliders.edit-slider' ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Sliders</span>
                     </a>
                 </li>
+                @endif
+                @if(in_array(21, $permission_ids))
                 <li>
                     <a href="{{ route('designs') }}"
                         class="{{ Route::currentRouteName() == 'designs' || Route::currentRouteName() == 'designs.create' || Route::currentRouteName() == 'designs.edit' ? 'active' : '' }}">
@@ -52,11 +71,14 @@
                             class="{{ Route::currentRouteName() == 'designs' || Route::currentRouteName() == 'designs.create' || Route::currentRouteName() == 'designs.edit' ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Designs</span>
                     </a>
                 </li>
+                @endif
+                @if(in_array(25, $permission_ids))
                 <li>
                     <a href="{{ route('dealers') }}" class="{{ Route::currentRouteName() == 'dealers' || Route::currentRouteName() == 'dealers.create' || Route::currentRouteName() == 'dealers.edit'  ? 'active' : '' }}">
                         <i class="{{Route::currentRouteName() == 'dealers' || Route::currentRouteName() == 'dealers.create' || Route::currentRouteName() == 'dealers.edit'  ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Dealer</span>
                     </a>
                 </li>
+                @endif
             </ul>
         </li>
         {{-- User Nav --}}
@@ -71,6 +93,7 @@
             <ul id="users-nav"
                 class="nav-content sidebar-ul collapse {{ Route::currentRouteName() == 'roles' || Route::currentRouteName() == 'roles.create' || Route::currentRouteName() == 'roles.edit' ||  Route::currentRouteName() == 'users' || Route::currentRouteName() == 'users.create' || Route::currentRouteName() == 'users.edit' ? 'show' : '' }}"
                 data-bs-parent="#sidebar-nav">
+                @if(in_array(1, $permission_ids))
                 <li>
                     <a href="{{ route('roles') }}"
                         class="{{ Route::currentRouteName() == 'roles' || Route::currentRouteName() == 'roles.create' || Route::currentRouteName() == 'roles.edit' ? 'active-link' : '' }}">
@@ -79,11 +102,14 @@
                             Type</span>
                     </a>
                 </li>
+                @endif
+                @if(in_array(17, $permission_ids))
                 <li>
                     <a href="{{route('users')}}" class="{{ Route::currentRouteName() == 'users' || Route::currentRouteName() == 'users.create' || Route::currentRouteName() == 'users.edit' ? 'active-link' : '' }}">
                         <i class="{{ Route::currentRouteName() == 'users' || Route::currentRouteName() == 'users.create' || Route::currentRouteName() == 'users .edit' ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Users</span>
                     </a>
                 </li>
+                @endif
 
             </ul>
         </li>
