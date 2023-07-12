@@ -27,6 +27,7 @@
 .form_box_inr{
     border: 1px solid #012970;
     margin-bottom: 15px;
+    
 }
 .form_box .form_box_inr:last-child{
     margin: 0 !important;
