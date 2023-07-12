@@ -5,6 +5,7 @@
 <aside id="sidebar" class="sidebar">
     <ul class="sidebar-nav" id="sidebar-nav">
 
+        {{-- Dashboard Nav --}}
         <li class="nav-item">
             <a class="nav-link {{ $currentRouteName == 'admin.dashboard' ? '' : 'collapsed' }}"
                 href="{{ route('admin.dashboard') }}">
@@ -13,6 +14,7 @@
             </a>
         </li>
 
+        {{-- Master Nav --}}
         <li class="nav-item">
             <a class="nav-link {{ Route::currentRouteName() != 'tags' && Route::currentRouteName() != 'tags.create' && Route::currentRouteName() != 'tags.edit' && Route::currentRouteName() != 'categories' && Route::currentRouteName() != 'categories.add-category' && Route::currentRouteName() != 'categories.edit-category' && Route::currentRouteName() != 'sliders' && Route::currentRouteName() != 'sliders.edit-slider' && Route::currentRouteName() != 'sliders.add-slider' && Route::currentRouteName() != 'designs' && Route::currentRouteName() != 'designs.create' && Route::currentRouteName() != 'designs.edit'  && Route::currentRouteName() != 'dealers' && Route::currentRouteName() != 'dealers.create' && Route::currentRouteName() != 'dealers.edit' ? 'collapsed' : '' }}  {{ Route::currentRouteName() == 'tags' || Route::currentRouteName() == 'tags.create' || Route::currentRouteName() == 'tags.edit' || Route::currentRouteName() == 'categories' || Route::currentRouteName() == 'categories.edit-category' || Route::currentRouteName() == 'categories.add-category' || Route::currentRouteName() == 'designs' || Route::currentRouteName() == 'designs.create' || Route::currentRouteName() == 'designs.edit' || Route::currentRouteName() == 'dealers' || Route::currentRouteName() == 'dealers.create' || Route::currentRouteName() == 'dealers.edit' ? 'active-tab' : '' }}"
                 data-bs-target="#catalogue-nav" data-bs-toggle="collapse" href="#"
@@ -59,6 +61,68 @@
                 </li>
             </ul>
         </li>
+
+        {{-- Orders Nav --}}
+        <li class="nav-item">
+            <a class="nav-link {{ $currentRouteName == '' ? '' : 'collapsed' }}"
+                href="{{ route('admin.order') }}">
+                <i class="bi bi-grid"></i>
+                <span>Orders</span>
+            </a>
+        </li>
+
+        {{-- Report Nav --}}
+        <li class="nav-item">
+            <a class="nav-link collapsed"  data-bs-target="#report-nav" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-layout-text-window-reverse"></i><span>Reports</span>
+                <i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            
+            <ul id="report-nav"
+                class="nav-content sidebar-ul collapse {{ Route::currentRouteName() == 'reports.summary.items' || Route::currentRouteName() == 'reports.star' || Route::currentRouteName() == 'reports.scheme' ||  Route::currentRouteName() == 'reports.dealer.performace' ? 'show' : '' }}"
+                data-bs-parent="#sidebar-nav">
+
+                <li>
+                    <a href="#" class="">
+                        <i class=""></i><span> -- Item Report</span>
+                    </a>
+                    <ul id="report-nav"
+                        class="nav-content sidebar-ul collapse {{ Route::currentRouteName() == 'reports.summary.items' || Route::currentRouteName() == 'reports.star' ? 'show' : '' }}"
+                        data-bs-parent="#sidebar-nav">
+                        <ol>
+                            <a href="{{ route('reports.summary.items') }}" class="{{ Route::currentRouteName() == 'reports.summary.items'  ? 'active-link' : '' }}">
+                                <i class="{{ Route::currentRouteName() == 'reports.summary.items'  ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Summary for Item</span>
+                            </a>
+                        </ol>
+                        <ol>
+                            <a href="{{ route('reports.star') }}" class="{{ Route::currentRouteName() == 'reports.star'  ? 'active-link' : '' }}">
+                                <i class="{{ Route::currentRouteName() == 'reports.star'  ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Star Report</span>
+                            </a>
+                        </ol>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" class="">
+                        <i class=""></i><span> -- Dealer Report</span>
+                    </a>
+                    <ul id="report-nav"
+                        class="nav-content sidebar-ul collapse {{ Route::currentRouteName() == 'reports.scheme' ||  Route::currentRouteName() == 'reports.dealer.performace' ? 'show' : '' }}""
+                        data-bs-parent="#sidebar-nav">
+                        <ol>
+                            <a href="{{ route('reports.scheme') }}" class="{{ Route::currentRouteName() == 'reports.scheme'  ? 'active-link' : '' }}">
+                                <i class="{{ Route::currentRouteName() == 'reports.scheme'  ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Scheme Report</span>
+                            </a>
+                        </ol>
+                        <ol>
+                            <a href="{{ route('reports.dealer.performace') }}" class="{{ Route::currentRouteName() == 'reports.dealer.performace'  ? 'active-link' : '' }}">
+                                <i class="{{ Route::currentRouteName() == 'reports.dealer.performace'  ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Dealer Performance</span>
+                            </a>
+                        </ol>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+
         {{-- User Nav --}}
         <li class="nav-item">
             <a class="nav-link {{ Route::currentRouteName() != 'roles' && Route::currentRouteName() != 'roles.create' && Route::currentRouteName() != 'roles.edit' &&  Route::currentRouteName() != 'users' && Route::currentRouteName() != 'users.create' && Route::currentRouteName() != 'users.edit' ? 'collapsed' : '' }} {{ Route::currentRouteName() == 'roles' || Route::currentRouteName() == 'roles.create' || Route::currentRouteName() == 'roles.edit' || Route::currentRouteName() == 'users' || Route::currentRouteName() == 'users.create' || Route::currentRouteName() == 'users.edit' ? 'active-tab' : '' }}"
@@ -86,6 +150,15 @@
                 </li>
 
             </ul>
+        </li>
+
+        {{-- Marketing Nav --}}
+        <li class="nav-item">
+            <a class="nav-link {{ $currentRouteName == '' ? '' : 'collapsed' }}"
+                href="{{ route('admin.marketing') }}">
+                <i class="bi bi-grid"></i>
+                <span>Marketing</span>
+            </a>
         </li>
 
         </li>
