@@ -91,7 +91,7 @@
                     <a href="{{route('westage.discount')}}" class="{{ Route::currentRouteName() == 'westage.discount' || Route::currentRouteName() == 'westage.discount.create' || Route::currentRouteName() == 'westage.discount.edit'  ? 'active' : '' }}">
                         <i class="{{Route::currentRouteName() == 'westage.discount' || Route::currentRouteName() == 'westage.discount.create' || Route::currentRouteName() == 'westage.discount.edit'  ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Westage Disount</span>
                     </a>
-                </li>
+                </li> 
                 @endif
             </ul>
         </li>
