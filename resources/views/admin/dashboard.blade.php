@@ -17,6 +17,7 @@
             </div>
         </div>
     </div>
+    
 
     {{-- Dashboard Section --}}
     <section class="section dashboard">
@@ -40,7 +41,8 @@
                                 <h5> Total Categories </h5>
                                 <div class="d-flex align-items-center">
                                     <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                        <i class="bi bi-layout-text-window-reverse"></i>
+                                        <!-- <i class="bi bi-layout-text-window-reverse"></i> -->
+                                        <i class="fa-solid fa-list-alt"></i>
                                     </div>
                                     <div class="ps-3">
                                         <h4><b> {{ $total_categories }} </b></h4>
@@ -56,7 +58,7 @@
                                 <h5> Total Designs</h5>
                                 <div class="d-flex align-items-center">
                                     <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                        <i class="bi bi-people"></i>
+                                        <i class="fa-solid fa-pencil-ruler"></i>
                                     </div>
                                     <div class="ps-3">
                                     <h4><b> {{ $total_sliders }} </b></h4>
@@ -72,7 +74,7 @@
                                 <h5 > Total Dealers</h5>
                                 <div class="d-flex align-items-center">
                                     <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                        <i class="bi bi-people"></i>
+                                        <i class="fa-solid fa-users"></i>
                                     </div>
                                     <div class="ps-3">
                                     <h4><b> {{ $total_dealers }} </b></h4>

@@ -24,7 +24,7 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form method="POST" class="form" id="CategoryForm" enctype="multipart/form-data">
+                <form method="POST" action="javascript:void(0)" class="form" id="CategoryForm" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="id" id="id" value="">
                     <div class="form_box">
@@ -93,7 +93,7 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <a onclick="saveUpdateCategory('add')" class="btn form_button" id="saveupdatebtn">Save</a>
             </div>
         </div>

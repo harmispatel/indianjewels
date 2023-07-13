@@ -5,6 +5,7 @@
     height: 100px;
     margin-bottom: 10px;
     border: 2px solid #ccc;
+    
 }
 
 .mult-img-box img{
@@ -102,14 +103,17 @@ padding: 10px 15px;
 }
 
 .info_card_inr .card-icon{ 
-    background-color: rgb(1 41 112 / 40%);
+    background-color: #012970;
     color: #fff;
 }
-
-.form_box_info .select2.select2-container {
-    width: 100% !important;
-    display: block;
+.sidebar-nav #report-nav li>a i {
+    font-size:16px;
 }
+
+.sidebar-nav .nav-content a {
+    padding:10px 10px 10px 40px;
+}
+ 
 @media (max-width:767px) {
     .custom_dt_table .table th,.custom_dt_table .table td{
         white-space: nowrap;
