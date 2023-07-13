@@ -45,7 +45,7 @@ $('.select2bs4').select2({
         timeOut: 4000
       }
       
-      @if($route == 'designs.create' || $route == 'designs.edit' || $route == 'dealers.create' || $route == 'dealers.edit' || $route == 'sliders.add-slider' || $route == 'sliders.edit-slider' || $route == 'categories.add' || $route == 'categories.edit' || $route == 'users.create' || $route == 'users.edit' || $route == 'roles.create' || $route == 'roles.edit')
+      @if($route == 'designs.create' || $route == 'designs.edit' || $route == 'dealers.create' || $route == 'dealers.edit' || $route == 'sliders.add-slider' || $route == 'sliders.edit-slider' || $route == 'categories.add' || $route == 'categories.edit' || $route == 'users.create' || $route == 'users.edit' || $route == 'roles.create' || $route == 'roles.edit' || $route == 'westage.discount.create' || $route == 'westage.discount.edit')
         $('body').addClass('toggle-sidebar');
       @endif
 

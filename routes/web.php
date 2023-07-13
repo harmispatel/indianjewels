@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\{AuthController,DashboardController,CategoryController,TagController, DesignController, SliderController, RoleController, AdminController, DealerController};
+use App\Http\Controllers\{AuthController,DashboardController,CategoryController,TagController, DesignController, SliderController, RoleController, AdminController, DealerController, WestageDiscountController};
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
@@ -121,9 +121,17 @@ Route::group(['prefix' => 'admin'], function ()
         Route::post('dealers/update',[DealerController::class,'update'])->name('dealers.update');
         Route::post('dealers/destroy',[DealerController::class,'destroy'])->name('dealers.destroy');
 
+        // westage Discount
+        Route::get('westage-discount',[WestageDiscountController::class,'index'])->name('westage.discount');
+        Route::get('westage-discount/load',[WestageDiscountController::class,'loaddiscount'])->name('westage.discount.load');
+        Route::get('westage-discount/create',[WestageDiscountController::class,'create'])->name('westage.discount.create');
+        Route::post('westage-discount/store',[WestageDiscountController::class,'store'])->name('westage.discount.store');
+        Route::get('westage-discount/edit/{id}',[WestageDiscountController::class,'edit'])->name('westage.discount.edit');
+        Route::post('westage-discount/update',[WestageDiscountController::class,'update'])->name('westage.discount.update');
+        Route::post('westage-discount/status',[WestageDiscountController::class,'status'])->name('westage.discount.status');
+        Route::post('westage-discount/destroy',[WestageDiscountController::class,'destroy'])->name('westage.discount.destroy');
 
         
-        // Logout Route
-        Route::get('logout', [AuthController::class,'AdminLogout'])->name('admin.logout');
+        
     });
 });

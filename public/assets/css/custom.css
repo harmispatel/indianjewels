@@ -27,7 +27,7 @@
 .form_box_inr{
     border: 1px solid #012970;
     margin-bottom: 15px;
-    
+
 }
 .form_box .form_box_inr:last-child{
     margin: 0 !important;
@@ -86,10 +86,6 @@ padding: 10px 15px;
     margin-bottom: 20px;
 }  
 
-<<<<<<< HEAD
-
-  
-=======
 .info_card{
     padding: 20px;
     background-color: #fff;
@@ -109,7 +105,6 @@ padding: 10px 15px;
     background-color: rgb(1 41 112 / 40%);
     color: #fff;
 }
->>>>>>> 28d2f324bbb400c655ef3608f2bc0aaa6cdd4ad8
 @media (max-width:767px) {
     .custom_dt_table .table th,.custom_dt_table .table td{
         white-space: nowrap;

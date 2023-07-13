@@ -253,9 +253,9 @@ class DealerController extends Controller
                 $dealer->update($input);
             }
             
-            return redirect()->route('dealers')->with('success','Dealers created successfully');
+            return redirect()->route('dealers')->with('success','Dealers Updated successfully');
         } catch (\Throwable $th) {
-            dd($th);    
+            
             return redirect()->route('dealers')->with('error','Something with wrong');
 
         }

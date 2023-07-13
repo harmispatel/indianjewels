@@ -327,6 +327,44 @@
                                                     </div>
                                                 </div>
 
+                                                
+                                                <div class="col-md-3">
+                                                    <div class="accordion" id="accordionEight">
+                                                        <div class="accordion-item">
+                                                            <h2 class="accordion-header" id="headingSeven">
+                                                                <button class="accordion-button collapsed" type="button"
+                                                                    data-bs-toggle="collapse"
+                                                                    data-bs-target="#collapseEight" aria-expanded="false"
+                                                                    aria-controls="collapseEight">
+                                                                    Wastage Discount
+                                                                </button>
+                                                            </h2>
+                                                            <div id="collapseEight" class="accordion-collapse collapse"
+                                                                aria-labelledby="headingSeven"
+                                                                data-bs-parent="#accordionEight">
+                                                                @foreach ($permission->slice(28, 4) as $value)
+                                                                    <div class="accordion-body">
+                                                                        <label>
+                                                                            <input type="checkbox" name="permission[]"
+                                                                                value="{{ $value->id }}"
+                                                                                class="mr-3">
+                                                                                    @if ($value->name == 'westage.discount')
+                                                                                        View
+                                                                                    @elseif($value->name == 'westage.discount.create')
+                                                                                        Add
+                                                                                    @elseif($value->name == 'westage.discount.edit')
+                                                                                        Update
+                                                                                    @else
+                                                                                        Delete
+                                                                                    @endif
+                                                                        </label>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
                                             </div>
                                         </div>
                                     </div>
