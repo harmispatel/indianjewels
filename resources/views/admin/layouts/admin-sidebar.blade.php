@@ -80,12 +80,13 @@
                 </li>
                 @endif
                 @if(in_array($dealer->id, $permission_ids))
-                <li>
-                    <a href="{{ route('dealers') }}" class="{{ Route::currentRouteName() == 'dealers' || Route::currentRouteName() == 'dealers.create' || Route::currentRouteName() == 'dealers.edit'  ? 'active' : '' }}">
-                        <i class="{{Route::currentRouteName() == 'dealers' || Route::currentRouteName() == 'dealers.create' || Route::currentRouteName() == 'dealers.edit'  ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Dealer</span>
-                    </a>
-                </li>
+                    <li>
+                        <a href="{{ route('dealers') }}" class="{{ Route::currentRouteName() == 'dealers' || Route::currentRouteName() == 'dealers.create' || Route::currentRouteName() == 'dealers.edit'  ? 'active' : '' }}">
+                            <i class="{{Route::currentRouteName() == 'dealers' || Route::currentRouteName() == 'dealers.create' || Route::currentRouteName() == 'dealers.edit'  ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Dealer</span>
+                        </a>
+                    </li>
                 @endif
+
                 @if(in_array($discount->id, $permission_ids))
                 <li>
                     <a href="{{route('westage.discount')}}" class="{{ Route::currentRouteName() == 'westage.discount' || Route::currentRouteName() == 'westage.discount.create' || Route::currentRouteName() == 'westage.discount.edit'  ? 'active' : '' }}">
