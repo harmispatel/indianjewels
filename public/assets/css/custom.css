@@ -111,7 +111,6 @@ padding: 10px 15px;
     padding:10px 10px 10px 40px;
 }
  
-
 @media (max-width:767px) {
     .custom_dt_table .table th,.custom_dt_table .table td{
         white-space: nowrap;
