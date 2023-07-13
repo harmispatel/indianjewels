@@ -95,6 +95,7 @@
                 @endif
             </ul>
         </li>
+
         {{-- User Nav --}}
         <li class="nav-item">
             <a class="nav-link {{ Route::currentRouteName() != 'roles' && Route::currentRouteName() != 'roles.create' && Route::currentRouteName() != 'roles.edit' &&  Route::currentRouteName() != 'users' && Route::currentRouteName() != 'users.create' && Route::currentRouteName() != 'users.edit' ? 'collapsed' : '' }} {{ Route::currentRouteName() == 'roles' || Route::currentRouteName() == 'roles.create' || Route::currentRouteName() == 'roles.edit' || Route::currentRouteName() == 'users' || Route::currentRouteName() == 'users.create' || Route::currentRouteName() == 'users.edit' ? 'active-tab' : '' }}"
@@ -124,7 +125,6 @@
                     </a>
                 </li>
                 @endif
-
             </ul>
         </li>
 
