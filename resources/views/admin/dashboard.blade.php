@@ -17,6 +17,7 @@
             </div>
         </div>
     </div>
+    
 
     {{-- Dashboard Section --}}
     <section class="section dashboard">
