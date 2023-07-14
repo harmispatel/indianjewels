@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\{AuthController,DashboardController,CategoryController,TagController, DesignController, SliderController, RoleController, AdminController, DealerController, OrderController, MarketingController, ReportController};
+use App\Http\Controllers\{AuthController,DashboardController,CategoryController,TagController, DesignController, SliderController, RoleController, AdminController, DealerController,WestageDiscountController , OrderController, MarketingController, ReportController, ImportExportController};
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
@@ -138,10 +138,13 @@ Route::group(['prefix' => 'admin'], function ()
         Route::get('dealer-performance', [ReportController::class,'dealerperrformanceindex'])->name('reports.dealer.performace');
 
         // Orders
-        Route::get('orders', [OrderController::class,'index'])->name('admin.order');
+        Route::get('orders', [OrderController::class,'index'])->name('order');
 
         // Marketing
-        Route::get('marketings', [MarketingController::class,'index'])->name('admin.marketing');
+        Route::get('marketings', [MarketingController::class,'index'])->name('marketing');
+
+        // Import/Export
+        Route::get('import-export',[ImportExportController::class,'index'])->name('import.export');
         
         
     });

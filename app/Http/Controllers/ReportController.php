@@ -6,7 +6,15 @@ use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
-    /**
+
+    function __construct()
+     {
+         $this->middleware('permission:reports.summary.items', ['only' => ['index']]);
+         $this->middleware('permission:reports.star', ['only' => ['index']]);
+         $this->middleware('permission:reports.scheme', ['only' => ['index']]);
+         $this->middleware('permission:reports.dealer.performace', ['only' => ['index']]);
+     }
+            /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response

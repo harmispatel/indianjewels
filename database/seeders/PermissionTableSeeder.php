@@ -48,6 +48,13 @@ class PermissionTableSeeder extends Seeder
             'westage.discount.create',
             'westage.discount.edit',
             'westage.discount.destroy',
+            'reports.summary.items',
+            'reports.star',
+            'reports.scheme',
+            'reports.dealer.performace',
+            'order',
+            'marketing',
+            'import_export',
          ];
 
          foreach ($permissions as $permission) {

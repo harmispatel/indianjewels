@@ -6,6 +6,12 @@ use Illuminate\Http\Request;
 
 class MarketingController extends Controller
 {
+
+    function __construct()
+    {  
+        $this->middleware('permission:order', ['only' => ['index']]);
+    }  
+
     /**
      * Display a listing of the resource.
      *
