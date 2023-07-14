@@ -64,7 +64,7 @@
 
         {{-- Orders Nav --}}
         <li class="nav-item">
-            <a class="nav-link {{ $currentRouteName == '' ? '' : 'collapsed' }}"
+            <a class="nav-link {{ $currentRouteName == 'admin.order' ? '' : 'collapsed' }}"
                 href="{{ route('admin.order') }}">
                 <!-- <i class="bi bi-cart-fill"></i> -->
                 <i class="fa-solid fa-cart-shopping"></i>
@@ -164,7 +164,7 @@
 
         {{-- Marketing Nav --}}
         <li class="nav-item">
-            <a class="nav-link {{ $currentRouteName == '' ? '' : 'collapsed' }}"
+            <a class="nav-link {{ $currentRouteName == 'admin.marketing' ? '' : 'collapsed' }}"
                 href="{{ route('admin.marketing') }}">
                 <i class="bi bi-megaphone"></i>
                 <!-- <i class="fa-regular fa-megaphone"></i> -->
