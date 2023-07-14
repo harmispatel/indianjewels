@@ -90,7 +90,7 @@
                                                         <div class="invalid-feedback">
                                                             {{ $errors->first('image') }}
                                                         </div>
-                                                    @endif
+                                                    @endif 
                                                 </div>
                                             </div>
                                         </div>
