@@ -68,7 +68,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> 
                                 <div class="form_box_inr">
                                     <div class="box_title">
                                         <h2>Category Image</h2>
