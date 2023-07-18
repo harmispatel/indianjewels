@@ -148,8 +148,8 @@ class DealerController extends Controller
             }
             return redirect()->route('dealers')->with('success','Dealers created successfully');
         } catch (\Throwable $th) {
-            dd($th);
-            return redirect()->route('dealers')->with('error','Something with wrong');
+
+            return redirect()->route('dealers')->with('error','Oops Something Went Wrong!');
 
         }
 

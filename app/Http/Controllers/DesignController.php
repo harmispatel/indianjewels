@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{Design,Category,Gender,Metal,Tag, Design_image, RoleHasPermissions};
+use App\Models\{Design,Category,Gender,Metal,Tag, Design_image, RoleHasPermissions,Dealer};
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use App\Traits\ImageTrait;
@@ -99,11 +99,12 @@ class DesignController extends Controller
     public function create()
     {
         //
-        $categories = Category::get();
+        $categories = Category::where('parent_category','!=',0)->get();
         $genders = Gender::get();
         $metals = Metal::get();
         $tags = Tag::get();
-        return view('admin.designs.create_designs',compact('categories','genders','metals','tags'));
+        $companies = Dealer::get();
+        return view('admin.designs.create_designs',compact('categories','genders','metals','tags','companies'));
     }
 
     /**
@@ -188,11 +189,12 @@ class DesignController extends Controller
     {
         $id = decrypt($id);
         $data = Design::where('id',$id)->with('designImages')->first();
-        $categories = Category::get();
+        $categories = Category::where('parent_category','!=',0)->get();
         $genders = Gender::get();
         $metals = Metal::get();
         $tags = Tag::get();
-        return view('admin.designs.edit_designs',compact('categories','genders','metals','tags','data'));
+        $companies = Dealer::get();
+        return view('admin.designs.edit_designs',compact('categories','genders','metals','tags','data','companies'));
         
         
     }

@@ -194,15 +194,13 @@
                                                 </label>
                                                 <select name="company[]" id="company" class="select2 form-select" multiple>
                                                     <option value="">--Select company--</option>
-                                                    <option value="1"
-                                                        @if ($companyselected) {{ in_array(1, $companyselected) ? 'selected' : '' }} @endif>
-                                                        Indian Jewelcast Pvt. Ltd.</option>
-                                                    <option value="2"
-                                                        @if ($companyselected) {{ in_array(2, $companyselected) ? 'selected' : '' }} @endif>
-                                                        Indian Art Cating</option>
-                                                    <option value="3"
-                                                        @if ($companyselected) {{ in_array(3, $companyselected) ? 'selected' : '' }} @endif>
-                                                        Impel Jewelley</option>
+                                                    @if (count($companies) > 0)
+                                                        @foreach ($companies as $company)
+                                                            <option value="{{ $company->id }}"
+                                                                @if ($companyselected) {{ in_array($company->id, $companyselected) ? 'selected' : '' }} @endif>
+                                                                {{ $company->comapany_name }}</option>
+                                                        @endforeach
+                                                    @endif    
                                                 </select>
                                             </div>
                                         </div>
@@ -352,8 +350,11 @@
                                                 <input type="file" name="image" id="image"
                                                     class="form-control">
                                                 <div class="mt-2">
-                                                    <img src="{{ asset('public/images/uploads/item_image/' . $data->image) }}"
-                                                        alt="" width="100" height="100">
+                                                @if($data->image)
+                                                    <img src="{{ asset('public/images/uploads/item_image/' . $data->image) }}" alt="" width="100" height="100">
+                                                @else
+                                                    <img src="{{ asset('public/images/uploads/item_image/no_image.jpg') }}" width="100" height="100">
+                                                @endif
                                                 </div>
                                             </div>
 

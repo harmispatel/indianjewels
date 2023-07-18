@@ -19,7 +19,7 @@ class CategoriesRequest extends FormRequest
     // Get the validation rules that apply to the request.
     public function rules()
     {
-        // dd($this);
+        
          $ex = Category::get();
          foreach($ex as $value)
          {
@@ -31,13 +31,13 @@ class CategoriesRequest extends FormRequest
             if ($this->parent_category == 0) {
                 $rules = [
                     'name' => 'required|unique:categories,name,'.$this->id,
-                    // 'name' => 'required|unique:categories,name,'.decrypt($this->category_id),
+                    
                     'image' => 'mimes:jpeg,png,jpg,gif,svg|max:3072',
                 ];
             }else{
                 if(in_array($this->parent_category,$val))
                 {
-                    // $id = decrypt($this->category_id);
+                    
                     $id = $this->id;
                     $request = $this;
                     $rules = [
