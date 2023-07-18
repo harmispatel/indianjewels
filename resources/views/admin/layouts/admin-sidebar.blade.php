@@ -259,7 +259,6 @@
         </li>
 
         {{-- Marketing Nav --}}
-<<<<<<< HEAD
         @if (in_array($marketing->id, $permission_ids))
             <li class="nav-item">
                 <a class="nav-link {{ $currentRouteName == 'marketing' ? '' : 'collapsed' }}"
@@ -269,16 +268,6 @@
                 </a>
             </li>
         @endif
-=======
-        <li class="nav-item">
-            <a class="nav-link {{ $currentRouteName == 'admin.marketing' ? '' : 'collapsed' }}"
-                href="{{ route('admin.marketing') }}">
-                <i class="bi bi-megaphone"></i>
-                <!-- <i class="fa-regular fa-megaphone"></i> -->
-                <span>Marketing</span>
-            </a>
-        </li>
->>>>>>> 52b9ed3b56895a6cdb24453a231027a11f98cb87
 
         </li>
     </ul>
