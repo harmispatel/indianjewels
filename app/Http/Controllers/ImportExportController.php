@@ -53,27 +53,33 @@ class ImportExportController extends Controller
         $cat = Design::pluck('category_id');
         $category = $cat->unique();
         $cats = Category::whereIn('id',$category)->get();
-        foreach ($cats as $value)
-        {
-            $catIds[] = $value->parent_category; 
-        }
-         
-         $category = $catIds;
-         $data['categories'] = $category;
-        
-        
-        if((count($data['categories']) > 0))
-        {
-            try {
-                
-                return Excel::download(new Exportdata($data),'Design_data.xlsx');
-                
-            } catch (\Throwable $th) {
-                
-                return redirect()->back()->with('error','Something Went Wrong!');
+        if (count($cats) > 0)
+         {
+            
+            foreach ($cats as $value)
+            {
+                $catIds[] = $value->parent_category; 
             }
-
+             
+             $category = $catIds;
+             $data['categories'] = $category;
+             if((count($data['categories']) > 0))
+             {
+                 try {
+                     
+                     return Excel::download(new Exportdata($data),'Design_data.xlsx');
+                     
+                 } catch (\Throwable $th) {
+                     
+                     return redirect()->back()->with('error','Something Went Wrong!');
+                 }
+     
+             }
+        }else{
+            return redirect()->back()->with('error','Something Went Wrong!');
         }
+        
+        
 
     }
 }
