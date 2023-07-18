@@ -120,26 +120,14 @@
         </li>
 
         {{-- Orders Nav --}}
-<<<<<<< HEAD
-        @if (in_array($order->id, $permission_ids))
-            <li class="nav-item">
-                <a class="nav-link {{ $currentRouteName == 'order' ? '' : 'collapsed' }}" href="{{ route('order') }}">
-                    <!-- <i class="bi bi-cart-fill"></i> -->
-                    <i class="fa-solid fa-cart-shopping"></i>
-                    <span>Orders</span>
-                </a>
-            </li>
-        @endif
-=======
         <li class="nav-item">
-            <a class="nav-link {{ $currentRouteName == 'admin.order' ? '' : 'collapsed' }}"
-                href="{{ route('admin.order') }}">
+            <a class="nav-link {{ $currentRouteName == 'order' ? '' : 'collapsed' }}"
+                href="{{ route('order') }}">
                 <!-- <i class="bi bi-cart-fill"></i> -->
                 <i class="fa-solid fa-cart-shopping"></i>
                 <span>Orders</span>
             </a>
         </li>
->>>>>>> 52b9ed3b56895a6cdb24453a231027a11f98cb87
 
         {{-- Report Nav --}}
         <li class="nav-item">
@@ -259,26 +247,14 @@
         </li>
 
         {{-- Marketing Nav --}}
-<<<<<<< HEAD
-        @if (in_array($marketing->id, $permission_ids))
-            <li class="nav-item">
-                <a class="nav-link {{ $currentRouteName == 'marketing' ? '' : 'collapsed' }}"
-                    href="{{ route('marketing') }}">
-                    <i class="bi bi-megaphone"></i>
-                    <span>Marketing</span>
-                </a>
-            </li>
-        @endif
-=======
         <li class="nav-item">
-            <a class="nav-link {{ $currentRouteName == 'admin.marketing' ? '' : 'collapsed' }}"
-                href="{{ route('admin.marketing') }}">
+            <a class="nav-link {{ $currentRouteName == 'marketing' ? '' : 'collapsed' }}"
+                href="{{ route('marketing') }}">
                 <i class="bi bi-megaphone"></i>
                 <!-- <i class="fa-regular fa-megaphone"></i> -->
                 <span>Marketing</span>
             </a>
         </li>
->>>>>>> 52b9ed3b56895a6cdb24453a231027a11f98cb87
 
         </li>
     </ul>

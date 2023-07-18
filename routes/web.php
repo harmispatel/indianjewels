@@ -145,6 +145,8 @@ Route::group(['prefix' => 'admin'], function ()
 
         // Import/Export
         Route::get('import-export',[ImportExportController::class,'index'])->name('import.export');
+        Route::post('import-data',[ImportExportController::class,'importData'])->name('import.data');
+        Route::post('export-data',[ImportExportController::class,'exportData'])->name('export.data');
         
         
     });

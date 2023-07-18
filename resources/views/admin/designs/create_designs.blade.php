@@ -198,11 +198,12 @@
                                                     </label>
                                                     <select name="company[]" id="company"
                                                         class="select2 form-control form-select {{ $errors->has('company') ? 'is-invalid' : '' }}"
-                                                        multiple>
-                                                        <option value="">--Select company--</option>
-                                                        <option value="1">Indian Jewelcast Pvt. Ltd.</option>
-                                                        <option value="2">Indian Art Cating</option>
-                                                        <option value="3">Impel Jewelley</option>
+                                                        multiple option value="">--Select company--</option>
+                                                        @if (count($companies) > 0)
+                                                            @foreach ($companies as $company)
+                                                            <option value="{{ $company->id }}" {{ in_array($company->id, (array) old('company_id', [])) ? "selected" : "" }}>{{ $company->comapany_name }}</option>
+                                                            @endforeach
+                                                        @endif
                                                     </select>
                                                 </div>
                                             </div>
