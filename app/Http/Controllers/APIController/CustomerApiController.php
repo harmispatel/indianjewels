@@ -16,7 +16,7 @@ class CustomerApiController extends Controller
         {
             $categories = Category::where('parent_category', 0)->where('status', 1)->get();
             $data = new CategoryResource($categories);
-            return $this->sendApiResponse(true, 0,'Parent Categories Loaded SuccessFully', $data);
+            return $this->sendApiResponse(true, 0,'Parent Categories Loaded SuccessFully.', $data);
         }
         catch (\Throwable $th)
         {
@@ -30,7 +30,7 @@ class CustomerApiController extends Controller
         try {
             $categories = Category::where('parent_category',$request->id)->where('status', 1)->get();
             $data = new CategoryResource($categories);
-            return $this->sendApiResponse(true, 0,'SubCategories Loaded SuccessFully', $data);
+            return $this->sendApiResponse(true, 0,'SubCategories Loaded SuccessFully.', $data);
             
         } catch (\Throwable $th) {
             
@@ -46,7 +46,7 @@ class CustomerApiController extends Controller
         {
             $designs = Design::where('highest_selling', 1)->limit(6)->get();
             $data = new HighestDesignResource($designs);
-            return $this->sendApiResponse(true, 0,'Highest selling Designs Loaded SuccessFully', $data);
+            return $this->sendApiResponse(true, 0,'Highest selling Designs Loaded SuccessFully.', $data);
         } 
         catch (\Throwable $th) 
         {  
@@ -54,6 +54,7 @@ class CustomerApiController extends Controller
         }
     }
 
+    // Function for Flash Designs
     public function getFlashDesign()
         {
             
@@ -61,7 +62,7 @@ class CustomerApiController extends Controller
                     $designs = Design::where('is_flash',1)->where('status',1)->take(5)->get();
                     
                     $data = new FlashDesignResource($designs);
-                    return $this->sendApiResponse(true, 0,'Flash Design Loaded SuccessFully', $data);
+                    return $this->sendApiResponse(true, 0,'Flash Design Loaded SuccessFully.', $data);
 
             } catch (\Throwable $th) {
                 //throw $th;
@@ -70,4 +71,18 @@ class CustomerApiController extends Controller
            }
         }
         
+    // Function for fetch lstest designs
+    public function getLatestDesign(Request $request) 
+    {
+        try 
+        {
+            $designs = Design::where('status', 1)->orderBy('id', 'desc')->take(6)->get();
+            $data = new HighestDesignResource($designs);
+            return $this->sendApiResponse(true, 0,'Latest Designs Loaded SuccessFully.', $data);
+        } 
+        catch (\Throwable $th) 
+        {  
+            return $this->sendApiResponse(false, 0,'Failed to Load Designs!', (object)[]);
+        }
+    }
 }
