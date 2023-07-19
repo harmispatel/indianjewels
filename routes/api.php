@@ -24,3 +24,4 @@ Route::post('sub-category',[CustomerApiController::class,'getSubCategories']);
 Route::get('flash-design', [CustomerApiController::class,'getFlashDesign']);
 
 Route::get('highest-selling-designs', [CustomerApiController::class, 'getHigestSellingDesigns']);
+Route::get('slider',[CustomerApiController::class,'getSlider']);
