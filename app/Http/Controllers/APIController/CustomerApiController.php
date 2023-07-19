@@ -37,7 +37,7 @@ class CustomerApiController extends Controller
             return $this->sendApiResponse(false, 0,'Failed to Load Categories!', (object)[]);
 
         }
-    }
+    }  
 
     // Function for fetch higest selling designs
     public function getHigestSellingDesigns(Request $request) 
