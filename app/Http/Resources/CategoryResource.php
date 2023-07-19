@@ -26,7 +26,7 @@ class CategoryResource extends JsonResource
                 $data['name'] = $category->name;
                 $data['parent_category'] = $category->parent_category;
                 $data['status'] = $category->status;
-                $data['image'] = (isset($category->image) && !empty($category->image)) ? asset($category->image) : '';
+                $data['image'] = (isset($category->image) && !empty($category->image)) ? asset('public/images/uploads/category_images/'.$category->image) : asset('public/images/uploads/category_images/no_image.jpg');
                 $categories_array[] = $data;
             }
         }
