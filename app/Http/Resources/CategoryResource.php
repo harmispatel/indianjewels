@@ -15,6 +15,7 @@ class CategoryResource extends JsonResource
      */
     public function toArray($request)
     {
+        
         $categories = isset($this->resource) ? $this->resource : [];
         $categories_array = [];
 

@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\APIController;
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
+use App\Models\{Category,Design};
 use Illuminate\Http\Request;
-use App\Http\Resources\CategoryResource;
+use App\Http\Resources\{CategoryResource,FlashDesignResource};
 
 class CustomerApiController extends Controller
 {
@@ -38,4 +38,21 @@ class CustomerApiController extends Controller
 
         }
     }
+
+    public function getFlashDesign()
+        {
+            
+            try {
+                    $designs = Design::where('is_flash',1)->where('status',1)->take(5)->get();
+                    
+                    $data = new FlashDesignResource($designs);
+                    return $this->sendApiResponse(true, 0,'Flash Design Loaded SuccessFully', $data);
+
+            } catch (\Throwable $th) {
+                //throw $th;
+            return $this->sendApiResponse(false, 0,'Failed to Load Categories!', (object)[]);
+
+           }
+        }
+        
 }
