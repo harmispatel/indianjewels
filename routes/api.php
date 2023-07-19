@@ -19,5 +19,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
-Route::post('/parent-category',[CustomerApiController::class,'parentcategory']);
+Route::get('category', [CustomerApiController::class, 'getCategories']);

@@ -31,4 +31,17 @@ class Controller extends BaseController
             'data'    => $data,
         ], Response::HTTP_OK);
     }
+
+    public function sendApiResponse($status, $total=0, $message, $data = [])
+    {
+        $mydata['status'] = $status;
+        if($total != 0)
+        {
+            $mydata['total'] = $total;
+        }
+        $mydata['message'] = $message;
+        $mydata['data'] = $data;
+
+        return response()->json($mydata, Response::HTTP_OK);
+    }
 }
