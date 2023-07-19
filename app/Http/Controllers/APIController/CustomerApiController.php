@@ -44,7 +44,6 @@ class CustomerApiController extends Controller
             
             try {
                     $designs = Design::where('is_flash',1)->where('status',1)->take(5)->get();
-                    
                     $data = new FlashDesignResource($designs);
                     return $this->sendApiResponse(true, 0,'Flash Design Loaded SuccessFully', $data);
 
