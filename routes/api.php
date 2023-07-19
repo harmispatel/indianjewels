@@ -21,3 +21,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('parent-category', [CustomerApiController::class, 'getParentCategories']);
 Route::post('sub-category',[CustomerApiController::class,'getSubCategories']);
+
+Route::get('highest-selling-designs', [CustomerApiController::class, 'getHigestSellingDesigns']);
