@@ -5,7 +5,7 @@ namespace App\Http\Controllers\APIController;
 use App\Http\Controllers\Controller;
 use App\Models\{Category,Design};
 use Illuminate\Http\Request;
-use App\Http\Resources\{CategoryResource,FlashDesignResource};
+use App\Http\Resources\{CategoryResource,FlashDesignResource, HighestDesignResource};
 
 class CustomerApiController extends Controller
 {
@@ -36,6 +36,21 @@ class CustomerApiController extends Controller
             
             return $this->sendApiResponse(false, 0,'Failed to Load Categories!', (object)[]);
 
+        }
+    }  
+
+    // Function for fetch higest selling designs
+    public function getHigestSellingDesigns(Request $request) 
+    {
+        try 
+        {
+            $designs = Design::where('highest_selling', 1)->limit(6)->get();
+            $data = new HighestDesignResource($designs);
+            return $this->sendApiResponse(true, 0,'Highest selling Designs Loaded SuccessFully', $data);
+        } 
+        catch (\Throwable $th) 
+        {  
+            return $this->sendApiResponse(false, 0,'Failed to Load Designs!', (object)[]);
         }
     }
 
