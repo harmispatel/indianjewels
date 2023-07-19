@@ -14,4 +14,24 @@ class Design extends Model
     {
         return $this->hasMany(Design_image::class);
     }
+
+    public function categories()
+    {
+        return $this->hasOne(Category::class, 'id', 'category_id');
+    }
+
+    public function gender()
+    {
+        return $this->hasOne(Gender::class, 'id', 'gender_id');
+    }
+
+    public function metal()
+    {
+        return $this->hasOne(Metal::class, 'id', 'metal_id');
+    }
+    
+    public function companies()
+    {
+        return $this->hasMany(Dealer::class, 'id', 'company');
+    }
 }
