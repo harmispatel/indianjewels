@@ -107,12 +107,12 @@ class CustomerApiController extends Controller
         try 
         {
             $id = $request->id;
-            $designs = Design::where('id', $id)->with('categories','metal','gender','designImages')->get(); 
-            $data = new DetailDesignResource($designs);
+            $design = Design::where('id', $id)->with('categories','metal','gender','designImages')->first(); 
+            $data = new DetailDesignResource($design);
             return $this->sendApiResponse(true, 0,'Design Loaded SuccessFully.', $data);
         } 
         catch (\Throwable $th) 
-        { 
+        {
             return $this->sendApiResponse(false, 0,'Failed to Load Designs!', (object)[]);
         }
     }
