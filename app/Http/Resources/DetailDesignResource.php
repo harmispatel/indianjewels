@@ -15,13 +15,8 @@ class DetailDesignResource extends JsonResource
      */
     public function toArray($request)
     {
-        $designs = (isset($this->resource)) ? $this->resource : [];
+        $design = (isset($this->resource)) ? $this->resource : [];
         
-        $designs_array = [];
-        
-        foreach($designs as $design)
-        {
-            
             $tags = json_decode($design->tags);
             $tagname = Tag::whereIn('id',$tags)->pluck('name');
             
@@ -32,7 +27,8 @@ class DetailDesignResource extends JsonResource
             }   
             $mul_images = $design->designImages;            
             $images = [];
-            if ($mul_images) {
+            if ($mul_images) 
+            {
                 foreach ($mul_images as $mul_image)
                 {
                     $imgs =  asset('public/images/uploads/item_image/'.$mul_image->image);
@@ -67,8 +63,7 @@ class DetailDesignResource extends JsonResource
             $data['wastage_22k'] = isset($design->wastage4) ? $design->wastage4 : '';
             $data['iaj_gross_weight'] = isset($design->iaj_weight) ? $design->iaj_weight : '';
             $data['multiple_image'] = isset($mul_images) ? $images : [] ;
-            $designs_array[] = $data;
-        }
-        return $designs_array;
+            $design = $data;
+        return $design;
     }
 }
