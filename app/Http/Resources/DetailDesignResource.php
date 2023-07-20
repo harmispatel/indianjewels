@@ -16,6 +16,7 @@ class DetailDesignResource extends JsonResource
     public function toArray($request)
     {
         $designs = (isset($this->resource)) ? $this->resource : [];
+        
         $designs_array = [];
         
         foreach($designs as $design)
