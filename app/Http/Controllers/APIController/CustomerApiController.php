@@ -5,7 +5,7 @@ namespace App\Http\Controllers\APIController;
 use App\Http\Controllers\Controller;
 use App\Models\{Category,Design,Slider};
 use Illuminate\Http\Request;
-use App\Http\Resources\{CategoryResource,FlashDesignResource, HighestDesignResource, SliderResource, DetailDesignResource};
+use App\Http\Resources\{CategoryResource,FlashDesignResource, HighestDesignResource, SliderResource, DetailDesignResource, DesignsResource};
 
 class CustomerApiController extends Controller
 {
@@ -110,6 +110,22 @@ class CustomerApiController extends Controller
             $design = Design::where('id', $id)->with('categories','metal','gender','designImages')->first(); 
             $data = new DetailDesignResource($design);
             return $this->sendApiResponse(true, 0,'Design Loaded SuccessFully.', $data);
+        } 
+        catch (\Throwable $th) 
+        {
+            return $this->sendApiResponse(false, 0,'Failed to Load Designs!', (object)[]);
+        }
+    }
+
+    // Function for design details from category
+    public function getDesigns(Request $request)
+    {
+        try 
+        {
+            $id = $request->category_id;
+            $designs = Design::where('category_id', $id)->with('categories','metal','gender','designImages')->get(); 
+            $data = new DesignsResource($designs);
+            return $this->sendApiResponse(true, 0,'Designs Loaded SuccessFully.', $data);
         } 
         catch (\Throwable $th) 
         {
