@@ -119,7 +119,7 @@ class CustomerApiController extends Controller
 
     // Function for design details from category
     public function getDesigns(Request $request)
-    {
+    { 
         try 
         {
             $id = $request->category_id;
