@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\{Category,Design,Slider};
 use Illuminate\Http\Request;
 use App\Http\Resources\{CategoryResource,FlashDesignResource, HighestDesignResource, SliderResource, DetailDesignResource, DesignsResource};
+use App\Http\Requests\APIRequest\{DesignDetailRequest, DesignsRequest};
 
 class CustomerApiController extends Controller
 {
@@ -102,7 +103,7 @@ class CustomerApiController extends Controller
     }
 
     // Function for design details
-    public function getDesignDetail(Request $request)
+    public function getDesignDetail(DesignDetailRequest $request)
     {
         try 
         {
@@ -118,7 +119,7 @@ class CustomerApiController extends Controller
     }
 
     // Function for design details from category
-    public function getDesigns(Request $request)
+    public function getDesigns(DesignsRequest $request)
     { 
         try 
         {
