@@ -109,7 +109,7 @@ Route::group(['prefix' => 'admin'], function ()
         Route::post('designs/destroy',[DesignController::class,'destroy'])->name('designs.destroy');
         
         // Logout Route
-        Route::get('logout', [AuthController::class,'AdminLogout'])->name('admin.logout');
+        Route::get('logout', [AdminController::class,'AdminLogout'])->name('admin.logout');
 
         // Dealers
         Route::get('dealers',[DealerController::class,'index'])->name('dealers');

@@ -14,11 +14,6 @@ use Illuminate\Support\Arr;
 use Auth;   
 use Spatie\Permission\Models\Permission;
 
-
-
-
-
-
 class AdminController extends Controller
 {
     //
@@ -69,7 +64,7 @@ class AdminController extends Controller
             })
             ->addColumn('image', function ($row)
             {
-                // dd($row->image);
+                
                 $default_image = asset("public/images/uploads/user_images/no_image.jpg");
                 $image = ($row->image) ? asset('public/images/uploads/user_images/'.$row->image) : $default_image;
                 $image_html = '';
@@ -248,5 +243,13 @@ class AdminController extends Controller
         }
 
      }
+
+
+      // Logout Admin
+    public function AdminLogout()
+    {
+        Auth::guard('admin')->logout();
+        return redirect()->route('admin.login');
+    }
 
 }

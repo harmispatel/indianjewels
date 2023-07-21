@@ -7,9 +7,11 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
+
+
     public function __construct()
     {
-        // $this->middleware('admin.guest')->except('logout');
+      $this->middleware('guest:admin', ['except' => ['logout']]);
     }
 
     // Show Admin Login Form
@@ -39,10 +41,5 @@ class AuthController extends Controller
     }
 
 
-    // Logout Admin
-    public function AdminLogout()
-    {
-        Auth::guard('admin')->logout();
-        return redirect()->route('admin.login');
-    }
+   
 }
