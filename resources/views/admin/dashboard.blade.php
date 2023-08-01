@@ -61,7 +61,7 @@
                                         <i class="fa-solid fa-pencil-ruler"></i>
                                     </div>
                                     <div class="ps-3">
-                                    <h4><b> {{ $total_sliders }} </b></h4>
+                                    <h4><b> {{ $total_designs }} </b></h4>
                                     </div>
                                 </div>
                             </div>

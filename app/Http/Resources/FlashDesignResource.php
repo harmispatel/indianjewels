@@ -24,12 +24,11 @@ class FlashDesignResource extends JsonResource
             {
                 $data['id'] = $flashDesign->id;
                 $data['name'] = $flashDesign->name;
-                $data['image'] = isset($flashDesign->image) ? asset('public/images/uploads/item_image'.$flashDesign->image) : asset('public/images/uploads/item_image/no_image.jpg');
+                $data['image'] = isset($flashDesign->image) ? asset('public/images/uploads/item_image/'.$flashDesign->image) : asset('public/images/uploads/item_image/no_image.jpg');
                 $flashDesign_array[] = $data;
 
             }
         }
-
 
         return $flashDesign_array;
 
