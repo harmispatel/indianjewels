@@ -174,6 +174,22 @@
                                                         value="1" {{ $data->highest_selling == 1 ? 'checked' : '' }}>
                                                 </div>
                                             </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="price" class="form-label">
+                                                        Price
+                                                        <span class="text-danger">*</span>
+                                                    </label>
+                                                    <input type="text" name="price" id="price"
+                                                        class="form-control {{ $errors->has('price') ? 'is-invalid' : '' }}"
+                                                        placeholder="Enter Item price" value="{{isset($data->price) ? $data->price : old('price')}}">
+                                                    @if ($errors->has('price'))
+                                                        <div class="invalid-feedback">
+                                                            {{ $errors->first('price') }}
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 

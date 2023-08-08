@@ -53,6 +53,7 @@ class DesignsResource extends JsonResource
             $data['status'] = ($design->status == 1) ? 'Active' : 'Inactive';
             $data['is_flash'] = ($design->is_flash == 1) ? 'Yes' : 'No';
             $data['highest_selling'] = ($design->highest_selling == 1) ? 'Yes' : 'No';
+            $data['price'] = isset($design->price) ? $design->price : '';
             $data['weight_14k'] = isset($design->weight1) ? $design->weight1 : '';
             $data['weight_18k'] = isset($design->weight2) ? $design->weight2 : '' ;
             $data['weight_20k'] = isset($design->weight3) ? $design->weight3 : '';

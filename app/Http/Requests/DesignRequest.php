@@ -46,6 +46,7 @@ class DesignRequest extends FormRequest
                 'category_id' => 'required',
                 'gender_id' => 'required',
                 'metal_id' => 'required',
+                'price' => 'required|numeric|gt:0',
             ];
 
         }else{
@@ -56,6 +57,7 @@ class DesignRequest extends FormRequest
                 'gender_id' => 'required',
                 'metal_id' => 'required',
                 'image' => 'required|mimes:jpeg,png,jpg',
+                'price' => 'required|numeric|gt:0',
     
     
             ];

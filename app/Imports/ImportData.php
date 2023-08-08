@@ -46,6 +46,7 @@ class ImportData implements ToModel,WithHeadingRow
                 $insert->gender_id = $rows['genderid'];
                 $insert->metal_id = $rows['metalid'];
                 $insert->description = $rows['description'];
+                $insert->price = $rows['price'];
                 $insert->weight1 = $rows['weight_14k'];
                 $insert->weight2 = $rows['weight_18k'];
                 $insert->weight3 = $rows['weight_20k'];

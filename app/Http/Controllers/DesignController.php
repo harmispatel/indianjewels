@@ -149,7 +149,6 @@ class DesignController extends Controller
             return redirect()->route('designs')->with('message','Design added Successfully');
 
         } catch (\Throwable $th) {
-            dd($th);
             
             return redirect()->route('designs')->with('error','Something with wrong');
         }

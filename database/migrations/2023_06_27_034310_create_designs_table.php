@@ -27,6 +27,7 @@ class CreateDesignsTable extends Migration
             $table->tinyInteger('is_flash')->default('0');
             $table->tinyInteger('highest_selling')->default('0');
             $table->text('description')->nullable();
+            $table->float('price',8,2)->nullable();
             $table->float('weight1',8,2)->nullable();
             $table->float('weight2',8,2)->nullable();
             $table->float('weight3',8,2)->nullable();

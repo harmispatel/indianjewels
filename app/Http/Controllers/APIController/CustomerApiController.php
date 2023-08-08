@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\APIController;
 
 use App\Http\Controllers\Controller;
-use App\Models\{Category,Design,Slider};
+use App\Models\{Category,Design,Slider,Metal,Gender};
 use Illuminate\Http\Request;
-use App\Http\Resources\{CategoryResource,FlashDesignResource, HighestDesignResource, SliderResource, DetailDesignResource, DesignsResource};
+use App\Http\Resources\{CategoryResource,FlashDesignResource, HighestDesignResource, SliderResource, DetailDesignResource, DesignsResource, MetalResource, GenderResource};
 use App\Http\Requests\APIRequest\{DesignDetailRequest, DesignsRequest};
 
 class CustomerApiController extends Controller
@@ -131,6 +131,89 @@ class CustomerApiController extends Controller
         catch (\Throwable $th) 
         {
             return $this->sendApiResponse(false, 0,'Failed to Load Designs!', (object)[]);
+        }
+    }
+
+
+    // Function for Metal list from Metal
+    public function getMetal()
+    {
+        try {
+            
+            $metal = Metal::get();
+            $data = new MetalResource($metal);
+            return $this->sendApiResponse(true, 0,'Metal Loaded SuccessFully.', $data);
+        } catch (\Throwable $th) {
+    
+            return $this->sendApiResponse(false, 0,'Failed to Load Designs!', (object)[]);
+    
+        }
+
+    }
+
+    // Function for Gender List from Gender
+    public function getGender()
+    {
+        try {
+            //code...
+            $gender = Gender::get();
+            $data = new GenderResource($gender);
+            return $this->sendApiResponse(true, 0,'Gender Loaded SuccessFully.', $data);
+
+        } catch (\Throwable $th) {
+            return $this->sendApiResponse(false, 0,'Failed to Load Designs!', (object)[]);
+        }
+    }
+
+    // Function for child category List from Category
+    public function getChildCategories()
+    {
+        try {
+            $categories = Category::where('parent_category','!=', 0)->where('status', 1)->get();
+            $data = new CategoryResource($categories);
+            return $this->sendApiResponse(true, 0,'Child Categories Loaded SuccessFully', $data);
+        } catch (\Throwable $th) {
+
+            return $this->sendApiResponse(false, 0,'Failed to Load Designs!', (object)[]);
+
+        }
+    }
+
+    // Function for get Design List from Design
+    Public function filterDesign(Request $request)
+    {
+        try {
+            
+            $main_categorys = $request->categoryIds;
+            $metals = $request->MetalIds;
+            $genders = $request->GenderIds;
+            
+            $main_categories = Category::whereIn('parent_category',$main_categorys)->get();
+                if (count($main_categories) > 0) {
+                    foreach ($main_categories as $main_category) {
+                        $category_ids[] = $main_category['id'];
+                    }
+                }
+                else
+                {
+                    $category_ids = [];
+                }
+            $designs = Design::query()
+                                ->when($category_ids, function ($query) use ($category_ids) {
+                                    $query->whereIn('category_id', $category_ids);
+                                })
+                                ->when($metals, function ($query) use ($metals) {
+                                    $query->whereIn('metal_id', $metals);
+                                })
+                                ->when($request->has('GenderIds'), function ($query) use ($genders) {
+                                    $query->whereIn('gender_id', $genders);
+                                })
+                                ->get();
+            
+            $data = new DesignsResource($designs);
+            return $this->sendApiResponse(true, 0,'Filter Design Loaded SuccessFully', $data);
+        } catch (\Throwable $th) {
+            return $this->sendApiResponse(false, 0,'Failed to Load Designs!', (object)[]);   
         }
     }
 }
