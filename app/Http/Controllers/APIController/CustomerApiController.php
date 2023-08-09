@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\APIController;
 
 use App\Http\Controllers\Controller;
-use App\Models\{Category,Design,Slider};
+use App\Models\{Category,Design,Slider,Dealer};
 use Illuminate\Http\Request;
-use App\Http\Resources\{CategoryResource,FlashDesignResource, HighestDesignResource, SliderResource, DetailDesignResource, DesignsResource};
+use App\Http\Resources\{CategoryResource,FlashDesignResource, HighestDesignResource, SliderResource, DetailDesignResource, DesignsResource, DealersResource};
 use App\Http\Requests\APIRequest\{DesignDetailRequest, DesignsRequest, SubCategoryRequest};
 
 class CustomerApiController extends Controller
@@ -130,6 +130,36 @@ class CustomerApiController extends Controller
         catch (\Throwable $th) 
         {
             return $this->sendApiResponse(false, 0,'Failed to Load Designs!', (object)[]);
+        }
+    }
+    
+    //Function for get designs
+    public function loadDesigns(Request $request)
+    { 
+        try 
+        {
+            $designs = Design::where('status', 1)->with('categories','metal','gender','designImages')->get(); 
+            $data = new DesignsResource($designs);
+            return $this->sendApiResponse(true, 0,'Designs Loaded SuccessFully.', $data);
+        } 
+        catch (\Throwable $th) 
+        {
+            return $this->sendApiResponse(false, 0,'Failed to Load Designs!', (object)[]);
+        }
+    }
+    
+    //Function for get dealers
+    public function getDealers(Request $request)
+    { 
+        try 
+        {
+            $dealers = Dealer::where('status', 1)->get(); 
+            $data = new DealersResource($dealers);
+            return $this->sendApiResponse(true, 0,'Dealers Loaded SuccessFully.', $data);
+        } 
+        catch (\Throwable $th) 
+        {
+            return $this->sendApiResponse(false, 0,'Failed to Load Dealers!', (object)[]);
         }
     }
 }

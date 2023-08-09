@@ -27,4 +27,5 @@ Route::get('latest-designs', [CustomerApiController::class, 'getLatestDesign']);
 Route::get('slider',[CustomerApiController::class,'getSlider']);
 Route::post('design-detail',[CustomerApiController::class,'getDesignDetail']);
 Route::post('designs',[CustomerApiController::class,'getDesigns']);
-
+Route::get('alldesigns',[CustomerApiController::class,'loadDesigns']);
+Route::get('dealers',[CustomerApiController::class,'getDealers']);
