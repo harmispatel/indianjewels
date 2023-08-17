@@ -116,6 +116,7 @@ Route::group(['prefix' => 'admin'], function ()
         Route::get('dealers/load',[DealerController::class,'loaddealers'])->name('dealers.load');
         Route::get('dealers/create',[DealerController::class,'create'])->name('dealers.create');
         Route::post('dealers/Store',[DealerController::class,'store'])->name('dealers.store');
+        // Route::get('dealers/edit/{id}',[DealerController::class,'edit'])->name('dealers.edit');
         Route::get('dealers/edit/{id}',[DealerController::class,'edit'])->name('dealers.edit');
         Route::post('dealers/status',[DealerController::class,'status'])->name('dealers.status');
         Route::post('dealers/update',[DealerController::class,'update'])->name('dealers.update');

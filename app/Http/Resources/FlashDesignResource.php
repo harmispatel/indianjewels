@@ -29,7 +29,6 @@ class FlashDesignResource extends JsonResource
 
             }
         }
-
         return $flashDesign_array;
 
     }

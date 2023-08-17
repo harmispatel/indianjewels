@@ -65,6 +65,9 @@ class SheetExport implements FromCollection, WithTitle, WithHeadings
                     // description
                     $item_data[] = isset($design->description) ? $design->description : '';
 
+                    // Price
+                    $item_data[] = isset($design->price) ? $design->price : '';
+
                     // weight 14k
                     $item_data[] = isset($design->weight1) ? $design->weight1 : '';
 
@@ -124,6 +127,7 @@ class SheetExport implements FromCollection, WithTitle, WithHeadings
         $heading_arr[] = 'metalid';
         $heading_arr[] = 'tag';
         $heading_arr[] = 'description';
+        $heading_arr[] = 'price';
         $heading_arr[] = 'weight 14k';
         $heading_arr[] = 'weight 18k';
         $heading_arr[] = 'weight 20k';

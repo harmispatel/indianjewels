@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use App\Http\Requests\DealerRequest;
-use App\Models\{Dealer, DealerDocument, RoleHasPermissions};
+use App\Models\{User, UserDocument, RoleHasPermissions};
 use App\Traits\ImageTrait;
 use Hash;
 use Auth;
@@ -58,7 +58,7 @@ class DealerController extends Controller
         if ($request->ajax())
         {
             // Get all Amenities
-            $dealers = Dealer::get();
+            $dealers = User::where('user_type',1)->get();
             
             return DataTables::of($dealers)
             ->addIndexColumn()
@@ -93,7 +93,6 @@ class DealerController extends Controller
                    }
                 $action_html = '';
                 if(in_array($dealer_edit->id,$val)){
-
                 $action_html .= '<a href="'.route('dealers.edit',encrypt($dealer_id)).'" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>';
                 }else{
                 $action_html .= '<a href="'.route('dealers.edit',encrypt($dealer_id)).'" class="btn btn-sm custom-btn me-1 disabled"><i class="bi bi-pencil"></i></a>';
@@ -132,15 +131,15 @@ class DealerController extends Controller
             }
             
             
-            $dealer = Dealer::create($input);
+            $dealer = User::create($input);
     
             if($request->hasFile('document'))
             {
                 $multiple = $request->file('document');
                 foreach ($multiple as $value)
                 {
-                    $doc = new DealerDocument;
-                    $doc->dealer_id = $dealer->id;
+                    $doc = new UserDocument;
+                    $doc->user_id = $dealer->id;
                     $multiDoc = $this->addSingleImage('document','documents',$value,$old_image = '','default');
                     $doc->document = $multiDoc;
                     $doc->save();
@@ -162,7 +161,7 @@ class DealerController extends Controller
          $status = $request->status;
          $id = $request->id;
          try {
-             $input = Dealer::find($id);
+             $input = User::find($id);
              $input->status =  $status;
              $input->update();
  
@@ -196,11 +195,12 @@ class DealerController extends Controller
      * @param  \App\Models\Dealer  $dealer
      * @return \Illuminate\Http\Response
      */
-    public function edit(Dealer $dealer,$id)
+    public function edit($id)
     {
         $id = decrypt($id);
-        $data = Dealer::where('id',$id)->first();
-        $documents = DealerDocument::where('dealer_id',$id)->get();
+        
+        $data = User::where('id',$id)->first();
+        $documents = UserDocument::where('user_id',$id)->get();
         
         return view('admin.dealers.edit_dealer',compact('data','documents'));
     }
@@ -212,7 +212,7 @@ class DealerController extends Controller
      * @param  \App\Models\Dealer  $dealer
      * @return \Illuminate\Http\Response
      */
-    public function update(DealerRequest $request, Dealer $dealer)
+    public function update(DealerRequest $request)
     {
         
         try {
@@ -222,7 +222,7 @@ class DealerController extends Controller
             if ($request->password || $request->password != null) {
                 $input['password'] = Hash::make($request->password);
             }
-                $dealer = Dealer::find($id);
+                $dealer = User::find($id);
 
             if ($request->has('logo'))
             {
@@ -240,8 +240,8 @@ class DealerController extends Controller
                 $multiple = $request->file('document');
                 foreach ($multiple as $value)
                 {
-                    $doc = new DealerDocument;
-                    $doc->dealer_id = $id;
+                    $doc = new UserDocument;
+                    $doc->user_id = $id;
                     $multiDoc = $this->addSingleImage('document','documents',$value,$old_image = '','default');
                     $doc->document = $multiDoc;
                     $doc->save();
@@ -273,8 +273,8 @@ class DealerController extends Controller
         try {
             //code...
             $id = decrypt($request->id);
-            $findLogo = Dealer::where('id',$id)->first();
-            $findMulDocs = DealerDocument::where('dealer_id',$id)->get();
+            $findLogo = User::where('id',$id)->first();
+            $findMulDocs = UserDocument::where('user_id',$id)->get();
             $img = isset($findLogo->logo) ? $findLogo->logo : '';
    
             foreach($findMulDocs as $value)
@@ -290,16 +290,16 @@ class DealerController extends Controller
                    unlink('public/images/uploads/companies_logos/'.$img);
              }
    
-             DealerDocument::where('dealer_id',$id)->delete();
+             UserDocument::where('user_id',$id)->delete();
 
-             Dealer::where('id',$id)->delete();
+             User::where('id',$id)->delete();
 
              return response()->json([
                'success' => 1,
                'message' => "Dealer delete Successfully..",
            ]);
         } catch (\Throwable $th) {
-            dd($th);
+            
             //throw $th;
             return response()->json([
                 'success' => 0,

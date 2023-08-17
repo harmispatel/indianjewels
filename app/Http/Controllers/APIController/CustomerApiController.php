@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\APIController;
 
 use App\Http\Controllers\Controller;
-use App\Models\{Category,Design,Slider,Dealer};
+use App\Models\{Category,Design,Slider,Metal,Gender};
 use Illuminate\Http\Request;
-use App\Http\Resources\{CategoryResource,FlashDesignResource, HighestDesignResource, SliderResource, DetailDesignResource, DesignsResource, DealersResource};
-use App\Http\Requests\APIRequest\{DesignDetailRequest, DesignsRequest, SubCategoryRequest};
+use App\Http\Resources\{CategoryResource,FlashDesignResource, HighestDesignResource, SliderResource, DetailDesignResource, DesignsResource, MetalResource, GenderResource};
+use App\Http\Requests\APIRequest\{DesignDetailRequest, DesignsRequest};
 
 class CustomerApiController extends Controller
 {
@@ -132,34 +132,144 @@ class CustomerApiController extends Controller
             return $this->sendApiResponse(false, 0,'Failed to Load Designs!', (object)[]);
         }
     }
+
+
+    // Function for Metal list from Metal
+    public function getMetal()
+    {
+        try {
+            
+            $metal = Metal::get();
+            $data = new MetalResource($metal);
+            return $this->sendApiResponse(true, 0,'Metal Loaded SuccessFully.', $data);
+        } catch (\Throwable $th) {
     
-    //Function for get designs
-    public function loadDesigns(Request $request)
-    { 
-        try 
-        {
-            $designs = Design::where('status', 1)->with('categories','metal','gender','designImages')->get(); 
-            $data = new DesignsResource($designs);
-            return $this->sendApiResponse(true, 0,'Designs Loaded SuccessFully.', $data);
-        } 
-        catch (\Throwable $th) 
-        {
+            return $this->sendApiResponse(false, 0,'Failed to Load Designs!', (object)[]);
+    
+        }
+
+    }
+
+    // Function for Gender List from Gender
+    public function getGender()
+    {
+        try {
+            //code...
+            $gender = Gender::get();
+            $data = new GenderResource($gender);
+            return $this->sendApiResponse(true, 0,'Gender Loaded SuccessFully.', $data);
+
+        } catch (\Throwable $th) {
             return $this->sendApiResponse(false, 0,'Failed to Load Designs!', (object)[]);
         }
     }
-    
-    //Function for get dealers
-    public function getDealers(Request $request)
-    { 
-        try 
-        {
-            $dealers = Dealer::where('status', 1)->get(); 
-            $data = new DealersResource($dealers);
-            return $this->sendApiResponse(true, 0,'Dealers Loaded SuccessFully.', $data);
-        } 
-        catch (\Throwable $th) 
-        {
-            return $this->sendApiResponse(false, 0,'Failed to Load Dealers!', (object)[]);
+
+    // Function for child category List from Category
+    public function getChildCategories()
+    {
+        try {
+            $categories = Category::where('parent_category','!=', 0)->where('status', 1)->get();
+            $data = new CategoryResource($categories);
+            return $this->sendApiResponse(true, 0,'Child Categories Loaded SuccessFully', $data);
+        } catch (\Throwable $th) {
+
+            return $this->sendApiResponse(false, 0,'Failed to Load Designs!', (object)[]);
+
         }
     }
+
+    // Function for get Design List from Design
+    Public function filterDesign(Request $request)
+    {
+        try {
+       
+       $main_categorys = $request->categoryIds;
+       $metals = $request->MetalIds;
+       $genders = $request->GenderIds;
+       $search = $request->search;
+       $sort_by = $request->sort_by;
+       
+       $main_categories = Category::whereIn('parent_category',$main_categorys)->get();
+       
+           if (count($main_categories) > 0)
+           {
+               foreach ($main_categories as $main_category) 
+               {
+                   
+                   $category_ids[] = strval($main_category['id']);
+               }
+           }
+           else
+           {
+           
+               $category_ids = [];
+           }
+       
+       if (empty($search) && empty($sort_by)) {
+               $designs = Design::query()
+                                   ->when($category_ids, function ($query) use ($category_ids) {
+                                       $query->whereIn('category_id', $category_ids);
+                                   })
+                                   ->when($metals, function ($query) use ($metals) {
+                                       $query->whereIn('metal_id', $metals);
+                                   })
+                                   ->when($genders, function ($query) use ($genders) {
+                                       $query->whereIn('gender_id', $genders);
+                                   })
+                                   ->get();
+           }else if(!empty($sort_by) && empty($search)){
+
+                   if($sort_by == "new_added"){
+                       $designs = Design::where('status', 1)->orderBy('created_at', 'DESC')->get();
+                       
+                   }else if($sort_by == "featured"){
+                       $designs = Design::where('is_flash',1)->where('status',1)->get();
+                   }else if($sort_by == "low_to_high"){
+                       $designs = Design::orderByRaw('CAST(price as DECIMAL(8,2)) ASC')->where('status',1)->get();
+                   }else if($sort_by == "high_to_low"){
+                       $designs = Design::orderByRaw('CAST(price as DECIMAL(8,2)) DESC')->where('status',1)->get();
+                   }else{
+                       $designs = Design::where('highest_selling',1)->where('status',1)->get();
+                   }
+               
+               }else{
+
+               $designs = Design::with('categories','gender','metal')
+                               ->whereHas('gender', function ($que) use ($search){
+                                       $que->where('name', 'like', '%'.$search.'%');
+                                   })
+                               ->orwhereHas('metal', function ($que) use ($search){
+                                       $que->where('name', 'like', '%'.$search.'%');
+                                   })
+                               ->orwhereHas('categories', function ($que) use ($search) {
+                                       $que->where('name', 'like', '%'.$search.'%' );
+                                   })
+                               ->orwhere('name','like', '%'.$search.'%')
+                               ->get();
+
+           }
+       $data = new DesignsResource($designs);
+       return $this->sendApiResponse(true, 0,'Filter Design Loaded SuccessFully', $data);
+    } catch (\Throwable $th) {
+
+       return $this->sendApiResponse(false, 0,'Failed to Load Designs!', (object)[]);   
+    }
+   }
+
+    // Function for Related Design List from Design
+    public function relatedDesigns(Request $request)
+    {
+        try {
+            $id = $request->categoryId;            
+            
+            $designs = Design::where('category_id',$id)->get();
+            $data = new DesignsResource($designs);
+            return $this->sendApiResponse(true, 0,'Related Design Loaded SuccessFully', $data);
+        } catch (\Throwable $th) {
+            return $this->sendApiResponse(false, 0,'Failed to Load Designs!', (object)[]);   
+
+        }
+
+    }
+
 }

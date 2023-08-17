@@ -6,6 +6,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
     <title>Pages / Login - NiceAdmin Bootstrap Template</title>
+    <link href="{{ asset('public/images/demo_logos/inj.png') }}" rel="icon">
     <meta content="" name="description">
     <meta content="" name="keywords">
 

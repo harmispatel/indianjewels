@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>@yield('title')</title>
-    {{-- <link href="{{ asset('public/admin_images/favicons/home.png') }}" rel="icon"> --}}
+    <link href="{{ asset('public/images/demo_logos/inj.png') }}" rel="icon">
     @include('admin.layouts.admin-css')
 </head>
 
