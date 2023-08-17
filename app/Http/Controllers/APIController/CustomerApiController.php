@@ -183,37 +183,94 @@ class CustomerApiController extends Controller
     Public function filterDesign(Request $request)
     {
         try {
+       
+       $main_categorys = $request->categoryIds;
+       $metals = $request->MetalIds;
+       $genders = $request->GenderIds;
+       $search = $request->search;
+       $sort_by = $request->sort_by;
+       
+       $main_categories = Category::whereIn('parent_category',$main_categorys)->get();
+       
+           if (count($main_categories) > 0)
+           {
+               foreach ($main_categories as $main_category) 
+               {
+                   
+                   $category_ids[] = strval($main_category['id']);
+               }
+           }
+           else
+           {
+           
+               $category_ids = [];
+           }
+       
+       if (empty($search) && empty($sort_by)) {
+               $designs = Design::query()
+                                   ->when($category_ids, function ($query) use ($category_ids) {
+                                       $query->whereIn('category_id', $category_ids);
+                                   })
+                                   ->when($metals, function ($query) use ($metals) {
+                                       $query->whereIn('metal_id', $metals);
+                                   })
+                                   ->when($genders, function ($query) use ($genders) {
+                                       $query->whereIn('gender_id', $genders);
+                                   })
+                                   ->get();
+           }else if(!empty($sort_by) && empty($search)){
+
+                   if($sort_by == "new_added"){
+                       $designs = Design::where('status', 1)->orderBy('created_at', 'DESC')->get();
+                       
+                   }else if($sort_by == "featured"){
+                       $designs = Design::where('is_flash',1)->where('status',1)->get();
+                   }else if($sort_by == "low_to_high"){
+                       $designs = Design::orderByRaw('CAST(price as DECIMAL(8,2)) ASC')->where('status',1)->get();
+                   }else if($sort_by == "high_to_low"){
+                       $designs = Design::orderByRaw('CAST(price as DECIMAL(8,2)) DESC')->where('status',1)->get();
+                   }else{
+                       $designs = Design::where('highest_selling',1)->where('status',1)->get();
+                   }
+               
+               }else{
+
+               $designs = Design::with('categories','gender','metal')
+                               ->whereHas('gender', function ($que) use ($search){
+                                       $que->where('name', 'like', '%'.$search.'%');
+                                   })
+                               ->orwhereHas('metal', function ($que) use ($search){
+                                       $que->where('name', 'like', '%'.$search.'%');
+                                   })
+                               ->orwhereHas('categories', function ($que) use ($search) {
+                                       $que->where('name', 'like', '%'.$search.'%' );
+                                   })
+                               ->orwhere('name','like', '%'.$search.'%')
+                               ->get();
+
+           }
+       $data = new DesignsResource($designs);
+       return $this->sendApiResponse(true, 0,'Filter Design Loaded SuccessFully', $data);
+    } catch (\Throwable $th) {
+
+       return $this->sendApiResponse(false, 0,'Failed to Load Designs!', (object)[]);   
+    }
+   }
+
+    // Function for Related Design List from Design
+    public function relatedDesigns(Request $request)
+    {
+        try {
+            $id = $request->categoryId;            
             
-            $main_categorys = $request->categoryIds;
-            $metals = $request->MetalIds;
-            $genders = $request->GenderIds;
-            
-            $main_categories = Category::whereIn('parent_category',$main_categorys)->get();
-                if (count($main_categories) > 0) {
-                    foreach ($main_categories as $main_category) {
-                        $category_ids[] = $main_category['id'];
-                    }
-                }
-                else
-                {
-                    $category_ids = [];
-                }
-            $designs = Design::query()
-                                ->when($category_ids, function ($query) use ($category_ids) {
-                                    $query->whereIn('category_id', $category_ids);
-                                })
-                                ->when($metals, function ($query) use ($metals) {
-                                    $query->whereIn('metal_id', $metals);
-                                })
-                                ->when($request->has('GenderIds'), function ($query) use ($genders) {
-                                    $query->whereIn('gender_id', $genders);
-                                })
-                                ->get();
-            
+            $designs = Design::where('category_id',$id)->get();
             $data = new DesignsResource($designs);
-            return $this->sendApiResponse(true, 0,'Filter Design Loaded SuccessFully', $data);
+            return $this->sendApiResponse(true, 0,'Related Design Loaded SuccessFully', $data);
         } catch (\Throwable $th) {
             return $this->sendApiResponse(false, 0,'Failed to Load Designs!', (object)[]);   
+
         }
+
     }
+
 }

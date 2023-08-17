@@ -33,4 +33,6 @@ Route::get('gender',[CustomerApiController::class,'getGender']);
 Route::get('child-category',[CustomerApiController::class,'getChildCategories']);
 Route::post('filter-design',[CustomerApiController::class,'filterDesign']);
 
+Route::post('related-designs',[CustomerApiController::class,'relatedDesigns']);
+
 
