@@ -273,4 +273,18 @@ class CustomerApiController extends Controller
 
     }
 
+    public function getalldesigns()
+    {
+        try{
+            
+            $designs = Design::get();
+             $data = new DesignsResource($designs);
+             return $this->sendApiResponse(true, 0,'All Design Loaded SuccessFully', $data);
+             
+        } catch (\Throwable $th) {
+             return $this->sendApiResponse(false, 0,'Failed to Load Designs!', (object)[]);   
+ 
+         }
+    }
+
 }

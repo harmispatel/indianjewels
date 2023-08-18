@@ -27,12 +27,10 @@ Route::get('latest-designs', [CustomerApiController::class, 'getLatestDesign']);
 Route::get('slider',[CustomerApiController::class,'getSlider']);
 Route::post('design-detail',[CustomerApiController::class,'getDesignDetail']);
 Route::post('designs',[CustomerApiController::class,'getDesigns']);
-
+Route::get('alldesigns',[CustomerApiController::class,'getalldesigns']);
 Route::get('metal',[CustomerApiController::class,'getMetal']);
 Route::get('gender',[CustomerApiController::class,'getGender']);
 Route::get('child-category',[CustomerApiController::class,'getChildCategories']);
 Route::post('filter-design',[CustomerApiController::class,'filterDesign']);
-
 Route::post('related-designs',[CustomerApiController::class,'relatedDesigns']);
-
 Route::post('user-login',[AuthApiController::class,'userlogin']);
