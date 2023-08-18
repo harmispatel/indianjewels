@@ -29,9 +29,9 @@ class Design extends Model
     {
         return $this->hasOne(Metal::class, 'id', 'metal_id');
     }
-    
+
     public function companies()
     {
-        return $this->hasMany(Dealer::class, 'id', 'company');
+        return $this->hasMany(User::class, 'id', 'company');
     }
 }

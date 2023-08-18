@@ -3,7 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Models\{Tag, Dealer};
+use App\Models\{Tag, Dealer, User};
 
 class DesignsResource extends JsonResource
 {
@@ -16,21 +16,21 @@ class DesignsResource extends JsonResource
     public function toArray($request)
     {
         $designs = (isset($this->resource)) ? $this->resource : [];
-        
+
         $designs_array = [];
-        
+
         foreach($designs as $design)
         {
-            
+
             $tags = json_decode($design->tags);
             $tagname = Tag::whereIn('id',$tags)->pluck('name');
-            
+
             $company = json_decode($design->company);
-            if ($company) 
+            if ($company)
             {
-                $companyname = Dealer::whereIn('id',$company)->pluck('name');
-            }   
-            $mul_images = $design->designImages;            
+                $companyname = User::whereIn('id',$company)->pluck('name');
+            }
+            $mul_images = $design->designImages;
             $images = [];
             if ($mul_images) {
                 foreach ($mul_images as $mul_image)

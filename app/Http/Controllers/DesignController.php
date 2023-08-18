@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{Design,Category,Gender,Metal,Tag, Design_image, RoleHasPermissions,Dealer};
+use App\Models\{Design,Category,Gender,Metal,Tag, Design_image, RoleHasPermissions,Dealer, User};
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use App\Traits\ImageTrait;
@@ -32,9 +32,9 @@ class DesignController extends Controller
          $this->middleware('permission:designs.create', ['only' => ['create','store']]);
          $this->middleware('permission:designs.edit', ['only' => ['edit','update']]);
          $this->middleware('permission:designs.destroy', ['only' => ['destroy']]);
-         
+
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -43,7 +43,7 @@ class DesignController extends Controller
     public function index()
     {
         //
-        
+
         return view('admin.designs.designs');
     }
 
@@ -99,11 +99,11 @@ class DesignController extends Controller
     public function create()
     {
         //
-        $categories = Category::where('parent_category','!=',0)->get();
+        $categories = Category::where(' ','!=',0)->get();
         $genders = Gender::get();
         $metals = Metal::get();
         $tags = Tag::get();
-        $companies = Dealer::get();
+        $companies = User::where('user_type',1)->get();
         return view('admin.designs.create_designs',compact('categories','genders','metals','tags','companies'));
     }
 
@@ -115,7 +115,7 @@ class DesignController extends Controller
      */
     public function store(DesignRequest $request)
     {
-        
+
         try {
             $input = $request->except('_token','tags','company','image','multiImage');
             $input['tags'] = json_encode($request->tags);
@@ -129,13 +129,13 @@ class DesignController extends Controller
               $data = Design::create($input);
 
               $id = $data->id;
-              if ($request->hasfile('multiImage')) 
+              if ($request->hasfile('multiImage'))
               {
                   $mulitple = $request->file('multiImage');
-                  
+
                 foreach($mulitple as $key => $value)
                 {
-                    
+
                     $designImage = new Design_image;
                     $designImage->design_id	= $id;
                     $multiFile = $this->addSingleImage('item','item_image',$value, $oldImage = '',"300*300");
@@ -143,19 +143,19 @@ class DesignController extends Controller
                     $designImage->save();
 
                 }
-                
+
               }
 
             return redirect()->route('designs')->with('message','Design added Successfully');
 
         } catch (\Throwable $th) {
-            
+
             return redirect()->route('designs')->with('error','Something with wrong');
         }
         //
     }
 
-    // Store a Tags status Changes resource in storage..    
+    // Store a Tags status Changes resource in storage..
     public function status(Request $request)
     {
         $status = $request->status;
@@ -192,10 +192,10 @@ class DesignController extends Controller
         $genders = Gender::get();
         $metals = Metal::get();
         $tags = Tag::get();
-        $companies = Dealer::get();
+        $companies = User::where('user_type',1)->get();
         return view('admin.designs.edit_designs',compact('categories','genders','metals','tags','data','companies'));
-        
-        
+
+
     }
 
     /**
@@ -208,8 +208,8 @@ class DesignController extends Controller
     public function update(DesignRequest $request, Design $design)
     {
         try {
-            
-            
+
+
             $input = $request->except('_token','tags','company','image','multiImage','id');
             $input['tags'] = json_encode($request->tags);
             $input['company'] = json_encode($request->company);
@@ -222,42 +222,42 @@ class DesignController extends Controller
             {
                 $input['is_flash'] = 0;
             }
-            
-            $id = decrypt($request->id);    
 
-            
+            $id = decrypt($request->id);
+
+
             if ($request->hasfile('image'))
             {
                 $img  = Design::where('id',$id)->first();
 
                 $old_image = isset($cimg->image) ? $cimg->image : '';
-                
+
                 $file = $request->image;
                 $singleFile = $this->addSingleImage('item','item_image',$file, $oldImage = '',"300*300");
                 $input['image'] = $singleFile;
             }
-                
+
             $data = Design::find($id);
             $data->update($input);
 
-            if ($request->hasfile('multiImage')) 
+            if ($request->hasfile('multiImage'))
             {
                 $mulitple = $request->file('multiImage');
-                
+
                 foreach($mulitple as $key => $value)
                 {
                     $designImage = new Design_image;
                     $designImage->design_id = $id;
-                    
+
                     $multiFile = $this->addSingleImage('item','item_image',$value, $oldImage = '',"300*300");
                       $designImage->image = $multiFile;
                       $designImage->save();
                   }
-                  
 
-                
+
+
             }
-                
+
             return redirect()->route('designs')->with('message','Design updated Successfully');
 
         } catch (\Throwable $th) {
@@ -282,20 +282,20 @@ class DesignController extends Controller
             $findImage = Design::where('id',$id)->first();
             $findMulImage = Design_image::where('design_id',$id)->get();
             $img = isset($findImage->image) ? $findImage->image : '';
-   
+
             foreach($findMulImage as $value)
             {
-                   if (!empty($value->image) && file_exists('public/images/uploads/item_image/'.$value->image)) 
+                   if (!empty($value->image) && file_exists('public/images/uploads/item_image/'.$value->image))
                    {
                        unlink('public/images/uploads/item_image/'.$value->image);
                    }
             }
-   
+
             if (!empty($img) && file_exists('public/images/uploads/item_image/'.$img))
              {
                    unlink('public/images/uploads/item_image/'.$img);
              }
-   
+
              Design_image::where('design_id',$id)->delete();
              Design::where('id',$id)->delete();
 
@@ -319,16 +319,16 @@ class DesignController extends Controller
             //code...
             $id = decrypt($request->id);
              $deleteImage = Design_image::where('id',$id)->first();
-    
+
              $img = isset($deleteImage->image) ? $deleteImage->image : '';
-    
-             if (!empty($img) && file_exists('public/images/uploads/item_image/'.$img)) 
+
+             if (!empty($img) && file_exists('public/images/uploads/item_image/'.$img))
              {
                 unlink('public/images/uploads/item_image/'.$img);
-             
+
              }
              Design_image::find($id)->delete();
-    
+
              return response()->json([
                 'success' => 1,
                 'message' => "Image delete Successfully..",

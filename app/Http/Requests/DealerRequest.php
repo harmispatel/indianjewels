@@ -28,7 +28,7 @@ class DealerRequest extends FormRequest
         {
             $rules = [
                 'name' => 'required',
-                'email' => 'required|email|unique:dealers,email,'.decrypt($this->id),
+                'email' => 'required|email|unique:users,email,'.decrypt($this->id),
                 'phone' => 'required|numeric|digits:10',
                 'address' => 'required',
                 'comapany_name' => 'required',
@@ -41,7 +41,7 @@ class DealerRequest extends FormRequest
         }else{
             $rules = [
                 'name' => 'required',
-                'email' => 'required|email|unique:dealers,email',
+                'email' => 'required|email|unique:users,email',
                 'phone' => 'required|numeric|digits:10',
                 'address' => 'required',
                 'comapany_name' => 'required',

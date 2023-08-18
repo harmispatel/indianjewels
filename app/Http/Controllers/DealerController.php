@@ -28,7 +28,7 @@ class DealerController extends Controller
          $this->middleware('permission:dealers.create', ['only' => ['create','store']]);
          $this->middleware('permission:dealers.edit', ['only' => ['edit','update']]);
          $this->middleware('permission:dealers.destroy', ['only' => ['destroy']]);
-         
+
     }
 
     /**
@@ -50,7 +50,7 @@ class DealerController extends Controller
     public function create()
     {
         //
-        return view('admin.dealers.create_dealer'); 
+        return view('admin.dealers.create_dealer');
     }
 
     public function loaddealers(Request $request)
@@ -59,10 +59,10 @@ class DealerController extends Controller
         {
             // Get all Amenities
             $dealers = User::where('user_type',1)->get();
-            
+
             return DataTables::of($dealers)
             ->addIndexColumn()
-            
+
             ->addColumn('logo', function ($row)
             {
                 $default_image = asset("public/images/uploads/companies_logos/no_image.jpg");
@@ -79,7 +79,7 @@ class DealerController extends Controller
                 $dealer_id = isset($row->id) ? $row->id : '';
 
                     return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus('.$checkVal.','.$dealer_id.')" id="statusBtn" '.$checked.'></div>';
-                
+
             })
             ->addColumn('actions',function($row)
             {
@@ -119,7 +119,7 @@ class DealerController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(DealerRequest $request)
-    {  
+    {
         try {
             $input = $request->except('_token','password','confirm_password','logo','document');
             $input['password'] = Hash::make($request->password);
@@ -129,10 +129,10 @@ class DealerController extends Controller
                 $image_url = $this->addSingleImage('comapany_logo','companies_logos',$file, $old_image = '',"300*300");
                 $input['logo'] = $image_url;
             }
-            
-            
+
+
             $dealer = User::create($input);
-    
+
             if($request->hasFile('document'))
             {
                 $multiple = $request->file('document');
@@ -147,7 +147,7 @@ class DealerController extends Controller
             }
             return redirect()->route('dealers')->with('success','Dealers created successfully');
         } catch (\Throwable $th) {
-
+            dd($th);
             return redirect()->route('dealers')->with('error','Oops Something Went Wrong!');
 
         }
@@ -155,7 +155,7 @@ class DealerController extends Controller
         //
     }
 
-     // Store a Users status Changes resource in storage..    
+     // Store a Users status Changes resource in storage..
      public function status(Request $request)
      {
          $status = $request->status;
@@ -164,13 +164,13 @@ class DealerController extends Controller
              $input = User::find($id);
              $input->status =  $status;
              $input->update();
- 
+
              return response()->json([
                  'success' => 1,
                  'message' => "Dealer Status has been Changed Successfully..",
              ]);
          } catch (\Throwable $th) {
-            
+
              return response()->json([
                  'success' => 0,
                  'message' => "Internal Server Error!",
@@ -198,10 +198,10 @@ class DealerController extends Controller
     public function edit($id)
     {
         $id = decrypt($id);
-        
+
         $data = User::where('id',$id)->first();
         $documents = UserDocument::where('user_id',$id)->get();
-        
+
         return view('admin.dealers.edit_dealer',compact('data','documents'));
     }
 
@@ -214,7 +214,7 @@ class DealerController extends Controller
      */
     public function update(DealerRequest $request)
     {
-        
+
         try {
             $id = decrypt($request->id);
             $input = $request->except('_token','id','password','confirm_password','logo','document');
@@ -229,14 +229,14 @@ class DealerController extends Controller
                 $old_logo = (isset($dealer->logo)) ? $dealer->logo : '';
                 if( $request->hasFile('logo'))
                 {
-                    $file = $request->file('logo');                    
+                    $file = $request->file('logo');
                     $image_url = $this->addSingleImage('comapany_logo','companies_logos',$file, $old_image = $old_logo,"300*300");
                     $input['logo'] = $image_url;
                 }
             }
 
             if ($request->hasFile('document')) {
-                
+
                 $multiple = $request->file('document');
                 foreach ($multiple as $value)
                 {
@@ -248,14 +248,14 @@ class DealerController extends Controller
                 }
             }
 
-            if ($dealer) 
+            if ($dealer)
             {
                 $dealer->update($input);
             }
-            
+
             return redirect()->route('dealers')->with('success','Dealers Updated successfully');
         } catch (\Throwable $th) {
-            
+
             return redirect()->route('dealers')->with('error','Something with wrong');
 
         }
@@ -276,20 +276,20 @@ class DealerController extends Controller
             $findLogo = User::where('id',$id)->first();
             $findMulDocs = UserDocument::where('user_id',$id)->get();
             $img = isset($findLogo->logo) ? $findLogo->logo : '';
-   
+
             foreach($findMulDocs as $value)
             {
-                   if (!empty($value->document) && file_exists('public/images/uploads/documents/'.$value->document)) 
+                   if (!empty($value->document) && file_exists('public/images/uploads/documents/'.$value->document))
                    {
                        unlink('public/images/uploads/documents/'.$value->document);
                    }
             }
-   
+
             if (!empty($img) && file_exists('public/images/uploads/companies_logos/'.$img))
              {
                    unlink('public/images/uploads/companies_logos/'.$img);
              }
-   
+
              UserDocument::where('user_id',$id)->delete();
 
              User::where('id',$id)->delete();
@@ -299,7 +299,7 @@ class DealerController extends Controller
                'message' => "Dealer delete Successfully..",
            ]);
         } catch (\Throwable $th) {
-            
+
             //throw $th;
             return response()->json([
                 'success' => 0,
@@ -309,5 +309,5 @@ class DealerController extends Controller
 
     }
         //
-    
+
 }

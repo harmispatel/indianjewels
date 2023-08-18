@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\{Dealer,WestageDiscount , RoleHasPermissions};
+use App\Models\{Dealer,WestageDiscount , RoleHasPermissions, User};
 use Yajra\DataTables\Facades\DataTables;
 use App\Http\Requests\WestageDiscountRequest;
 use Auth;
@@ -27,7 +27,7 @@ class WestageDiscountController extends Controller
          $this->middleware('permission:westage.discount.create', ['only' => ['create','store']]);
          $this->middleware('permission:westage.discount.edit', ['only' => ['edit','update']]);
          $this->middleware('permission:westage.discount.destroy', ['only' => ['destroy']]);
-         
+
     }
 
     /**
@@ -48,7 +48,7 @@ class WestageDiscountController extends Controller
      */
     public function create()
     {
-        $dealers = Dealer::get();
+        $dealers = User::where('user_type',1)->get();
 
         return view('admin.westagediscount.create_westagediscount',compact('dealers'));
     }
@@ -91,7 +91,7 @@ class WestageDiscountController extends Controller
 
 
                 }
-                
+
                 return $action_html;
             })
             ->rawColumns(['status','actions'])
@@ -111,9 +111,9 @@ class WestageDiscountController extends Controller
         try {
             $input = $request->except('_token','dealers');
             $input['dealers'] = json_encode($request->dealers);
-    
+
              $dealer = WestageDiscount::create($input);
-    
+
              return redirect()->route('westage.discount')->with('success','Westage Discount created successfully');
             //code...
         } catch (\Throwable $th) {
@@ -121,16 +121,16 @@ class WestageDiscountController extends Controller
             return redirect()->route('westage.discount')->with('error','Something with wrong');
 
         }
-        
 
-        
+
+
     }
 
     public function status(Request $request)
     {
         $status = $request->status;
         $id = $request->id;
-        try 
+        try
         {
             $input = WestageDiscount::find($id);
             $input->status =  $status;
@@ -141,8 +141,8 @@ class WestageDiscountController extends Controller
                 'success' => 1,
                 'message' => "Westage Discount Status has been Changed Successfully..",
             ]);
-        } 
-        catch (\Throwable $th) 
+        }
+        catch (\Throwable $th)
         {
             return response()->json(
             [
@@ -162,10 +162,10 @@ class WestageDiscountController extends Controller
     {
         try {
             $id = decrypt($id);
-            
+
             $data = WestageDiscount::where('id',$id)->first();
-            $dealers = Dealer::get();
-    
+            $dealers = User::where('user_type',1)->get();
+
             return view('admin.westagediscount.edit_westagediscount',compact('data','dealers'));
             //code...
         } catch (\Throwable $th) {
@@ -173,7 +173,7 @@ class WestageDiscountController extends Controller
             return redirect()->route('westage.discount')->with('error','Something with wrong');
 
         }
-        
+
 
         //
     }
@@ -192,10 +192,10 @@ class WestageDiscountController extends Controller
             $input = $request->except('_token','id','dealers');
             $input['dealers'] = json_encode($request->dealers);
             $id = decrypt($request->id);
-            
+
              $discount = WestageDiscount::find($id);
              $discount->update($input);
-    
+
              return redirect()->route('westage.discount')->with('success','Westage Discount Updated successfully');
             //code...
         } catch (\Throwable $th) {
@@ -204,7 +204,7 @@ class WestageDiscountController extends Controller
 
         }
 
-        
+
     }
 
     /**
@@ -215,8 +215,8 @@ class WestageDiscountController extends Controller
      */
     public function destroy(WestageDiscount $westageDiscount, Request $request)
     {
-        
-        try 
+
+        try
         {
             $tags = WestageDiscount::where('id',decrypt($request->id))->delete();
             return response()->json(
@@ -224,15 +224,15 @@ class WestageDiscountController extends Controller
                 'success' => 1,
                 'message' => "Tag delete Successfully..",
             ]);
-        } 
-        catch (\Throwable $th) 
+        }
+        catch (\Throwable $th)
         {
             return response()->json(
             [
                 'success' => 0,
                 'message' => "Something with wrong",
             ]);
-        }   
+        }
         //
     }
 }
