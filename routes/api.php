@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\APIController\CustomerApiController;
+use App\Http\Controllers\APIController\{CustomerApiController,AuthApiController};
 
 /*
 |--------------------------------------------------------------------------
@@ -35,4 +35,4 @@ Route::post('filter-design',[CustomerApiController::class,'filterDesign']);
 
 Route::post('related-designs',[CustomerApiController::class,'relatedDesigns']);
 
-
+Route::post('user-login',[AuthApiController::class,'userlogin']);
