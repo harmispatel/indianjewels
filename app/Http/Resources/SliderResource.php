@@ -22,7 +22,7 @@ class SliderResource extends JsonResource
             foreach ($sliders as $slider)
             {
                 $data['id'] = $slider->id;
-                $data['image'] = asset('public/images/uploads/slider_image'.$slider->image);
+                $data['image'] = asset('public/images/uploads/slider_image/'.$slider->image);
                 $data['text'] = isset($slider->banner_text) ? $slider->banner_text : '';
                 $slider_array[] = $data;
             }
