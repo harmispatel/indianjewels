@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\{Slider, Category, User};
+use App\Models\{Slider, Category, User, Design};
 
 class DashboardController extends Controller
 {
@@ -13,7 +13,7 @@ class DashboardController extends Controller
         $data['total_categories'] = Category::count();
 
         // Total of all Sliders
-        $data['total_sliders'] = Slider::count();
+        $data['total_sliders'] = Design::count();
 
         // // Total of all dealers
         $data['total_dealers'] = User::where('user_type',1)->count();

@@ -99,7 +99,7 @@ class DesignController extends Controller
     public function create()
     {
         //
-        $categories = Category::where(' ','!=',0)->get();
+        $categories = Category::where('parent_category','!=',0)->get();
         $genders = Gender::get();
         $metals = Metal::get();
         $tags = Tag::get();
