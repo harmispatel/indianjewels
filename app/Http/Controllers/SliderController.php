@@ -87,7 +87,7 @@ class SliderController extends Controller
 
                     $action_html .= '<a onclick="deleteSliders(\''.encrypt($slider_id).'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
                 }
-                return $action_html;
+                return $action_html; 
             })
             ->rawColumns(['status','actions','image'])
             ->make(true);
