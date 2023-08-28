@@ -68,24 +68,66 @@ class CustomerApiController extends Controller
                         
                         return $this->sendApiResponse(false, 0,'Failed to Load Design!', (object)[]);
 
-                     }
-            }
+    // Function for Fetch Sub categories
+    public function getSubCategories(SubCategoryRequest $request)
+    {
+        try 
+        {
+            $id = $request->parent_category;
+            $categories = Category::where('parent_category',$id)->where('status', 1)->get();
+            $data = new CategoryResource($categories);
+            return $this->sendApiResponse(true, 0,'SubCategories Loaded SuccessFully', $data);
+        } 
+        catch (\Throwable $th) 
+        {
+            return $this->sendApiResponse(false, 0,'Failed to Load Categories!', (object)[]);
+        }
+    }  
 
-            // Function for fetch Slider
-            public function getSlider()
-            {
-                try {
+    // Function for fetch higest selling designs
+    public function getHigestSellingDesigns(Request $request) 
+    {
+        try 
+        {
+            $designs = Design::where('highest_selling',1)->where('status',1)->take(6)->get();
+            $data = new HighestDesignResource($designs);
+            return $this->sendApiResponse(true, 0,'Highest selling Designs Loaded SuccessFully', $data);
+        } 
+        catch (\Throwable $th) 
+        {  
+            return $this->sendApiResponse(false, 0,'Failed to Load Designs!', (object)[]);
+        }
+    }
 
-                    $sliders = Slider::where('status',1)->get();
-                    
-                    $data = new SliderResource($sliders);
-                    return $this->sendApiResponse(true, 0,'Slider Loaded SuccessFully', $data);
-                    
-                } catch (\Throwable $th) {
+    // Function for fetch Flash designs
+    public function getFlashDesign()
+    {
+        try 
+        {
+            $designs = Design::where('is_flash',1)->where('status',1)->take(5)->get();
+            $data = new FlashDesignResource($designs);
+            return $this->sendApiResponse(true, 0,'Flash Design Loaded SuccessFully', $data); 
+        } 
+        catch (\Throwable $th) 
+        {
+            return $this->sendApiResponse(false, 0,'Failed to Load Design!', (object)[]);
+        }
+    }
 
-                    return $this->sendApiResponse(false, 0,'Failed to Load Slider!', (object)[]);                    
-                }
-            }
+    // Function for fetch Slider
+    public function getSlider()
+    {
+        try 
+        {
+            $sliders = Slider::where('status',1)->get();
+            $data = new SliderResource($sliders);
+            return $this->sendApiResponse(true, 0,'Slider Loaded SuccessFully', $data); 
+        } 
+        catch (\Throwable $th) 
+        {
+            return $this->sendApiResponse(false, 0,'Failed to Load Slider!', (object)[]);                    
+        }
+    }
         
     // Function for fetch lstest designs
     public function getLatestDesign(Request $request) 

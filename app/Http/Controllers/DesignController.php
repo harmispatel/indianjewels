@@ -113,9 +113,9 @@ class DesignController extends Controller
     {
 
         try {
-            $input = $request->except('_token','tags','company','image','multiImage');
+            $input = $request->except('_token','tags','image','multiImage');
             $input['tags'] = json_encode($request->tags);
-            $input['company'] = json_encode($request->company);
+            // $input['company'] = json_encode($request->company);
             if ($request->hasfile('image'))
         {
             $file = $request->image;
@@ -145,7 +145,6 @@ class DesignController extends Controller
             return redirect()->route('designs')->with('message','Design added Successfully');
 
         } catch (\Throwable $th) {
-
             return redirect()->route('designs')->with('error','Something with wrong');
         }
         //
@@ -208,7 +207,7 @@ class DesignController extends Controller
 
             $input = $request->except('_token','tags','company','image','multiImage','id');
             $input['tags'] = json_encode($request->tags);
-            $input['company'] = json_encode($request->company);
+            // $input['company'] = json_encode($request->company);
 
             if (empty($request->highest_selling))
             {

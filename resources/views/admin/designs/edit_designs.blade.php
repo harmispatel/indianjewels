@@ -158,16 +158,16 @@
                                                     </div>
                                                 @endif
                                             </div>
-                                            <div class="col-md-3 mb-3">
+                                            <!-- <div class="col-md-3 mb-3">
                                                 <label for="is_flash">Is Flash Show?</label>
                                                 <div class="form-check form-switch">
                                                     <input class="form-check-input" type="checkbox" name="is_flash"
                                                         role="switch" id="is_flash" value="1"
                                                         {{ $data->is_flash == 1 ? 'checked' : '' }}>
                                                 </div>
-                                            </div>
+                                            </div> -->
                                             <div class="col-md-3 mb-3">
-                                                <label for="highest_selling">Highest Selling Item</label>
+                                                <label for="highest_selling">Top Selling Item</label>
                                                 <div class="form-check form-switch">
                                                     <input class="form-check-input" type="checkbox"
                                                         name="highest_selling" role="switch" id="highest_selling"
@@ -194,34 +194,7 @@
                                     </div>
 
                                 </div>
-                                <div class="form_box_inr">
-                                    <div class="box_title">
-                                        <h2>Company Selection Information</h2>
-                                    </div>
-                                    @php
-                                        $companyselected = isset($data->company) ? json_decode($data->company) : '';
-                                    @endphp
-                                    <div class="form_box_info">
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <label for="company" class="form-label">
-                                                    Company
-    
-                                                </label>
-                                                <select name="company[]" id="company" class="select2 form-select" multiple>
-                                                    <option value="">--Select company--</option>
-                                                    @if (count($companies) > 0)
-                                                        @foreach ($companies as $company)
-                                                            <option value="{{ $company->id }}"
-                                                                @if ($companyselected) {{ in_array($company->id, $companyselected) ? 'selected' : '' }} @endif>
-                                                                {{ $company->comapany_name }}</option>
-                                                        @endforeach
-                                                    @endif    
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                
                                 <div class="form_box_inr">
                                     <div class="box_title">
                                         <h2>Weight & Wastage Information</h2>
@@ -420,9 +393,9 @@
         $('#tags').select2({
             placeholder: "-- select tags --"
         });
-        $('#company').select2({
-            placeholder: "-- select company --"
-        });
+        // $('#company').select2({
+        //     placeholder: "-- select company --"
+        // });
 
         function Imgdelete(id) {
             $.ajax({

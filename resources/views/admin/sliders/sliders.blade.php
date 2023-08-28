@@ -1,6 +1,6 @@
 @extends('admin.layouts.admin-layout')
 
-@section('title', __('Sliders'))
+@section('title', __('Top Banner'))
 
 @section('content')
 
@@ -15,12 +15,12 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
     }
 @endphp
 
-{{-- Modal for Add New Slider & Edit Slider --}}
+{{-- Modal for Add New Top Banner & Edit Top Banner --}}
     <div class="modal fade" id="sliderModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="sliderModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="sliderModalLabel">New Slider</h5>
+                    <h5 class="modal-title" id="sliderModalLabel">New Top Banner</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -29,7 +29,7 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                         <input type="hidden" name="id" id="id" value="">
                         <div class="form_box_inr">
                             <div class="box_title">
-                                <h2>Slider</h2>
+                                <h2>Top Banner</h2>
                             </div>
                             <div class="form_box_info">
                                 <div class="row">
@@ -67,13 +67,13 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
 
 {{-- Page Title --}}
     <div class="pagetitle">
-        <h1>Sliders</h1>
+        <h1>Top Banner</h1>
         <div class="row">
             <div class="col-md-8">
                 <nav>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item active">Sliders</li>
+                        <li class="breadcrumb-item active">Top Banner</li>
                     </ol>
                 </nav>
             </div>
@@ -155,7 +155,7 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
 
         // Change Modal Title
         $('#sliderModalLabel').html('');
-        $('#sliderModalLabel').append('New Slider');
+        $('#sliderModalLabel').append('New Top Banner');
 
         // Chage Button Name
         $('#saveupdatebtn').html('');
@@ -327,7 +327,7 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
 
                     // Change Modal Title
                     $('#sliderModalLabel').html('');
-                    $('#sliderModalLabel').append('Edit Slider');
+                    $('#sliderModalLabel').append('Edit Top Banner');
 
                     // Chage Button Name
                     $('#saveupdatebtn').html('');

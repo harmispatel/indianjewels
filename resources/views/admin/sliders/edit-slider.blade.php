@@ -1,18 +1,18 @@
 @extends('admin.layouts.admin-layout')
 
-@section('title', __('Sliders'))
+@section('title', __('Top Banner'))
 
 @section('content')
 
     {{-- Page Title --}}
     <div class="pagetitle">
-        <h1>Sliders</h1>
+        <h1>Top Banner</h1>
         <div class="row">
             <div class="col-md-8">
                 <nav>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
-                        <li class="breadcrumb-item "><a href="{{ route('sliders') }}">Sliders</a></li>
+                        <li class="breadcrumb-item "><a href="{{ route('sliders') }}">Top Banner</a></li>
                     </ol>
                 </nav>
             </div>
@@ -52,7 +52,7 @@
                         <div class="form_box">
                             <div class="form_box_inr">
                                 <div class="box_title">
-                                    <h2>Sliders Details</h2>
+                                    <h2>Top Banners Details</h2>
                                 </div>
                                 <div class="form_box_info">
                                     <div class="row">
@@ -77,6 +77,28 @@
                                                     <textarea name="banner_text" id="banner_text" value="{{ $data->banner_text }}" class="form-control" placeholder="Enter Banner Text"></textarea>
                                                 </div>
                                             </div>
+                                            @php
+                                                $tagselected = isset($data->tags) ? json_decode($data->tags) : '';
+                                            @endphp
+                                            <div class="col-md-6">
+                                                <label for="tags" class="form-label">Tags</label>
+                                                <select name="tags[]" id="tags"
+                                                    class="select2 form-select {{ $errors->has('tags') ? 'is-invalid' : '' }}"
+                                                    multiple>
+                                                    @if (count($tags) > 0)
+                                                        @foreach ($tags as $tag)
+                                                            <option value="{{ $tag->id }}"
+                                                                @if ($tagselected) {{ in_array($tag->id, $tagselected) ? 'selected' : '' }} @endif>
+                                                                {{ $tag->name }}</option>
+                                                        @endforeach
+                                                    @endif
+                                                </select>
+                                                @if ($errors->has('tags'))
+                                                    <div class="invalid-feedback">
+                                                        {{ $errors->first('tags') }}
+                                                    </div>
+                                                @endif
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -91,4 +113,15 @@
             </div>
         </div>
     </section>
+@endsection
+
+
+@section('page-js')
+    <script type="text/javascript">
+        $('#tags').select2({
+            placeholder: "-- select tags --",
+            allowClear: true
+
+        });
+    </script>
 @endsection

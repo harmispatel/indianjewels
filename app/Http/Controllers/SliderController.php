@@ -36,7 +36,8 @@ class SliderController extends Controller
      */
     public function index()
     {
-        return view('admin.sliders.sliders');
+        $tags = Tag::get();
+        return view('admin.sliders.sliders', compact('tags'));
     }
 
     /**
@@ -108,7 +109,8 @@ class SliderController extends Controller
      */
     public function store(SlidersRequest $request)
     {
-        $input = $request->except('_token', 'id');
+        $input = $request->except('_token', 'id','tags');
+        $input['tags'] = json_encode($request->tags);
         $input['created_at'] = Carbon::now();
  
         // Upload new Image
@@ -124,7 +126,7 @@ class SliderController extends Controller
             return response()->json(
             [
                 'success' => 1,
-                'message' => "Slider has been created Successfully..",
+                'message' => "Top banner has been created Successfully..",
             ]);
         }
         catch (\Throwable $th) 
@@ -155,12 +157,14 @@ class SliderController extends Controller
         {
             $id = decrypt($request->id);
             $data = Slider::where('id',$id)->first();
+            $tags = Tag::get();
             
             return response()->json(
             [
                 'success' => 1,
                 'data' => $data,
-                'message' => "Slider edit Successfully..",
+                'message' => "Top banner edit Successfully..",
+                'compact' => 'tags',
             ]);
         }
         catch (\Throwable $th)
@@ -179,7 +183,8 @@ class SliderController extends Controller
     public function update(SlidersRequest $request, Slider $slider)
     {
         $slider_id = isset($request->id) ? $request->id : '';
-        $input = $request->except('_token','id');
+        $input = $request->except('_token','id','tags');
+        $input['tags'] = json_encode($request->tags);
         try
         {
             $slider = Slider::find($slider_id);
@@ -203,7 +208,7 @@ class SliderController extends Controller
             return response()->json(
             [
                 'success' => 1,
-                'message' => "Slider updated Successfully..",
+                'message' => "Top banner updated Successfully..",
             ]);
         }
         catch (\Throwable $th) 
@@ -232,7 +237,7 @@ class SliderController extends Controller
             return response()->json(
             [
                 'success' => 1,
-                'message' => "Slider Status has been Changed Successfully..",
+                'message' => "Top banner Status has been Changed Successfully..",
             ]);
         } 
         catch (\Throwable $th) 
@@ -267,7 +272,7 @@ class SliderController extends Controller
             return response()->json(
             [
                 'success' => 1,
-                'message' => "Slider delete Successfully..",
+                'message' => "Top banner delete Successfully..",
             ]);
         } 
         catch (\Throwable $th)

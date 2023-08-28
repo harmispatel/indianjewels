@@ -18,7 +18,7 @@ class SliderResource extends JsonResource
         $slider_array  = [];
 
         if (count($sliders) > 0)
-         {
+        {
             foreach ($sliders as $slider)
             {
                 $data['id'] = $slider->id;
@@ -26,7 +26,6 @@ class SliderResource extends JsonResource
                 $data['text'] = isset($slider->banner_text) ? $slider->banner_text : '';
                 $slider_array[] = $data;
             }
-         
         }
         return $slider_array;
     }
