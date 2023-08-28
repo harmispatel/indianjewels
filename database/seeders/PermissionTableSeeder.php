@@ -54,7 +54,7 @@ class PermissionTableSeeder extends Seeder
             'reports.dealer.performace',
             'order',
             'marketing',
-            'import_export',
+            'import.export',
          ];
 
          foreach ($permissions as $permission) {

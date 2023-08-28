@@ -117,9 +117,9 @@ class DesignController extends Controller
     {
         
         try {
-            $input = $request->except('_token','tags','company','image','multiImage');
+            $input = $request->except('_token','tags','image','multiImage');
             $input['tags'] = json_encode($request->tags);
-            $input['company'] = json_encode($request->company);
+            // $input['company'] = json_encode($request->company);
             if ($request->hasfile('image'))
         {
             $file = $request->image;
@@ -149,7 +149,7 @@ class DesignController extends Controller
             return redirect()->route('designs')->with('message','Design added Successfully');
 
         } catch (\Throwable $th) {
-            
+            dd($th);
             return redirect()->route('designs')->with('error','Something with wrong');
         }
         //
@@ -192,8 +192,8 @@ class DesignController extends Controller
         $genders = Gender::get();
         $metals = Metal::get();
         $tags = Tag::get();
-        $companies = Dealer::get();
-        return view('admin.designs.edit_designs',compact('categories','genders','metals','tags','data','companies'));
+        // $companies = Dealer::get();
+        return view('admin.designs.edit_designs',compact('categories','genders','metals','tags','data'));
         
         
     }
@@ -210,18 +210,18 @@ class DesignController extends Controller
         try {
             
             
-            $input = $request->except('_token','tags','company','image','multiImage','id');
+            $input = $request->except('_token','tags','image','multiImage','id');
             $input['tags'] = json_encode($request->tags);
-            $input['company'] = json_encode($request->company);
+            // $input['company'] = json_encode($request->company);
 
             if (empty($request->highest_selling))
             {
                 $input['highest_selling'] = 0;
             }
-            if (empty($request->is_flash))
-            {
-                $input['is_flash'] = 0;
-            }
+            // if (empty($request->is_flash))
+            // {
+            //     $input['is_flash'] = 0;
+            // }
             
             $id = decrypt($request->id);    
 

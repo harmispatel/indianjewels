@@ -15,9 +15,6 @@ use App\Http\Controllers\APIController\CustomerApiController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
 
 Route::get('parent-category', [CustomerApiController::class, 'getParentCategories']);
 Route::post('sub-category',[CustomerApiController::class,'getSubCategories']);

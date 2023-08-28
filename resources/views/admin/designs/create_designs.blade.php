@@ -162,7 +162,7 @@
                                                     @endif
                                                 </div>
                                             </div>
-                                            <div class="col-md-3 mb-3">
+                                            <!-- <div class="col-md-3 mb-3">
                                                 <div class="form-group">
                                                     <label for="is_flash">Is Flash Show?</label>
                                                     <div class="form-check form-switch">
@@ -170,10 +170,10 @@
                                                             role="switch" id="is_flash" value="1">
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div> -->
                                             <div class="col-md-3 mb-3">
                                                 <div class="form-group">
-                                                    <label for="highest_selling">Highest Selling Item</label>
+                                                    <label for="highest_selling">Top Selling Item</label>
                                                     <div class="form-check form-switch">
                                                         <input class="form-check-input" type="checkbox"
                                                             name="highest_selling" role="switch" id="highest_selling"
@@ -200,7 +200,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form_box_inr">
+                                <!-- <div class="form_box_inr">
                                     <div class="box_title">
                                         <h2>Company Selection Information</h2>
                                     </div>
@@ -225,7 +225,7 @@
                                             </div>
                                         </div>
                                      </div>
-                                </div>
+                                </div> -->
                                 <div class="form_box_inr">
                                     <div class="box_title">
                                         <h2>Weight & Wastage Information</h2>
@@ -381,9 +381,9 @@
             allowClear: true
 
         });
-        $('#company').select2({
-            placeholder: "-- select company --",
-            allowClear: true
-        });
+        // $('#company').select2({
+        //     placeholder: "-- select company --",
+        //     allowClear: true
+        // });
     </script>
 @endsection
