@@ -43,13 +43,20 @@ class CategoryController extends Controller
     // Store a newly created resource in storage.
     public function store(CategoriesRequest $request)
     {
-        $input = $request->except('_token','image','parent_category');
+        
+        $input = $request->except('_token','image','parent_category','parent_cat');
 
         try
         {
 
             // Parent Category
-            $input['parent_category'] = (isset($request->parent_category) && !empty($request->parent_category)) ? $request->parent_category : 0;
+            if ($request->parent_cat) {
+                $input['parent_category'] = 0;
+            }else{
+                $input['parent_category'] = $request->parent_category;
+            }
+
+            // $input['parent_category'] = (isset($request->parent_category) && !empty($request->parent_category)) ? $request->parent_category : 0;
 
             // Upload Category Image when Exists
             if ($request->hasFile('image'))
@@ -68,6 +75,7 @@ class CategoryController extends Controller
         }
         catch (\Throwable $th)
         {
+            
             // return redirect()->route('categories')->with('error','Internal Server Error!');
             return $this->sendResponse(false, "500, Internal Server Error!");
 
@@ -110,18 +118,27 @@ try {
     // Update the specified resource in storage.
     public function update(CategoriesRequest $request)
     {
-        // dd($request->all());
+        
 
-        // $category_id = isset($request->category_id) ? decrypt($request->category_id) : '';
         $category_id = isset($request->id) ? $request->id : '';
-        $input = $request->except('_token','category_id','image','parent_category');
-
+        $input = $request->except('_token','category_id','image','parent_category','parent_cat');
+        
         try
         {
             $category = Category::find($category_id);
+            
+            
+            // Parent Category
+            if ($request->parent_cat == null || $request->parent_cat ) {
+                
+                $input['parent_category'] = 0;
+            }else{
+                
+                $input['parent_category'] = $request->parent_category;
+            }
 
             // Parent Category
-            $input['parent_category'] = (isset($request->parent_category) && !empty($request->parent_category)) ? $request->parent_category : 0;
+            // $input['parent_category'] = (isset($request->parent_category) && !empty($request->parent_category)) ? $request->parent_category : 0;
 
             // Save Image if exists
             if ($request->has('image'))
@@ -144,15 +161,13 @@ try {
                 $category->update($input);
             }
 
-            // return redirect()->route('categories')->with('success','Category has been Updated SuccessFully..');
+            
             return $this->sendResponse(true, "Category has been Upadated SuccessFully....");
 
         }
         catch (\Throwable $th)
         {
-            return $this->sendResponse(false, "500, Internal Server Error!");
-
-            // return redirect()->route('categories')->with('error','Internal Server Error!');
+            return $this->sendResponse(false, "500, Internal Server Error!"); 
         }
     }
 

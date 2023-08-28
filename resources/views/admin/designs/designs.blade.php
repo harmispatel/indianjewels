@@ -30,9 +30,9 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                 @if((in_array($design_add->id, $permission_ids))) 
                 <a href="{{ route('designs.create') }}" class="btn btn-sm new-category custom-btn">
                     <i class="bi bi-plus-lg"></i>
-                    @else
+                    {{-- @else
                     <a href="{{ route('designs.create') }}" class="btn btn-sm new-category custom-btn disabled">
-                        <i class="bi bi-plus-lg"></i>
+                        <i class="bi bi-plus-lg"></i> --}}
                     @endif
                 </a>
             </div>

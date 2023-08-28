@@ -94,16 +94,10 @@ class DealerController extends Controller
                 $action_html = '';
                 if(in_array($dealer_edit->id,$val)){
                 $action_html .= '<a href="'.route('dealers.edit',encrypt($dealer_id)).'" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>';
-                }else{
-                $action_html .= '<a href="'.route('dealers.edit',encrypt($dealer_id)).'" class="btn btn-sm custom-btn me-1 disabled"><i class="bi bi-pencil"></i></a>';
-
                 }
                 if(in_array($dealer_delete->id,$val)){
 
                     $action_html .= '<a onclick="deleteDealer(\''.encrypt($dealer_id).'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
-                }else{
-                    $action_html .= '<a onclick="deleteDealer(\''.encrypt($dealer_id).'\')" class="btn btn-sm btn-danger me-1 disabled"><i class="bi bi-trash"></i></a>';
-
                 }
                 return $action_html;
             })

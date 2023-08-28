@@ -101,18 +101,11 @@ class AdminController extends Controller
                 if(in_array($user_edit->id,$val)){
 
                     $action_html .= '<a href="'.route('users.edit',encrypt($user_id)).'" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>';
-                }else{
-                    $action_html .= '<a href="'.route('users.edit',encrypt($user_id)).'" class="btn btn-sm custom-btn me-1 disabled"><i class="bi bi-pencil"></i></a>';
-
                 }
                 if(in_array($user_delete->id,$val)){
                     if($user_id != 1){
                         $action_html .= '<a onclick="deleteUsers(\''.encrypt($user_id).'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
                     }
-                }else{
-                    $action_html .= '<a onclick="deleteUsers(\''.encrypt($user_id).'\')" class="btn btn-sm btn-danger me-1 disabled"><i class="bi bi-trash"></i></a>';
-                    
-
                 }
 
                 return $action_html;
