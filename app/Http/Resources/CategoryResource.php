@@ -23,11 +23,27 @@ class CategoryResource extends JsonResource
         {
             foreach ($categories as $category)
             {
+                $child_categories = $category->subcategories;
+
                 $data['id'] = $category->id;
                 $data['name'] = $category->name;
                 $data['parent_category'] = $category->parent_category;
                 $data['status'] = $category->status;
                 $data['image'] = (isset($category->image) && !empty($category->image)) ? asset('public/images/uploads/category_images/'.$category->image) : asset('public/images/uploads/category_images/no_image.jpg');
+
+                if(count($child_categories) > 0)
+                {
+                    $child_cat = [];
+                    foreach($child_categories as $child_category)
+                    {
+                        $datas = [];
+                        $datas['id'] = $child_category->id;
+                        $datas['name'] = $child_category->name;
+                        $child_cat[] = $datas;
+                    }
+                    $data['child_categories'] = $child_cat;
+                }
+
                 $categories_array[] = $data;
             }
         }

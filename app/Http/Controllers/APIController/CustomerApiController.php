@@ -15,7 +15,7 @@ class CustomerApiController extends Controller
             {
                 try
                 {
-                    $categories = Category::where('parent_category', 0)->where('status', 1)->get();
+                    $categories = Category::with(['subcategories'])->where('parent_category', 0)->where('status', 1)->get();
                     $data = new CategoryResource($categories);
                     return $this->sendApiResponse(true, 0,'Parent Categories Loaded SuccessFully', $data);
                 }
