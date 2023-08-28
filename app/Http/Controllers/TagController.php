@@ -63,16 +63,10 @@ class TagController extends Controller
                 if(in_array($tag_edit->id,$val)){
 
                     $action_html .= '<a onclick="editTag(\''.$tag_id.'\')" class="btn btn-sm custom-btn me-1" id="editTags"><i class="bi bi-pencil"></i></a>';
-                }else{
-                    $action_html .= '<a onclick="editTag(\''.$tag_id.'\')" class="btn btn-sm custom-btn me-1 disabled" id="editTags"><i class="bi bi-pencil"></i></a>';
-
                 }
                 if(in_array($tag_delete->id,$val)){
 
                     $action_html .= '<a onclick="deleteTag(\''.$tag_id.'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
-                }else{
-                    $action_html .= '<a onclick="deleteTag(\''.$tag_id.'\')" class="btn btn-sm btn-danger me-1 disabled"><i class="bi bi-trash"></i></a>';
-
                 }
                 return $action_html;
             })

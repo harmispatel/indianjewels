@@ -45,20 +45,25 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                                             @endif
                                         </div>
                                     </div>
-                                    <div class="col-md-6 mb-3">
+                                    <div class="col-md-3 mb-3" id="parent_category_div">
                                         <div class="form-group">
-                                            <label for = "parent_category" class="form-label">Perent Category</label>
+                                            <label for="is_flash">Parent Category</label>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" name="parent_cat"
+                                                    role="switch" id="parent_cat" value="1" />
+                                                    {{-- <input id="parent_cat" type="checkbox" name="parent_cat" value="1" /> --}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3 sub_category"  style="display:block">
+                                        <div class="form-group">
+                                            <label for = "parent_category" class="form-label">Sub Category</label>
                                             <select name="parent_category" id="parent_category" class="form-select">
-                                                <option value="">Select Perent Category</option>
                                                 @if(count($categories) > 0)
                                                     @foreach($categories as $category)
-                                                        @php
-                                                            $quote = "";
-                                                        @endphp
                                                         <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                                        @if(count($category->subcategories) > 0)
-                                                            @include('admin.categories.child_categories',['subcategories' => $category->subcategories])
-                                                        @endif
                                                     @endforeach
                                                 @endif
                                             </select>
@@ -119,9 +124,9 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                     <i class="bi bi-plus-lg"></i>
                 </a>
                 @else
-                <a data-bs-toggle="modal" data-bs-target="#categoryModal" class="btn btn-sm new-category custom-btn disabled" >
+                {{-- <a data-bs-toggle="modal" data-bs-target="#categoryModal" class="btn btn-sm new-category custom-btn disabled" >
                     <i class="bi bi-plus-lg"></i>
-                </a>
+                </a> --}}
                  @endif
             </div>
         </div>
@@ -171,12 +176,12 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                                                 @if((in_array($cat_edit->id, $permission_ids))) 
                                                     <a onclick="editCategory('{{ encrypt($category->id) }}')" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>
                                                     @else
-                                                    <a onclick="editCategory('{{ encrypt($category->id) }}')" class="btn btn-sm custom-btn me-1 disabled"><i class="bi bi-pencil"></i></a>
+                                                    {{-- <a onclick="editCategory('{{ encrypt($category->id) }}')" class="btn btn-sm custom-btn me-1 disabled"><i class="bi bi-pencil"></i></a> --}}
                                                     @endif
                                                     @if((in_array($cat_delete->id, $permission_ids)))
                                                     <a onclick="deleteCategory('{{ encrypt($category->id) }}')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>
                                                     @else
-                                                    <a onclick="deleteCategory('{{ encrypt($category->id) }}')" class="btn btn-sm btn-danger me-1 disabled"><i class="bi bi-trash"></i></a>
+                                                    {{-- <a onclick="deleteCategory('{{ encrypt($category->id) }}')" class="btn btn-sm btn-danger me-1 disabled"><i class="bi bi-trash"></i></a> --}}
                                                     
                                                     @endif
                                                 </td>
@@ -206,7 +211,10 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
             $('#categoriesTable').DataTable({
                 "ordering": false,
             });
-
+            
+            
+  
+            
             // Toastr Options
             toastr.options =
             {
@@ -222,7 +230,13 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
             toastr.error('{{ Session::get('error') }}')
             @endif
         });
-
+     
+        $(function() {
+                $("#parent_cat").on("click",function() {
+                    
+                    $(".sub_category").toggle(this.unchecked);
+                });
+            });
          // Reset Coupon Modal
          $('.new-category').on('click', function()
         {
@@ -232,7 +246,8 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
             
 
             // Empty Coupon ID
-            $('#id').val('');
+             var checkbox = $('#id').val();
+             
 
             // Remove Validation Class
             $('#name').removeClass('is-invalid');
@@ -253,6 +268,7 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
             // Chage Button Name
             $('#saveupdatebtn').html('');
             $('#saveupdatebtn').append('Save');
+
 
             // Remove old Selected Options Value
             $('#parent_category option:selected').removeAttr('selected');
@@ -371,6 +387,7 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                     {
                         // Category Data's
                         const category = response.data;
+                        console.log(category.parent_category);
                         var default_image = "no_image.jpg";
                         var category_image = (category.image) ? category.image : default_image;
 
@@ -378,7 +395,15 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                         // Add values in CouponForm
                         $('#name').val(category.name);
                         $('#id').val(category.id);
-                        $("#parent_category option[value='" + category.parent_category + "']").attr("selected", "selected");
+                        if (category.parent_category == 0) {
+                            $('#parent_category_div').hide();
+                            $('.sub_category').hide();
+                        }else{
+                            $('#parent_cat').prop('checked',false);
+                            $('.sub_category').show();
+                            $("#parent_category option[value='" + category.parent_category + "']").attr("selected", "selected");
+
+                        }
                         
                         // Show Image in CategoryForm
                         $('#catImage').html('');

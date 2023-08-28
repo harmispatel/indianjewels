@@ -76,13 +76,9 @@ class DesignController extends Controller
                 if(in_array($design_edit->id,$val)){
 
                 $action_html .= '<a href="'.route('designs.edit',$tag_id).'" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>';
-                }else{
-                $action_html .= '<a href="'.route('designs.edit',$tag_id).'" class="btn btn-sm custom-btn me-1 disabled"><i class="bi bi-pencil"></i></a>';
                 }
-                if(in_array($design_edit->id,$val)){
+                if(in_array($design_delete->id,$val)){
                 $action_html .= '<a onclick="deleteDesign(\''.$tag_id.'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
-                }else{
-                $action_html .= '<a onclick="deleteDesign(\''.$tag_id.'\')" class="btn btn-sm btn-danger me-1 disabled"><i class="bi bi-trash"></i></a>';
                 }
                 return $action_html;
             })

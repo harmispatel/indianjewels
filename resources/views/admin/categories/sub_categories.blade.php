@@ -38,15 +38,15 @@
                 <a onclick="editCategory('{{ encrypt($subcategory->id) }}')" class="btn btn-sm custom-btn me-1"><i
                         class="bi bi-pencil"></i></a>
             @else
-                <a onclick="editCategory('{{ encrypt($subcategory->id) }}')"
-                    class="btn btn-sm custom-btn me-1 disabled"><i class="bi bi-pencil"></i></a>
+                {{-- <a onclick="editCategory('{{ encrypt($subcategory->id) }}')"
+                    class="btn btn-sm custom-btn me-1 disabled"><i class="bi bi-pencil"></i></a> --}}
             @endif
             @if (in_array($cat_delete->id, $permission_ids))
                 <a onclick="deleteCategory('{{ encrypt($subcategory->id) }}')" class="btn btn-sm btn-danger me-1"><i
                         class="bi bi-trash"></i></a>
             @else
-                <a onclick="deleteCategory('{{ encrypt($subcategory->id) }}')"
-                    class="btn btn-sm btn-danger me-1 disabled"><i class="bi bi-trash"></i></a>
+                {{-- <a onclick="deleteCategory('{{ encrypt($subcategory->id) }}')"
+                    class="btn btn-sm btn-danger me-1 disabled"><i class="bi bi-trash"></i></a> --}}
             @endif
         </td>
     </tr>

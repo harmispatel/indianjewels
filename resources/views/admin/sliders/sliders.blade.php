@@ -82,8 +82,8 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                 <a data-bs-toggle="modal" data-bs-target="#sliderModal" class="btn btn-sm new-slider custom-btn">
                     <i class="bi bi-plus-lg"></i>
                     @else
-                    <a data-bs-toggle="modal" data-bs-target="#sliderModal" class="btn btn-sm new-slider custom-btn disabled">
-                        <i class="bi bi-plus-lg"></i>
+                    {{-- <a data-bs-toggle="modal" data-bs-target="#sliderModal" class="btn btn-sm new-slider custom-btn disabled">
+                        <i class="bi bi-plus-lg"></i> --}}
                     @endif
                 </a>
             </div>
