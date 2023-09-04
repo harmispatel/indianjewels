@@ -23,11 +23,17 @@ class SlidersRequest extends FormRequest
      */
     public function rules()
     {
+        
         if($this->id)
         {
             $rules =  
             [
                 'image' => 'mimes:jpeg,png,jpg,gif,svg',
+                'days' => 'required|unique:sliders,days,'.$this->id,
+                'tags' => 'required|array',
+
+                
+                
             ];
         }
         else
@@ -35,6 +41,8 @@ class SlidersRequest extends FormRequest
             $rules =
             [
                 'image' => 'required|mimes:jpeg,png,jpg,gif,svg',
+                'days' => 'required|unique:sliders,days',
+                'tags' => 'required|array',
             ];
         }
         return $rules;

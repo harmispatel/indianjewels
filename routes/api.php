@@ -29,6 +29,7 @@ Route::get('alldesigns',[CustomerApiController::class,'getalldesigns']);
 
 Route::get('metal',[CustomerApiController::class,'getMetal']);
 Route::get('gender',[CustomerApiController::class,'getGender']);
+Route::get('tags',[CustomerApiController::class,'getTags']);
 Route::get('child-category',[CustomerApiController::class,'getChildCategories']);
 Route::post('filter-design',[CustomerApiController::class,'filterDesign']);
 Route::post('related-designs',[CustomerApiController::class,'relatedDesigns']);

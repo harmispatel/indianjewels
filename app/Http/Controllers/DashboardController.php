@@ -13,7 +13,7 @@ class DashboardController extends Controller
         $data['total_categories'] = Category::count();
 
         // Total of all Sliders
-        $data['total_sliders'] = Design::count();
+        $data['total_designs'] = Design::count();
 
         // // Total of all dealers
         $data['total_dealers'] = User::where('user_type',1)->count();

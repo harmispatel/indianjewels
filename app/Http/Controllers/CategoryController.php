@@ -43,7 +43,7 @@ class CategoryController extends Controller
     // Store a newly created resource in storage.
     public function store(CategoriesRequest $request)
     {
-        
+
         $input = $request->except('_token','image','parent_category','parent_cat');
 
         try
@@ -75,7 +75,7 @@ class CategoryController extends Controller
         }
         catch (\Throwable $th)
         {
-            
+
             // return redirect()->route('categories')->with('error','Internal Server Error!');
             return $this->sendResponse(false, "500, Internal Server Error!");
 
@@ -95,7 +95,7 @@ class CategoryController extends Controller
     // Show the form for editing the specified resource.
     public function edit(Request $request)
     {
-        
+
         $category_id =  decrypt($request->id);
 try {
     //code...
@@ -118,22 +118,22 @@ try {
     // Update the specified resource in storage.
     public function update(CategoriesRequest $request)
     {
-        
+
 
         $category_id = isset($request->id) ? $request->id : '';
         $input = $request->except('_token','category_id','image','parent_category','parent_cat');
-        
+
         try
         {
             $category = Category::find($category_id);
-            
-            
+
+
             // Parent Category
             if ($request->parent_cat == null || $request->parent_cat ) {
-                
+
                 $input['parent_category'] = 0;
             }else{
-                
+
                 $input['parent_category'] = $request->parent_category;
             }
 
@@ -161,13 +161,13 @@ try {
                 $category->update($input);
             }
 
-            
+
             return $this->sendResponse(true, "Category has been Upadated SuccessFully....");
 
         }
         catch (\Throwable $th)
         {
-            return $this->sendResponse(false, "500, Internal Server Error!"); 
+            return $this->sendResponse(false, "500, Internal Server Error!");
         }
     }
 

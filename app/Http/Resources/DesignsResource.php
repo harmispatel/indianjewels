@@ -18,6 +18,8 @@ class DesignsResource extends JsonResource
         $designs = (isset($this->resource)) ? $this->resource : [];
 
         $designs_array = [];
+        
+        
 
         foreach($designs as $design)
         {

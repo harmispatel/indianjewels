@@ -10,6 +10,10 @@ $slider_add = Spatie\Permission\Models\Permission::where('name','sliders.add-sli
 $slider_edit = Spatie\Permission\Models\Permission::where('name','sliders.edit-slider')->first();
 $slider_delete = Spatie\Permission\Models\Permission::where('name','sliders.destroy')->first();
 $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('permission_id');  
+
+$Days = ['0'=>'Sunday','1'=>'Monday','2'=>'Tuesday','3'=>'Wendesday','4'=>'Thursday','5'=>'Friday','6'=>'Saturday'];
+
+
     foreach ($permissions as $permission) {
         $permission_ids[] = $permission;
     }
@@ -53,6 +57,35 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                                         </div>
                                     </div>
                                 </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-group">
+                                            <label for="days" class="form-label">Days<span class="text-danger">*</span></label>
+                                            <select name="days" id="days" class="form-control">
+                                                <option value="">-- Select Days --</option>
+                                                @foreach ($Days as $key => $day)
+                                                    <option value="{{$day}}">{{$day}}</option>    
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-group">
+                                            <label for="tags" class="form-label">Tags<span
+                                                class="text-danger">*</span></label>
+                                                <select name="tags[]" id="tags" class="form-control" multiple>
+                                                    @if(count($tags) > 0)
+                                                        @foreach ($tags as $tag)
+                                                            <option value="{{$tag->id}}">{{$tag->name}}</option>
+                                                        @endforeach
+                                                    @endif
+                                                </select>
+
+                                        </div>
+
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -78,14 +111,15 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                 </nav>
             </div>
             <div class="col-md-4" style="text-align: right;">
+                
                 @if((in_array($slider_add->id, $permission_ids))) 
-                <a data-bs-toggle="modal" data-bs-target="#sliderModal" class="btn btn-sm new-slider custom-btn">
-                    <i class="bi bi-plus-lg"></i>
-                    @else
-                    {{-- <a data-bs-toggle="modal" data-bs-target="#sliderModal" class="btn btn-sm new-slider custom-btn disabled">
-                        <i class="bi bi-plus-lg"></i> --}}
+                
+                    @if($slider < 7)
+                    <a data-bs-toggle="modal" data-bs-target="#sliderModal" class="btn btn-sm new-slider custom-btn">
+                        <i class="bi bi-plus-lg"></i>
+                    </a>
+                        @endif
                     @endif
-                </a>
             </div>
         </div>
     </div>
@@ -146,12 +180,19 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
 
         // Remove Validation Class
         $('#image').removeClass('is-invalid');
+        $('#days').removeClass('is-invalid');
+        $('#tags').removeClass('is-invalid');
 
         $('#sliderimage').html('')
         $('#sliderimage').hide();
 
         // Clear all Toastr Messages
         toastr.clear();
+
+        $('#tags').select2({
+            dropdownParent:$("#sliderModal"),
+            placeholder: "Select Tags",
+        });
 
         // Change Modal Title
         $('#sliderModalLabel').html('');
@@ -239,6 +280,8 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
 
         // Remove Validation Class
         $('#image').removeClass('is-invalid');
+        $('#tags').removeClass('is-invalid');
+        $('#days').removeClass('is-invalid');
 
         // Clear all Toastr Messages
         toastr.clear();
@@ -259,6 +302,9 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                     $('#sliderModal').modal('hide');
                     toastr.success(response.message);
                     loadSliders();
+                    setTimeout(() => {
+                                location.reload();
+                            }, 1500);
                 }
                 else
                 {
@@ -271,6 +317,7 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
             {
                 // All Validation Errors
                 const validationErrors = (response?.responseJSON?.errors) ? response.responseJSON.errors : '';
+                
                 if (validationErrors != '')
                 {
                     // image Error
@@ -279,7 +326,21 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                     {
                         $('#image').addClass('is-invalid');
                         toastr.error(ImageError);
+                        
                     }
+                    var DayError = (validationErrors.days) ? validationErrors.days : '';
+                    if (DayError != ''){
+                        $('#days').addClass('is-invalid');
+                        toastr.error(DayError);
+                    }
+
+                    var TagError = (validationErrors.tags) ? validationErrors.tags : '';
+                    if (TagError != ''){
+                        $('#tags').addClass('is-invalid');
+                        toastr.error(TagError);
+                    }
+
+                    
                 }
             }
         });
@@ -294,6 +355,12 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
 
         // Remove Validation Class
         $('#image').removeClass('is-invalid');
+        $('#days').removeClass('is-invalid');
+        $('#tags').removeClass('is-invalid');
+
+        $("#tags").select2({
+                dropdownParent: $("#sliderModal")
+            });
 
         // Clear all Toastr Messages
         toastr.clear();
@@ -316,14 +383,32 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                     const sliders = response.data;
                     const default_image = "public/images/uploads/slider_image/no_image.jpg";
                     const Simage = (sliders.image) ? sliders.image : default_image;
+                    const Slider_tags = sliders.slider_tags;
 
                     // Add values in SliderForm
                     $('#banner_text').val(sliders.banner_text);
                     $('#id').val(sliders.id);
 
+                    $('#days option:selected').removeAttr('selected');
+                    $('#tags option:selected').removeAttr('selected');
+
+
+                    $("#days option[value='"+sliders.days+"']").attr("selected", "selected");
+
+
+                    Slider_tags.forEach(tag =>
+                        {
+                            var tag_id = tag;
+                            $("#tags").find("option[value=" + tag_id + "]").prop("selected","selected");
+                        });
+
                     $('#sliderimage').html('')
                     $('#sliderimage').append('<img src="{{ asset('public/images/uploads/slider_image') }}/'+Simage+'" width="70" height="70">');
                     $('#sliderimage').show();
+
+                    $("#tags").select2({
+                            dropdownParent: $("#sliderModal")
+                        });
 
                     // Change Modal Title
                     $('#sliderModalLabel').html('');
@@ -378,6 +463,9 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                         {
                             toastr.success(response.message);
                             $('#slidersTable').DataTable().ajax.reload();
+                            setTimeout(() => {
+                                location.reload();
+                            }, 1500);
                         } 
                         else 
                         {
@@ -419,6 +507,8 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
             }
         })
     }
+
+   
 
 </script>
 

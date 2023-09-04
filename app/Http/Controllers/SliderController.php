@@ -37,7 +37,8 @@ class SliderController extends Controller
     public function index()
     {
         $tags = Tag::get();
-        return view('admin.sliders.sliders', compact('tags'));
+        $slider = Slider::count();
+        return view('admin.sliders.sliders',compact('tags','slider'));
     }
 
     /**
@@ -100,7 +101,6 @@ class SliderController extends Controller
      */
     public function create()
     {
-        // $sliders = Slider::all();
         return view('admin.sliders.add-slider');
     }
 
@@ -109,6 +109,7 @@ class SliderController extends Controller
      */
     public function store(SlidersRequest $request)
     {
+        
         $input = $request->except('_token', 'id','tags');
         $input['tags'] = json_encode($request->tags);
         $input['created_at'] = Carbon::now();
@@ -131,7 +132,7 @@ class SliderController extends Controller
         }
         catch (\Throwable $th) 
         {
-            dd($th);
+            
             return response()->json(
             [
                 'success' => 0,
@@ -157,6 +158,8 @@ class SliderController extends Controller
         {
             $id = decrypt($request->id);
             $data = Slider::where('id',$id)->first();
+            $data['slider_tags'] = json_decode($data->tags);
+            
             $tags = Tag::get();
             
             return response()->json(

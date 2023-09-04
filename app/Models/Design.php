@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Design extends Model
 {
+    
     use HasFactory;
     protected $guarded = [];
 
@@ -34,4 +35,7 @@ class Design extends Model
     {
         return $this->hasMany(User::class, 'id', 'company');
     }
+
+    
+
 }

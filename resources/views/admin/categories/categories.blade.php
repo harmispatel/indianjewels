@@ -51,7 +51,6 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                                             <div class="form-check form-switch">
                                                 <input class="form-check-input" type="checkbox" name="parent_cat"
                                                     role="switch" id="parent_cat" value="1" />
-                                                    {{-- <input id="parent_cat" type="checkbox" name="parent_cat" value="1" /> --}}
                                             </div>
                                         </div>
                                     </div>
