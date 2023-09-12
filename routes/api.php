@@ -34,3 +34,10 @@ Route::get('child-category',[CustomerApiController::class,'getChildCategories'])
 Route::post('filter-design',[CustomerApiController::class,'filterDesign']);
 Route::post('related-designs',[CustomerApiController::class,'relatedDesigns']);
 Route::post('user-login',[AuthApiController::class,'userlogin']);
+
+Route::post('profile',[CustomerApiController::class,'profile'])->middleware('auth:api');
+Route::post('update-profile',[CustomerApiController::class,'updateProfile'])->middleware('auth:api');
+
+Route::post('add-remove-collection-design',[CustomerApiController::class,'dealerCollectionDesign']);
+Route::post('list-collection-design',[CustomerApiController::class,'listCollectionDesign']);
+Route::post('alldesigns-collection',[CustomerApiController::class,'getallfesignscollection']);

@@ -249,7 +249,7 @@ class DealerController extends Controller
 
             return redirect()->route('dealers')->with('success','Dealers Updated successfully');
         } catch (\Throwable $th) {
-
+            
             return redirect()->route('dealers')->with('error','Something with wrong');
 
         }

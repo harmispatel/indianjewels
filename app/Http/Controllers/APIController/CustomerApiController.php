@@ -3,15 +3,22 @@
 namespace App\Http\Controllers\APIController;
 
 use App\Http\Controllers\Controller;
-use App\Models\{Category,Design,Slider,Metal,Gender,Tag};
+use App\Models\{Category,Design,Slider,Metal,Gender,Tag,User,UserDocument, DealerCollection};
 use Illuminate\Http\Request;
-use App\Http\Resources\{CategoryResource,FlashDesignResource, HighestDesignResource, SliderResource, DetailDesignResource, DesignsResource, MetalResource, GenderResource};
-use App\Http\Requests\APIRequest\{DesignDetailRequest, DesignsRequest, SubCategoryRequest};
+use App\Http\Resources\{CategoryResource,FlashDesignResource, HighestDesignResource, SliderResource, DetailDesignResource, DesignsResource, MetalResource, GenderResource, CustomerResource, DesignCollectionListResource};
+use App\Http\Requests\APIRequest\{DesignDetailRequest, DesignsRequest, SubCategoryRequest, ProfileRequest};
 use Illuminate\Http\Response;
+use Hash;
 use Carbon\Carbon;
+use App\Traits\ImageTrait;
+
+
+
 
 class CustomerApiController extends Controller
 {
+    use ImageTrait;
+
     // Function for Fetch Parent categories
     public function getParentCategories()
     {
@@ -223,7 +230,6 @@ class CustomerApiController extends Controller
                     {
                         foreach ($main_categories as $main_category) 
                         {
-                            
                             $category_ids[] = strval($main_category['id']);
                         }
                     }
@@ -349,6 +355,145 @@ class CustomerApiController extends Controller
              return $this->sendApiResponse(false, 0,'Failed to Load Designs!', (object)[]);   
  
          }
+    }
+
+    public function profile(Request $request)
+    {
+        try {
+            
+            $email = $request->email;
+            $user = User::where('email',$email)->with('document')->first();
+            $data = new CustomerResource($user);
+               return $this->sendApiResponse(true, 0,'Profile Loaded SuccessFully', $data);
+            } catch (\Throwable $th) {
+                
+            return $this->sendApiResponse(false, 0,'Failed to Load Profile!', (object)[]);   
+        }
+    }
+
+    public function updateProfile(Request $request)
+    {
+        
+        
+        try {
+            $id = $request->id;
+            $input = $request->except('id','password','document');
+            if ($request->password || $request->password != null) {
+                $input['password'] = Hash::make($request->password);
+            }
+            $dealer = User::find($id);
+
+            if ($request->has('logo'))
+            {
+                $old_logo = (isset($dealer->logo)) ? $dealer->logo : '';
+                if( $request->hasFile('logo'))
+                {
+                    $file = $request->file('logo');
+                    $image_url = $this->addSingleImage('comapany_logo','companies_logos',$file, $old_image = $old_logo,"300*300");
+                    $input['logo'] = $image_url;
+                }
+            }
+
+            if ($request->hasFile('document')) {
+
+                $multiple = $request->file('document');
+                foreach ($multiple as $value)
+                {
+                    $doc = new UserDocument;
+                    $doc->user_id = $id;
+                    $multiDoc = $this->addSingleImage('document','documents',$value,$old_image = '','default');
+                    $doc->document = $multiDoc;
+                    $doc->save();
+                }
+            } 
+            if ($dealer)
+            {
+                $dealer->update($input);
+            }
+            $data = new CustomerResource($dealer);
+            return $this->sendApiResponse(true, 0,'Profile update Loaded SuccessFully', $data);            
+        } catch (\Throwable $th) {
+            return $this->sendApiResponse(false, 0,'Failed to Profile Update Profile!', (object)[]);   
+        }
+    }
+
+    public function dealerCollectionDesign(Request $request)
+    {
+        try {
+            $email = $request->email;
+            $designId = $request->design_id;
+
+            $user = User::where('email',$email)->first();
+            $userId = $user->id;
+            
+
+            $collection = DealerCollection::where('user_id',$userId)->where('design_id',$designId)->first();
+            
+            if (empty($collection)) {
+                
+                $insert = new DealerCollection;
+                $insert->user_id = $userId;
+                $insert->design_id = $designId;
+                $insert->save();
+                return response()->json(
+                    [
+                        'success' => true,
+                        'message' => 'Added design collection SuccessFully',
+                        'collection_status' => 1,
+                    ], Response::HTTP_OK);
+                
+            }else{
+
+                $deletecollection = DealerCollection::find($collection->id);
+                $collection->delete();
+                return response()->json(
+                    [
+                        'success' => true,
+                        'message' => 'Added design collection SuccessFully',
+                        'collection_status' => 0,
+                    ], Response::HTTP_OK);
+                
+            }
+            
+        } catch (\Throwable $th) {
+
+            return $this->sendApiResponse(false, 0,'Failed to Load Update Profile!', (object)[]);               
+        }
+    }
+
+    public function listCollectionDesign(Request $request)
+    {
+        try {
+            $email = $request->email;
+            $user = User::where('email',$email)->first();
+            $userId = $user->id;
+            $collection = DealerCollection::where('user_id',$userId)->with('designs')->get();
+
+            $data = new DesignCollectionListResource($collection);
+            
+            return $this->sendApiResponse(true, 0,'Collection Design Loaded SuccessFully', $data);            
+        } catch (\Throwable $th) {
+            return $this->sendApiResponse(false, 0,'Failed to Load Collection Design!', (object)[]);               
+            
+        }
+    }
+
+    public function getallfesignscollection(Request $request)
+    {
+        try {
+            $email = $request->email;
+            $user = User::where('email',$email)->first();
+            $userId = $user->id;
+            $collection = DealerCollection::where('user_id',$userId)->with('designs')->pluck('design_id');
+            
+            $data = new DesignsCollectionFirstResource($collection);
+            return $this->sendApiResponse(true, 0,'Collection Design Loaded SuccessFully', $data);            
+
+        } catch (\Throwable $th) {
+            
+            return $this->sendApiResponse(false, 0,'Failed to Load Collection Design!', (object)[]);               
+            
+        }
     }
 
 }
