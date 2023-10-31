@@ -11,7 +11,7 @@ use App\Models\{Admin, RoleHasPermissions};
 use Hash;
 use DB;
 use Illuminate\Support\Arr;
-use Auth;   
+use Auth;
 use Spatie\Permission\Models\Permission;
 
 
@@ -35,7 +35,7 @@ class AdminController extends Controller
          $this->middleware('permission:users.create', ['only' => ['create','store']]);
          $this->middleware('permission:users.edit', ['only' => ['edit','update']]);
          $this->middleware('permission:users.destroy', ['only' => ['destroy']]);
-         
+
     }
 
 
@@ -47,7 +47,7 @@ class AdminController extends Controller
     public function create()
     {
         $roles = Role::all();
-        
+
         return view('admin.users.create_users', compact('roles'));
     }
 
@@ -57,7 +57,7 @@ class AdminController extends Controller
         {
             // Get all Amenities
             $sliders = Admin::get();
-            
+
             return DataTables::of($sliders)
             ->addIndexColumn()
             ->addColumn('name', function ($row)
@@ -122,7 +122,7 @@ class AdminController extends Controller
 
     public function store(UserRequest $request)
     {
-                
+
             try {
                 $input = $request->except('_token','image','confirm_password','password');
                 $input['password'] = Hash::make($request->password);
@@ -133,20 +133,20 @@ class AdminController extends Controller
                         $input['image'] = $image_url;
                     }
                 $user = Admin::create($input);
-        
+
                 $user_type = $user->user_type;
                 $roles = Role::where('id',$user_type)->first();
                 $user->assignRole($roles->name);
-                
+
                 return redirect()->route('users')->with('success','User created successfully');
             } catch (\Throwable $th) {
                 return redirect()->route('users')->with('error','Something with wrong');
 
-            }   
-    
+            }
+
     }
 
-     // Store a Users status Changes resource in storage..    
+     // Store a Users status Changes resource in storage..
      public function status(Request $request)
      {
          $status = $request->status;
@@ -155,7 +155,7 @@ class AdminController extends Controller
              $input = Admin::find($id);
              $input->status =  $status;
              $input->update();
- 
+
              return response()->json([
                  'success' => 1,
                  'message' => "User Status has been Changed Successfully..",
@@ -181,8 +181,8 @@ class AdminController extends Controller
         try {
             //code...
             $input = $request->except('_token','id','password','confirm_password','image');
-            $id = decrypt($request->id); 
-    
+            $id = decrypt($request->id);
+
             if(!empty($request->password) || $request->password != null)
             {
                 $input['password'] = Hash::make($request->password);
@@ -201,8 +201,8 @@ class AdminController extends Controller
                         $user_type = $user->user_type;
                         $roles = Role::where('id',$user_type)->first();
                         $user->assignRole($roles->name);
-    
-    
+
+
                     return redirect()->route('users')->with('success','User updated successfully');
         } catch (\Throwable $th) {
             return redirect()->route('users')->with('error','Something with wrong');
@@ -216,17 +216,17 @@ class AdminController extends Controller
      {
         try {
             //code...
-            $id = decrypt($request->id); 
-            
+            $id = decrypt($request->id);
+
             $user = Admin::where('id',$id)->first();
-    
+
             $img = isset($user->image) ? $user->image : '';
-    
+
             if (!empty($img) && file_exists('public/images/uploads/user_images/'.$img))
             {
                   unlink('public/images/uploads/user_images/'.$img);
             }
-    
+
             Admin::where('id',$id)->delete();
             return response()->json([
                 'success' => 1,

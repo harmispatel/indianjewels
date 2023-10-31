@@ -7,7 +7,7 @@
 $role = Auth::guard('admin')->user()->user_type;
 $role_add = Spatie\Permission\Models\Permission::where('name','roles.create')->first();
 
-$permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('permission_id');  
+$permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('permission_id');
     foreach ($permissions as $permission) {
         $permission_ids[] = $permission;
     }

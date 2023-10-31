@@ -32,7 +32,6 @@
     {{-- Admin JS --}}
     @include('admin.layouts.admin-js')
 
-    
     @yield('page-js')
 
 </body>

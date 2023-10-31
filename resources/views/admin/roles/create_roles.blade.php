@@ -272,7 +272,7 @@
                                                                             <input type="checkbox" name="permission[]"
                                                                                 value="{{ $value->id }}"
                                                                                 class="mr-3">
-                                                                                
+
                                                                                     @if ($value->name == 'sliders')
                                                                                         View
                                                                                     @elseif($value->name == 'sliders.add-slider')
@@ -327,7 +327,7 @@
                                                     </div>
                                                 </div>
 
-                                                
+
                                                 <div class="col-md-3">
                                                     <div class="accordion" id="accordionEight">
                                                         <div class="accordion-item">
@@ -435,7 +435,7 @@
                                                                     data-bs-toggle="collapse"
                                                                     data-bs-target="#collapseEleven" aria-expanded="false"
                                                                     aria-controls="collapseEleven">
-                                                                    Scheme Report 
+                                                                    Scheme Report
                                                                 </button>
                                                             </h2>
                                                             <div id="collapseEleven" class="accordion-collapse collapse"
@@ -466,7 +466,7 @@
                                                                     data-bs-toggle="collapse"
                                                                     data-bs-target="#collapseTwelve" aria-expanded="false"
                                                                     aria-controls="collapseTwelve">
-                                                                    Dealer Performance 
+                                                                    Dealer Performance
                                                                 </button>
                                                             </h2>
                                                             <div id="collapseTwelve" class="accordion-collapse collapse"
@@ -550,7 +550,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="col-md-3">
                                                     <div class="accordion" id="accordionFifteen">
                                                         <div class="accordion-item">

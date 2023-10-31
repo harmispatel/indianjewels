@@ -10,9 +10,7 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use DB;
 use App\Models\{Admin, RoleHasPermissions};
-use Auth;
-
-
+use Illuminate\Support\Facades\Auth;
 
 
 class RoleController extends Controller
@@ -82,10 +80,10 @@ class RoleController extends Controller
             'name' => 'required|unique:roles,name',
             'permission' => 'required',
         ]);
-    
+
         $role = Role::create(['name' => $request->input('name')]);
         $role->syncPermissions($request->input('permission'));
-    
+
         return redirect()->route('roles')
                         ->with('success','Role created successfully');
     }
@@ -102,38 +100,38 @@ class RoleController extends Controller
         return view('admin.roles.edit_roles',compact('role','permission','rolePermissions'));
     }
 
-    public function update(Request $request)
-    {
-        $this->validate($request, [
-            'name' => 'required',
-            'permission' => 'required',
-        ]);
-        $id = decrypt($request->id);
+        public function update(Request $request)
+        {
+            $this->validate($request, [
+                'name' => 'required',
+                'permission' => 'required',
+            ]);
+            $id = decrypt($request->id);
 
-        $role = Role::find($id);
-        $role->name = $request->input('name');
-        $role->save();
-    
-        $role->syncPermissions($request->input('permission'));
+            $role = Role::find($id);
+            $role->name = $request->input('name');
+            $role->save();
 
-        return redirect()->route('roles')
-                        ->with('success','Role updated successfully');
-    }
+            $role->syncPermissions($request->input('permission'));
+
+            return redirect()->route('roles')
+                            ->with('success','Role updated successfully');
+        }
 
     public function destroy(Request $request)
-    {    
-        try 
+    {
+        try
         {
             $id = decrypt($request->id);
             $role = Role::where('id',$id)->delete();
-            
-            
+
+
             return response()->json(
             [
                 'success' => 1,
                 'message' => "Role delete Successfully..",
             ]);
-        } 
+        }
         catch (\Throwable $th)
         {
             return response()->json(
@@ -141,7 +139,7 @@ class RoleController extends Controller
                 'success' => 0,
                 'message' => "Something with wrong",
             ]);
-        }   
+        }
 
     }
 

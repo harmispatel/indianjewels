@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class ProfileRequest extends FormRequest
+class UserProfileRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,13 +28,8 @@ class ProfileRequest extends FormRequest
         $rules = [
             'name' => 'required',
             'email' => 'required|email|unique:users,email,'.$this->id,
-            'phone' => 'required|numeric|digits:10',
+            'phone' => 'required|numeric|digits:10|unique:users,phone,'.$this->id,
             'address' => 'required',
-            'comapany_name' => 'required',
-            'gst_no' => 'required',
-            'confirm_password' => 'same:password',
-            'pincode' => 'required',
-            // 'document.*' => 'mimes:pdf,png,jpg,jpeg',
         ];
         return $rules;
     }

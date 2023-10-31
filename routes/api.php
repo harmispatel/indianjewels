@@ -38,6 +38,23 @@ Route::post('user-login',[AuthApiController::class,'userlogin']);
 Route::post('profile',[CustomerApiController::class,'profile'])->middleware('auth:api');
 Route::post('update-profile',[CustomerApiController::class,'updateProfile'])->middleware('auth:api');
 
-Route::post('add-remove-collection-design',[CustomerApiController::class,'dealerCollectionDesign']);
+Route::post('add-collection-design',[CustomerApiController::class,'dealerAddCollectionDesign']);
+Route::post('remove-collection-design',[CustomerApiController::class,'dealerRemoveCollectionDesign']);
 Route::post('list-collection-design',[CustomerApiController::class,'listCollectionDesign']);
-Route::post('alldesigns-collection',[CustomerApiController::class,'getallfesignscollection']);
+Route::post('alldesigns-collection',[CustomerApiController::class,'getalldesignscollection']);
+
+Route::post('add-user-wishlist',[CustomerApiController::class,'userAddWishlist']);
+Route::post('remove-user-wishlist',[CustomerApiController::class,'userReomveWishlist']);
+Route::post('login',[AuthApiController::class,'login']);
+Route::post('user-profile',[CustomerApiController::class,'userProfile']);
+Route::post('update-user-profile',[CustomerApiController::class,'updateUserProfile']);
+Route::post('user-wishlist',[CustomerApiController::class,'getuserWishlist']);
+Route::post('dealer/cart-store',[CustomerApiController::class,'delaerCartStore']);
+Route::post('dealer/cart-list',[CustomerApiController::class,'dealerCartList']);
+Route::post('dealer/cart-remove',[CustomerApiController::class,'dealerCartRemove']);
+Route::post('dealer/order-store',[CustomerApiController::class,'dealerOrderStore']);
+Route::post('dealer/order-list',[CustomerApiController::class,'dealerOrderList']);
+
+Route::post('user/cart-store',[CustomerApiController::class,'userCartStore']);
+Route::post('user/cart-list',[CustomerApiController::class,'userCartList']);
+Route::post('user/cart-remove',[CustomerApiController::class,'userCartRemove']);

@@ -3,15 +3,15 @@
 namespace App\Http\Controllers\APIController;
 
 use App\Http\Controllers\Controller;
-use App\Models\{Category,Design,Slider,Metal,Gender,Tag,User,UserDocument, DealerCollection};
+use App\Models\{Category,Design,Slider,Metal,Gender,Tag,User,UserDocument, DealerCollection,UserWishlist,CartDealer, OrderDealerReport, CartUser};
 use Illuminate\Http\Request;
-use App\Http\Resources\{CategoryResource,FlashDesignResource, HighestDesignResource, SliderResource, DetailDesignResource, DesignsResource, MetalResource, GenderResource, CustomerResource, DesignCollectionListResource};
-use App\Http\Requests\APIRequest\{DesignDetailRequest, DesignsRequest, SubCategoryRequest, ProfileRequest};
+use App\Http\Resources\{CategoryResource,FlashDesignResource, HighestDesignResource, SliderResource, DetailDesignResource, DesignsResource, MetalResource, GenderResource, CustomerResource, DesignsCollectionFirstResource,DesignCollectionListResource, CartDelaerListResource, OrderDelaerListResource, CartUserListResource};
+use App\Http\Requests\APIRequest\{DesignDetailRequest, DesignsRequest, SubCategoryRequest, ProfileRequest, UserProfileRequest};
 use Illuminate\Http\Response;
 use Hash;
 use Carbon\Carbon;
 use App\Traits\ImageTrait;
-
+use Auth;
 
 
 
@@ -360,9 +360,10 @@ class CustomerApiController extends Controller
     public function profile(Request $request)
     {
         try {
-            
-            $email = $request->email;
-            $user = User::where('email',$email)->with('document')->first();
+            $id = auth()->user()->id;
+            $user = User::where('id',$id)->with('document')->first();
+            // $email = $request->email;
+            // $user = User::where('email',$email)->with('document')->first();
             $data = new CustomerResource($user);
                return $this->sendApiResponse(true, 0,'Profile Loaded SuccessFully', $data);
             } catch (\Throwable $th) {
@@ -417,7 +418,96 @@ class CustomerApiController extends Controller
         }
     }
 
-    public function dealerCollectionDesign(Request $request)
+    // public function dealerCollectionDesign(Request $request)
+    // {
+    //     try {
+    //         $email = $request->email;
+    //         $designId = $request->design_id;
+
+    //         $user = User::where('email',$email)->first();
+    //         $userId = $user->id;
+            
+
+    //         $collection = DealerCollection::where('user_id',$userId)->where('design_id',$designId)->first();
+            
+    //         if (empty($collection)) {
+                
+    //             $insert = new DealerCollection;
+    //             $insert->user_id = $userId;
+    //             $insert->design_id = $designId;
+    //             $insert->save();
+    //             return response()->json(
+    //                 [
+    //                     'success' => true,
+    //                     'message' => 'Added design collection SuccessFully',
+    //                     'collection_status' => 1,
+    //                 ], Response::HTTP_OK);
+                
+    //         }else{
+
+    //             $deletecollection = DealerCollection::find($collection->id);
+    //             $collection->delete();
+    //             return response()->json(
+    //                 [
+    //                     'success' => true,
+    //                     'message' => 'Remove design collection SuccessFully',
+    //                     'collection_status' => 0,
+    //                 ], Response::HTTP_OK);
+                
+    //         }
+            
+    //     } catch (\Throwable $th) {
+
+    //         return $this->sendApiResponse(false, 0,'Failed to Load Update Profile!', (object)[]);               
+    //     }
+    // }
+
+    public function dealerAddCollectionDesign(Request $request)
+    {
+        try {
+                    $email = $request->email;
+                    $designId = $request->design_id;
+        
+                    $user = User::where('email',$email)->first();
+                    $userId = $user->id;
+                    
+        
+                    $collection = DealerCollection::where('user_id',$userId)->where('design_id',$designId)->first();
+                    
+                    if (empty($collection)) {
+                        
+                        $insert = new DealerCollection;
+                        $insert->user_id = $userId;
+                        $insert->design_id = $designId;
+                        $insert->save();
+                        return response()->json(
+                            [
+                                'success' => true,
+                                'message' => 'Added design collection SuccessFully',
+                                'collection_status' => 1,
+                            ], Response::HTTP_OK);
+                        
+                    }else{
+        
+                        // $deletecollection = DealerCollection::find($collection->id);
+                        // $collection->delete();
+                        return response()->json(
+                            [
+                                'success' => true,
+                                'message' => 'Already design collection Exits',
+                                'collection_status' => 0,
+                            ], Response::HTTP_OK);
+                        
+                    }
+                    
+                } catch (\Throwable $th) {
+        
+                    return $this->sendApiResponse(false, 0,'Failed to Load Update Profile!', (object)[]);               
+                }
+
+    }
+
+    public function dealerRemoveCollectionDesign(Request $request)
     {
         try {
             $email = $request->email;
@@ -428,36 +518,33 @@ class CustomerApiController extends Controller
             
 
             $collection = DealerCollection::where('user_id',$userId)->where('design_id',$designId)->first();
-            
-            if (empty($collection)) {
-                
-                $insert = new DealerCollection;
-                $insert->user_id = $userId;
-                $insert->design_id = $designId;
-                $insert->save();
-                return response()->json(
-                    [
-                        'success' => true,
-                        'message' => 'Added design collection SuccessFully',
-                        'collection_status' => 1,
-                    ], Response::HTTP_OK);
-                
-            }else{
 
+            if ($collection) {
+                
                 $deletecollection = DealerCollection::find($collection->id);
-                $collection->delete();
-                return response()->json(
+                $deletecollection->delete();
+                            return response()->json(
                     [
                         'success' => true,
-                        'message' => 'Added design collection SuccessFully',
+                        'message' => 'Remove design collection SuccessFully',
                         'collection_status' => 0,
                     ], Response::HTTP_OK);
-                
+            }else{
+                return response()->json(
+                    [
+                        'success' => true,
+                        'message' => 'design collection Not Found',
+                        'collection_status' => 0,
+                    ], Response::HTTP_OK);
             }
             
-        } catch (\Throwable $th) {
 
-            return $this->sendApiResponse(false, 0,'Failed to Load Update Profile!', (object)[]);               
+            
+        } catch (\Throwable $th) {
+            //throw $th;
+            dd($th);
+            return $this->sendApiResponse(false, 0,'Failed to Dealer Remove Collection!', (object)[]);               
+
         }
     }
 
@@ -478,22 +565,308 @@ class CustomerApiController extends Controller
         }
     }
 
-    public function getallfesignscollection(Request $request)
+    public function getalldesignscollection(Request $request)
     {
         try {
             $email = $request->email;
             $user = User::where('email',$email)->first();
             $userId = $user->id;
             $collection = DealerCollection::where('user_id',$userId)->with('designs')->pluck('design_id');
-            
             $data = new DesignsCollectionFirstResource($collection);
-            return $this->sendApiResponse(true, 0,'Collection Design Loaded SuccessFully', $data);            
+            return $this->sendApiResponse(true, 0,'Collection First Design Loaded SuccessFully', $data);            
 
         } catch (\Throwable $th) {
-            
-            return $this->sendApiResponse(false, 0,'Failed to Load Collection Design!', (object)[]);               
+            dd($th);
+            return $this->sendApiResponse(false, 0,'Failed to Load Collection First Design!', (object)[]);               
             
         }
+    }
+
+    public function userAddWishlist(Request $request)
+    {
+        try {
+            $phone = $request->phone;
+            $designId = $request->design_id;
+
+            $user = User::where('phone',$phone)->first();
+            $userId = $user->id;
+            
+
+            $wishlist = UserWishlist::where('user_id',$userId)->where('design_id',$designId)->first();
+            
+            if (empty($wishlist)) {
+                
+                $insert = new UserWishlist;
+                $insert->user_id = $userId;
+                $insert->design_id = $designId;
+                $insert->save();
+                return response()->json(
+                    [
+                        'success' => true,
+                        'message' => 'Added User wishlist SuccessFully',
+                        'wishlist_status' => 1,
+                    ], Response::HTTP_OK);
+                
+            }
+            else{
+
+                // $deletewishlist = UserWishlist::find($wishlist->id);
+                // $deletewishlist->delete();
+                // return response()->json(
+                //     [
+                //         'success' => true,
+                //         'message' => 'Remove User wishlist SuccessFully',
+                //         'wishlist_status' => 0,
+                //     ], Response::HTTP_OK);
+
+                return response()->json(
+                    [
+                        'success' => true,
+                        'message' => 'Already User wishlist Exits',
+                        'wishlist_status' => 0,
+                    ], Response::HTTP_OK);
+                
+            }
+
+        } catch (\Throwable $th) {
+            return $this->sendApiResponse(false, 0,'Failed to Load Collection Design!', (object)[]);               
+        }
+        
+    }
+
+    public function userReomveWishlist(Request $request)
+    {
+        try {
+            $phone = $request->phone;
+            $designId = $request->design_id;
+            $user = User::where('phone',$phone)->first();
+            $userId = $user->id;
+            
+
+            $wishlist = UserWishlist::where('user_id',$userId)->where('design_id',$designId)->first();
+            
+            if ($wishlist) {
+                $deletewishlist = UserWishlist::find($wishlist->id);
+                $deletewishlist->delete();
+                return response()->json(
+                    [
+                        'success' => true,
+                        'message' => 'Remove User wishlist SuccessFully',
+                        'wishlist_status' => 0,
+                    ], Response::HTTP_OK);
+            }else{
+                return response()->json(
+                    [
+                        'success' => true,
+                        'message' => 'User wishlist Not Found',
+                        'wishlist_status' => 0,
+                    ], Response::HTTP_OK);
+            }
+            
+
+        } catch (\Throwable $th) {
+            return $this->sendApiResponse(false, 0,'Failed to Load Collection Design!', (object)[]);               
+        }
+    }
+
+    
+    public function userProfile(Request $request)
+    {
+        try {
+
+            $phone = $request->phone;
+            $user = User::where('phone',$phone)->first();
+            $data = new CustomerResource($user);
+            return $this->sendApiResponse(true, 0,'User Profile Loaded SuccessFully', $data);
+        } catch (\Throwable $th) {
+            return $this->sendApiResponse(false, 0,'Failed to Load User Profile!', (object)[]);                  
+        }
+    }
+
+    public function updateUserProfile(UserProfileRequest $request)
+    {
+        try {
+            $id = $request->id;
+            $input = $request->except('id','image');
+            $user = User::find($id);
+
+            if ($request->has('image'))
+            {
+                $old_logo = (isset($user->logo)) ? $user->logo : '';
+                if( $request->hasFile('image'))
+                {
+                    $file = $request->file('image');
+                    $image_url = $this->addSingleImage('comapany_logo','companies_logos',$file, $old_image = $old_logo,"300*300");
+                    $input['logo'] = $image_url;
+                }
+            }
+            if ($user)
+            {
+                $user->update($input);
+            }
+            $data = new CustomerResource($user);
+
+            return $this->sendApiResponse(true, 0,'User Profile Update SuccessFully', $data);            
+        } catch (\Throwable $th) {
+            return $this->sendApiResponse(false, 0,'Failed to Update User Profile!', (object)[]);                  
+        }
+    }
+
+    public function getuserWishlist(Request $request)
+    {
+        try {
+            $phone = $request->phone;
+            $user = User::where('phone',$phone)->first();
+            $userId = $user->id;
+            $collection = UserWishlist::where('user_id',$userId)->with('designs')->get();
+            $data = new DesignCollectionListResource($collection);
+            return $this->sendApiResponse(true, 0,'User Wishlist Loaded SuccessFully', $data);            
+            
+        } catch (\Throwable $th) {
+            return $this->sendApiResponse(false, 0,'Failed to Load User Profile!', (object)[]);                  
+        }
+    }
+
+    public function dealerCartStore(Request $request)
+    {
+        try {
+            $email = $request->email;
+            $user = User::where('email',$email)->first();
+            $userId = $user->id;
+            $insert = $request->except('email');
+            $insert['dealer_id'] = $userId;
+            $data = CartDealer::create($insert);
+
+            return $this->sendApiResponse(true, 0,'Add To Cart SuccessFully', $data);            
+        } catch (\Throwable $th) {
+            dd($th);
+            return $this->sendApiResponse(false, 0,'Failed to Add To Cart!', (object)[]);                  
+        }
+    }
+
+    public function dealerCartList(Request $request)
+    {
+        try {
+            $email = $request->email;
+            $user = User::where('email',$email)->first();
+            $userId = $user->id;
+            $carts =  CartDealer::where('dealer_id',$userId)->with('designs')->get();
+            $data = new CartDelaerListResource($carts);
+            return $this->sendApiResponse(true, 0,'Cart List SuccessFully', $data);            
+
+        } catch (\Throwable $th) {
+            return $this->sendApiResponse(false, 0,'Failed to Cart List!', (object)[]);                  
+            
+        }
+    }
+
+    public function dealerCartRemove(Request $request)
+    {
+        try {
+            $cartId = $request->cart_id;
+            if ($cartId) {
+                $cartRemove = CartDealer::where('id',$cartId);
+                $cartRemove->delete();  
+                
+                return $this->sendApiResponse(true, 0,'Remove Cart SuccessFully', (object)[]);            
+            }            
+        } catch (\Throwable $th) {
+            //throw $th;
+            dd($th);
+            return $this->sendApiResponse(false, 0,'Failed to Cart List!', (object)[]);                  
+
+        }
+    }
+
+    public function dealerOrderStore(Request $request)
+    {
+        try {
+            
+            $email = $request->email;
+            $items = $request->items;
+            $user = User::where('email',$email)->first();
+            $userId = $user->id;
+            foreach ($items as $item){
+                $data = new OrderDealerReport;
+                $data->order_date = Carbon::now()->format('Y-m-d');
+                $data->dealer_id = $userId;
+                $data->design_id = $item['id'];
+                $data->quantity = $item['quantity'];
+                $data->order_status = 'Pending';
+                $data->save();
+            }
+            return $this->sendApiResponse(true, 0,'Order SuccessFully',(object)[]);
+        } catch (\Throwable $th) {
+            dd($th);
+            return $this->sendApiResponse(false, 0,'Failed to Order!', (object)[]);                  
+
+        }
+
+    }
+
+    public function dealerOrderList(Request $request)
+    {
+        try {
+            $email = $request->email;
+            $user = User::where('email',$email)->first();
+            $userId = $user->id;
+            $order =  OrderDealerReport::where('dealer_id',$userId)->with('designs')->get();
+            $data = new OrderDelaerListResource($order);
+            return $this->sendApiResponse(true, 0,'Order List SuccessFully', $data);
+        } catch (\Throwable $th) {
+            return $this->sendApiResponse(false, 0,'Failed to Order List!', (object)[]);                  
+        }
+    }
+
+    public function userCartStore(Request $request)
+    {
+        try {
+       
+            $phone = $request->phone;
+            $user = User::where('phone',$phone)->first();
+            $userId = $user->id;
+            $insert = $request->except('phone');
+            $insert['user_id'] = $userId;
+            $data = CartUser::create($insert);
+            return $this->sendApiResponse(true, 0,'Add To Cart SuccessFully', $data);            
+        } catch (\Throwable $th) {
+            dd($th);
+            return $this->sendApiResponse(false, 0,'Failed to Order List!', (object)[]);                              
+        }
+    }
+
+    public function userCartList(Request $request)
+    {
+        try {
+            $phone = $request->phone;
+            $user = User::where('phone',$phone)->first();
+            $userId = $user->id;
+            $carts =  CartUser::where('user_id',$userId)->with('designs')->get();
+            
+            $data = new CartUserListResource($carts);
+            return $this->sendApiResponse(true, 0,'Cart List SuccessFully', $data);            
+        } catch (\Throwable $th) {
+            dd($th);
+            return $this->sendApiResponse(false, 0,'Failed to Cart List!', (object)[]);                  
+            
+        }
+    }
+
+    public function userCartRemove(Request $request)
+    {
+        try {
+            $cartId = $request->cart_id;
+            if ($cartId) {
+                $cartRemove = CartUser::where('id',$cartId);
+                $cartRemove->delete();  
+                
+                return $this->sendApiResponse(true, 0,'Remove Cart SuccessFully', (object)[]);            
+            }            
+        } catch (\Throwable $th) {
+            return $this->sendApiResponse(false, 0,'Failed to Cart List!', (object)[]);                  
+
+        }
+        
     }
 
 }

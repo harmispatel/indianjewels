@@ -2,13 +2,13 @@
     $currentRouteName = Route::currentRouteName();
     $role = Auth::guard('admin')->user();
     $role_id = $role->user_type;
-    
+
     $permissions = App\Models\RoleHasPermissions::where('role_id', $role_id)->pluck('permission_id');
-    
+
     foreach ($permissions as $permission) {
         $permission_ids[] = $permission;
     }
-    
+
     $category = Spatie\Permission\Models\Permission::where('name', 'categories')->first();
     $tag = Spatie\Permission\Models\Permission::where('name', 'tags')->first();
     $slider = Spatie\Permission\Models\Permission::where('name', 'sliders')->first();
@@ -24,7 +24,7 @@
     $order = Spatie\Permission\Models\Permission::where('name', 'order')->first();
     $marketing = Spatie\Permission\Models\Permission::where('name', 'marketing')->first();
     $import_export = Spatie\Permission\Models\Permission::where('name', 'import.export')->first();
-    
+
 @endphp
 
 <aside id="sidebar" class="sidebar">
@@ -259,4 +259,3 @@
         </li>
     </ul>
 </aside>
- 

@@ -30,7 +30,7 @@
 <link rel="stylesheet" href="//cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 
 <style>
-    
+
     /* Toggle Status Button */
     .form-check-input:checked{
         background-color: #198754!important;
