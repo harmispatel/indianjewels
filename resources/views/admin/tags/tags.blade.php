@@ -5,12 +5,12 @@
 @section('content')
 
 @php
- $tag_add = Spatie\Permission\Models\Permission::where('name','tags.create')->first();
- $user_type =  Auth::guard('admin')->user()->user_type;
- $roles = App\Models\RoleHasPermissions::where('role_id',$user_type)->pluck('permission_id');
- foreach ($roles as $key => $value) {
-     $val[] = $value;
-    }    
+    $tag_add = Spatie\Permission\Models\Permission::where('name','tags.create')->first();
+    $user_type =  Auth::guard('admin')->user()->user_type;
+    $roles = App\Models\RoleHasPermissions::where('role_id',$user_type)->pluck('permission_id');
+    foreach ($roles as $key => $value) {
+        $val[] = $value;
+        }
 @endphp
 
     {{-- Modal for Add New Tag & Edit Tag --}}
@@ -61,9 +61,9 @@
             </div>
             <div class="col-md-4" style="text-align: right;">
             @if(in_array($tag_add->id,$val))
-                <a data-bs-toggle="modal" data-bs-target="#tagModal" class="btn btn-sm new-tag custom-btn">
+                {{-- <a data-bs-toggle="modal" data-bs-target="#tagModal" class="btn btn-sm new-tag custom-btn">
                     <i class="bi bi-plus-lg"></i>
-                </a>
+                </a> --}}
                 @else
                 {{-- <a data-bs-toggle="modal" data-bs-target="#tagModal" class="btn btn-sm new-tag custom-btn disabled">
                     <i class="bi bi-plus-lg"></i>
@@ -108,7 +108,8 @@
                                         <th>Id</th>
                                         <th>Name</th>
                                         <th>Status</th>
-                                        <th>Actions</th>
+                                        <th>Display on Header</th>
+                                        {{-- <th>Actions</th> --}}
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -183,9 +184,9 @@
             tagsTable = $('#TagsTable').DataTable({
                 processing: true,
                 serverSide: true,
-                pageLength: 100,
+                pageLength: 10,
                 ajax: "{{ route('tags.load') }}",
-                columns: 
+                columns:
                 [
                     {
                         data: 'id',
@@ -194,7 +195,7 @@
                     {
                         data: 'name',
                         name: 'name',
-                        
+
                     },
                     {
                         data: 'changestatus',
@@ -203,17 +204,23 @@
                         searchable: false
                     },
                     {
-                        data: 'actions',
-                        name: 'actions',
+                        data: 'display_on_header',
+                        name: 'display_on_header',
                         orderable: false,
                         searchable: false
                     },
+                    // {
+                    //     data: 'actions',
+                    //     name: 'actions',
+                    //     orderable: false,
+                    //     searchable: false
+                    // },
                 ]
             });
         }
 
-               // Function for Save & Update Tags
-               function saveUpdateTag(type)
+        // Function for Save & Update Tags
+        function saveUpdateTag(type)
         {
             // Data Type (Save/Update)
             var dType = type;
@@ -305,7 +312,7 @@
                         // Tags Data's
                         const tags = response.data;
 
-                        
+
                         // Add values in TagForm
                         $('#name').val(tags.name);
                         $('#id').val(tags.id);
@@ -333,7 +340,7 @@
         }
 
         // Function for Delete Tags
-        function deleteTag(tagId) 
+        function deleteTag(tagId)
         {
             swal(
             {
@@ -342,35 +349,35 @@
                 buttons: true,
                 dangerMode: true,
             })
-            .then((willDeleteTags) => 
+            .then((willDeleteTags) =>
             {
-                if (willDeleteTags) 
+                if (willDeleteTags)
                 {
                     $.ajax(
                     {
                         type: "POST",
                         url: '{{ route('tags.destroy') }}',
-                        data: 
+                        data:
                         {
                             "_token": "{{ csrf_token() }}",
                             'id': tagId,
                         },
                         dataType: 'JSON',
-                        success: function(response) 
+                        success: function(response)
                         {
-                            if (response.success == 1) 
+                            if (response.success == 1)
                             {
                                 toastr.success(response.message);
                                 $('#TagsTable').DataTable().ajax.reload();
-                            } 
-                            else 
+                            }
+                            else
                             {
                                 swal(response.message, "", "error");
                             }
                         }
                     });
-                } 
-                else 
+                }
+                else
                 {
                     swal("Cancelled", "", "error");
                 }
@@ -378,26 +385,51 @@
         }
 
 
-        function changeStatus(status, id) 
+        function changeStatus(status, id)
         {
             $.ajax(
             {
                 type: "POST",
                 url: '{{ route('tags.status') }}',
-                data: 
+                data:
                 {
                     "_token": "{{ csrf_token() }}",
                     "status": status,
                     "id": id
                 },
                 dataType: 'JSON',
-                success: function(response) 
+                success: function(response)
                 {
-                    if (response.success == 1) 
+                    if (response.success == 1)
                     {
                         toastr.success(response.message);
-                    } 
-                    else 
+                    }
+                    else
+                    {
+                        toastr.error(response.message);
+                    }
+                }
+            })
+        }
+
+        // Function for Change Display on Header Status
+        function displayHeaderStatus(id)
+        {
+            $.ajax({
+                type: "POST",
+                url: "{{ route('tags.display_header_status') }}",
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "id": id
+                },
+                dataType: 'JSON',
+                success: function(response)
+                {
+                    if (response.success == 1)
+                    {
+                        toastr.success(response.message);
+                    }
+                    else
                     {
                         toastr.error(response.message);
                     }

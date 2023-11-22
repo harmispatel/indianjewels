@@ -20,14 +20,12 @@ class ExportData implements WithMultipleSheets
     {
         $sheets = [];
         $all_data = $this->data;
-        
+
         // Add logic to generate sheets dynamically based on your data
         foreach ($all_data['categories'] as $category) {
-
             $sheets[] = new SheetExport($category);
         }
         return $sheets;
-        
     }
-    
+
 }

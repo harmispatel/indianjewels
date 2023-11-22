@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>Pages / Login - NiceAdmin Bootstrap Template</title>
+    <title>Impel Jewelers | Login</title>
     <link href="{{ asset('public/images/demo_logos/inj.png') }}" rel="icon">
     <meta content="" name="description">
     <meta content="" name="keywords">
@@ -42,7 +42,7 @@
                         <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
                             <div class="d-flex justify-content-center py-4">
                                 <a href="#" class="logo d-flex align-items-center w-auto">
-                                    <img src="{{ asset('public/images/demo_logos/inj.png') }}">
+                                    <img src="{{ asset('public/images/default_images/logos/impel-logo2.png') }}" style="width: 100px; max-height: 100px;">
                                     {{-- <span class="d-none d-lg-block">ADMIN LOGIN</span> --}}
                                 </a>
                             </div>
@@ -80,6 +80,11 @@
                                                 @endif
                                             </div>
                                         </div>
+
+                                        <div class="col-12 text-end">
+                                            <p class="small m-0"><a href="{{ route('admin.forget.password') }}">Forgot Password?</a></p>
+                                        </div>
+
                                         <div class="col-12">
                                             <button class="btn btn-primary w-100" type="submit">Login</button>
                                         </div>
@@ -114,6 +119,11 @@
         // Error Message
         @if (Session::has('error'))
             toastr.error('{{ Session::get('error') }}')
+        @endif
+
+        // Success Message
+        @if (Session::has('success'))
+            toastr.success('{{ Session::get('success') }}')
         @endif
 
         // Show & Hide Password

@@ -8,7 +8,7 @@
 $role = Auth::guard('admin')->user()->user_type;
 $dealer_add = Spatie\Permission\Models\Permission::where('name','dealers.create')->first();
 
-$permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('permission_id');  
+$permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('permission_id');
     foreach ($permissions as $permission) {
         $permission_ids[] = $permission;
     }
@@ -26,7 +26,7 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                 </nav>
             </div>
             <div class="col-md-4" style="text-align: right;">
-                @if((in_array($dealer_add->id, $permission_ids))) 
+                @if((in_array($dealer_add->id, $permission_ids)))
                 <a href="{{ route('dealers.create') }}" class="btn btn-sm new-category custom-btn">
                     <i class="bi bi-plus-lg"></i>
                 </a>
@@ -43,7 +43,7 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
     {{-- Category Section --}}
     <section class="section dashboard">
         <div class="row">
-            
+
 
             {{-- Categories Card --}}
             <div class="col-md-12">
@@ -97,7 +97,7 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
             @if (Session::has('error'))
                 toastr.error('{{ Session::get('error') }}')
             @endif
-            
+
             var table = $('#DealersTable').DataTable({
                 processing: true,
                 serverSide: true,
@@ -105,7 +105,9 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                 ajax: "{{ route('dealers.load') }}",
                 columns: [{
                         data: 'id',
-                        name: 'id'
+                        name: 'id',
+                        orderable: false,
+                        searchable: false
                     },
                     {
                         data: 'name',
@@ -118,8 +120,8 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                     {
                         data: 'status',
                         name: 'status',
-                        orderable: false,
-                        searchable: false
+                        // orderable: false,
+                        // searchable: false
                     },
                     {
                         data: 'actions',

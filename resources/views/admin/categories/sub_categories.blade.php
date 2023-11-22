@@ -23,7 +23,7 @@
             @if (!empty($subcategory->image) && file_exists('public/images/uploads/category_images/' . $subcategory->image))
                 <img src="{{ asset('public/images/uploads/category_images/' . $subcategory->image) }}" width="60">
             @else
-                <img src="{{ asset('public/images/uploads/category_images/no_image.jpg') }}" width="60">
+                <img src="{{ asset('public/images/default_images/not-found/no_img1.jpg') }}" width="60">
             @endif
         </td>
         <td>

@@ -23,7 +23,6 @@ class DealerRequest extends FormRequest
      */
     public function rules()
     {
-        // dd($this);
         if($this->id)
         {
             $rules = [
@@ -35,7 +34,11 @@ class DealerRequest extends FormRequest
                 'gst_no' => 'required',
                 'confirm_password' => 'same:password',
                 'pincode' => 'required',
+                'city' => 'required',
+                'state' => 'required',
                 'document.*' => 'mimes:pdf,png,jpg,jpeg',
+                'discount_value' => 'required',
+                'dealer_code' => 'required|unique:users,dealer_code,'.decrypt($this->id),
             ];
 
         }else{
@@ -49,7 +52,11 @@ class DealerRequest extends FormRequest
                 'password' =>'required|min:6',
                 'confirm_password' => 'required|same:password|min:6',
                 'pincode' => 'required',
+                'city' => 'required',
+                'state' => 'required',
                 'document.*' => 'mimes:jpg,png,pdf,doc,docx',
+                'discount_value' => 'required',
+                'dealer_code' => 'required|unique:users,dealer_code',
             ];
         }
         return $rules;

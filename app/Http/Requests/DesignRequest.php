@@ -23,26 +23,12 @@ class DesignRequest extends FormRequest
      */
     public function rules()
     {
-        // $rules = [
-        //     'name' => 'required',
-        //     'code' => 'required',
-        //     'category_id' => 'requried',
-        //     'gender_id' => 'requried',
-        //     'metal_id' => 'requried',
-        //     'company' => 'required|array|min:1',
-        //     'tags' => 'required|array|min:1',
-            // 'image' => 'required|mimes:jpeg,png,jpg,gif',
-        // ];
-        
-        // return $rules;
-// dd($this);
-        
         if($this->id)
         {
             $rules = [
                 'image' => 'mimes:jpeg,png,jpg',
                 'name' => 'required',
-                'code'=> 'required',
+                'code'=> 'required|unique:designs,code,'.decrypt($this->id),
                 'category_id' => 'required',
                 'gender_id' => 'required',
                 'metal_id' => 'required',
@@ -52,14 +38,12 @@ class DesignRequest extends FormRequest
         }else{
             $rules = [
                 'name' => 'required',
-                'code'=> 'required',
+                'code'=> 'required|unique:designs,code',
                 'category_id' => 'required',
                 'gender_id' => 'required',
                 'metal_id' => 'required',
-                'image' => 'required|mimes:jpeg,png,jpg',
+                'image' => 'mimes:jpeg,png,jpg',
                 'price' => 'required|numeric|gt:0',
-    
-    
             ];
         }
         return $rules;

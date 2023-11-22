@@ -17,7 +17,10 @@ class CreateCartUserTable extends Migration
             $table->id();
             $table->integer('user_id')->nullble();
             $table->string('design_name')->nullable();
+            $table->integer('design_id')->nullble();
             $table->string('quantity')->nullable();
+            $table->string('gold_type',50)->nullable();
+            $table->string('gold_color',50)->nullable();
             $table->timestamps();
         });
     }

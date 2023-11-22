@@ -29,7 +29,7 @@ class SliderController extends Controller
          $this->middleware('permission:sliders.add-slider', ['only' => ['create','store']]);
          $this->middleware('permission:sliders.edit-slider', ['only' => ['edit','update']]);
          $this->middleware('permission:sliders.destroy', ['only' => ['destroy']]);
-         
+
     }
     /**
      * Display a listing of the resource.
@@ -43,20 +43,20 @@ class SliderController extends Controller
 
     /**
      * Load Sliders Data.
-     */ 
+     */
     public function loadSliders(Request $request)
     {
         if ($request->ajax())
         {
-            // Get all Amenities
+            // Get all Sliders
             $sliders = Slider::get();
-            
+
             return DataTables::of($sliders)
             ->addIndexColumn()
             ->addColumn('image', function ($row)
             {
-                $default_image = asset("public/images/uploads/slider_image/no_image.jpg");
-                $image = ($row->image) ? asset('public/images/uploads/slider_image/'.$row->image) : $default_image;
+                $default_image = asset("public/images/default_images/not-found/no_img1.jpg");
+                $image = (isset($row->image) && !empty($row->image) && file_exists('public/images/uploads/slider_images/'.$row->image)) ? asset('public/images/uploads/slider_images/'.$row->image) : $default_image;
                 $image_html = '';
                 $image_html .= '<img class="me-2" src="'.$image.'" width="50" height="50">';
                 return $image_html;
@@ -89,7 +89,7 @@ class SliderController extends Controller
 
                     $action_html .= '<a onclick="deleteSliders(\''.encrypt($slider_id).'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
                 }
-                return $action_html; 
+                return $action_html;
             })
             ->rawColumns(['status','actions','image'])
             ->make(true);
@@ -109,18 +109,18 @@ class SliderController extends Controller
      */
     public function store(SlidersRequest $request)
     {
-        
+
         $input = $request->except('_token', 'id','tags');
         $input['tags'] = json_encode($request->tags);
         $input['created_at'] = Carbon::now();
- 
+
         // Upload new Image
         try
         {
         if ($request->has('image'))
         {
             $file = $request->image;
-            $singleFile = $this->addSingleImage('slider','slider_image',$file, $oldImage = '',"1200*500");
+            $singleFile = $this->addSingleImage('slider','slider_images',$file, $oldImage = '',"1200*500");
             $input['image'] = $singleFile;
         }
             $slider = Slider::insert($input);
@@ -130,9 +130,9 @@ class SliderController extends Controller
                 'message' => "Top banner has been created Successfully..",
             ]);
         }
-        catch (\Throwable $th) 
+        catch (\Throwable $th)
         {
-            
+
             return response()->json(
             [
                 'success' => 0,
@@ -158,10 +158,18 @@ class SliderController extends Controller
         {
             $id = decrypt($request->id);
             $data = Slider::where('id',$id)->first();
+            $slider_image_html = '';
+
+            if(isset($data['image']) && !empty($data['image']) && file_exists('public/images/uploads/slider_images/'.$data['image'])){
+                $slider_image_html .= '<img src="'.asset('public/images/uploads/slider_images/'.$data['image']).'" width="70">';
+            }else{
+                $slider_image_html .= '<img src="'.asset('public/images/default_images/not-found/no_img1.jpg').'" width="70">';
+            }
+            $data['image'] = $slider_image_html;
             $data['slider_tags'] = json_decode($data->tags);
-            
+
             $tags = Tag::get();
-            
+
             return response()->json(
             [
                 'success' => 1,
@@ -177,7 +185,7 @@ class SliderController extends Controller
                 'success' => 0,
                 'message' => "Something with wrong",
             ]);
-        } 
+        }
     }
 
     /**
@@ -191,20 +199,20 @@ class SliderController extends Controller
         try
         {
             $slider = Slider::find($slider_id);
-            
+
             // Save Image if exists and Delete old Image
             if ($request->has('image'))
             {
                 // Delete old Image
                 $old_image = isset($slider->image) ? $slider->image : '';
-                
+
                 // Upload new Image
                 $file = $request->image;
-                $singleFile = $this->addSingleImage('slider','slider_image',$file, $old_image,"1200*500");
-                $input['image'] = $singleFile; 
-            
+                $singleFile = $this->addSingleImage('slider','slider_images',$file, $old_image,"1200*500");
+                $input['image'] = $singleFile;
+
             }
-            if ($slider) 
+            if ($slider)
             {
                 $slider->update($input);
             }
@@ -214,7 +222,7 @@ class SliderController extends Controller
                 'message' => "Top banner updated Successfully..",
             ]);
         }
-        catch (\Throwable $th) 
+        catch (\Throwable $th)
         {
             return response()->json(
             [
@@ -231,7 +239,7 @@ class SliderController extends Controller
     {
         $status = $request->status;
         $id = $request->id;
-        try 
+        try
         {
             $input = Slider::find($id);
             $input->status =  $status;
@@ -242,8 +250,8 @@ class SliderController extends Controller
                 'success' => 1,
                 'message' => "Top banner Status has been Changed Successfully..",
             ]);
-        } 
-        catch (\Throwable $th) 
+        }
+        catch (\Throwable $th)
         {
             return response()->json(
             [
@@ -258,8 +266,8 @@ class SliderController extends Controller
      * Remove the specified resource from storage.
      */
     public function destroy(Request $request)
-    {    
-        try 
+    {
+        try
         {
             $id = decrypt($request->id);
             $slider = Slider::where('id',$id)->first();
@@ -269,15 +277,15 @@ class SliderController extends Controller
             {
                 unlink('public/images/uploads/slider_image/'.$oldImage);
             }
-            
+
              Slider::where('id',$id)->delete();
-            
+
             return response()->json(
             [
                 'success' => 1,
                 'message' => "Top banner delete Successfully..",
             ]);
-        } 
+        }
         catch (\Throwable $th)
         {
             return response()->json(
@@ -285,7 +293,7 @@ class SliderController extends Controller
                 'success' => 0,
                 'message' => "Something with wrong",
             ]);
-        }   
+        }
 
     }
 }

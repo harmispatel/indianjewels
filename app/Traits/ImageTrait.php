@@ -33,29 +33,29 @@ trait ImageTrait
         // Upload New Image
         if ($file != null)
         {
-            
+
 
             $filename = $image_name."_".$this->randomMediaName(5).".".$file->getClientOriginalExtension();
 
-            
+
             // Image Upload Path
             $image_path = public_path().'/images/uploads/'.$path;
-            
+
             // Get Image Path
-            
+
             if($dim == 'default')
             {
-                
+
             //     // $image->save($image_path.'/'.$filename);
                 $file->move($image_path, $filename);
             }
             else
             {
-                $image = Image::make($file->path());    
-                
+                $image = Image::make($file->path());
+
                 // Image Dimension Array
                 $dim_array = explode('*',$dim);
-                
+
 
                 // Resize Image & Upload in Storage
                 $image->resize($dim_array[0],$dim_array[1], function ()
@@ -67,6 +67,6 @@ trait ImageTrait
     }
 
 
-    
+
 
 }

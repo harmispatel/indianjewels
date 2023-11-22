@@ -39,7 +39,7 @@
                                             <input type="hidden" name="id" id="id" value="{{encrypt($data->id)}}">
                                             <div class="col-md-6 mb-3">
                                                 <div class="form-group">
-                                                    <label for="firstname" class="form-label">First Name<span class="text-danger">*</span></label>
+                                                    <label for="firstname" class="form-label">First Name <span class="text-danger">*</span></label>
                                                     <input type="text" name="firstname" value="{{isset($data->firstname) ? $data->firstname : old('firstname')}}" id="firstname" class="form-control {{ $errors->has('firstname') ? 'is-invalid' : '' }}" placeholder="Enter First Name">
                                                     @if ($errors->has('firstname'))
                                                         <div class="invalid-feedback">
@@ -50,7 +50,7 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label for = "lastname" class="form-label">Last Name<span class="text-danger">*</span></label>
+                                                    <label for = "lastname" class="form-label">Last Name <span class="text-danger">*</span></label>
                                                     <input type="text" name="lastname" value="{{isset($data->lastname) ? $data->lastname : old('lastname')}}" id="lastname" class="form-control {{ $errors->has('lastname') ? 'is-invalid' : '' }}" placeholder="Enter Last Name">
                                                     @if ($errors->has('lastname'))
                                                         <div class="invalid-feedback">
@@ -61,7 +61,7 @@
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <div class="form-group">
-                                                    <label for="email" class="form-label">Email<span class="text-danger">*</span></label>
+                                                    <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
                                                     <input type="email" name="email" value="{{isset($data->email) ? $data->email : old('email')}}" id="email" class="form-control {{$errors->has('email') ? 'is-invalid' : ''}}" placeholder="Enter Email">
                                                     @if ($errors->has('email'))
                                                     <div class="invalid-feedback">
@@ -108,10 +108,10 @@
                                                 </div>
 
                                             </div>
-                                            
-                                            
+
+
                                             <div class="col-md-6 mb-3">
-                                                <label for="user_type" class="form-label">User Type<span class="text-danger">*</span></label>
+                                                <label for="user_type" class="form-label">Role <span class="text-danger">*</span></label>
                                                 <select name="user_type" id="user_type" name="user_type" class="form-select">
                                                     @foreach ($roles as $role)
                                                     <option value="{{$role->id}}"{{$role->id == $data->user_type ? 'selected' : ''}}>{{ $role->name }}</option>
@@ -129,14 +129,13 @@
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
                                                 <div class="form_group">
-                                                    <label for="image" class="form-label">Image<span class="text-danger">*</span></label>
+                                                    <label for="image" class="form-label">Image</label>
                                                     <input type="file" name="image" class="form-control @error('image') is-invalid @enderror">
                                                     <div class="mt-2">
-                                                        @if($data->image)
-                                                        <img src="{{ asset('public/images/uploads/user_images/' . $data->image) }}"
-                                                            alt="" width="100" height="100">
-                                                            @else
-                                                            <img src="{{asset('public/images/uploads/user_images/no_image.jpg')}}" alt="" width="100" height="100">
+                                                        @if(isset($data->image) && !empty($data->image) && file_exists('public/images/uploads/user_images/' . $data->image))
+                                                            <img src="{{ asset('public/images/uploads/user_images/' . $data->image) }}" width="100" height="100">
+                                                        @else
+                                                            <img src="{{asset('public/images/default_images/not-found/no_img1.jpg')}}" width="100" height="100">
                                                         @endif
                                                     </div>
                                                     @if ($errors->has('image'))
@@ -152,7 +151,7 @@
                             </div>
                         </div>
                         <div class="card-footer text-center">
-                            <button class="btn form_button">Save</button>
+                            <button class="btn form_button">Update</button>
                         </div>
                     </form>
                 </div>

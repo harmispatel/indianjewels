@@ -28,9 +28,22 @@ class UserProfileRequest extends FormRequest
         $rules = [
             'name' => 'required',
             'email' => 'required|email|unique:users,email,'.$this->id,
-            'phone' => 'required|numeric|digits:10|unique:users,phone,'.$this->id,
+            // 'phone' => 'required|numeric|digits:12|unique:users,phone,'.$this->id,
             'address' => 'required',
+            'pincode' => 'required',
+            'state' => 'required',
+            'city' => 'required',
         ];
+
+        if($this->address_same_as_company == 0){
+            $rules += [
+                'shipping_address' => 'required',
+                'shipping_pincode' => 'required',
+                'shipping_state' => 'required',
+                'shipping_city' => 'required',
+            ];
+        }
+
         return $rules;
     }
 

@@ -8,7 +8,7 @@
         $userType = auth()->guard('admin')->user()->user_type;
         $typeName= Spatie\Permission\Models\Role::where('id',$userType)->first();
         $userTypeName = $typeName->name;
-        $logo = "";
+        $logo = asset('public/images/default_images/logos/impel-logo2.png');
     }
     else
     {
@@ -24,7 +24,7 @@
     <div class="d-flex align-items-center justify-content-between text-center">
         <a href="{{ route('admin.dashboard') }}" class="logo d-flex align-items-center justify-content-center">
             @if(!empty($logo))
-                <img class="w-100" src="{{ $logo }}" alt="Logo">
+                <img class="" src="{{ $logo }}" alt="Logo" style="width: 100px; max-height: 50px!important;">
             @else
                 <span class="d-none d-lg-block">Logo Here</span>
             @endif
@@ -37,10 +37,10 @@
         <ul class="d-flex align-items-center">
             <li class="nav-item dropdown pe-3">
                 <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-                    @if (!empty($userImage) || $userImage != null)
+                    @if ((!empty($userImage) || $userImage != null) && file_exists('public/images/uploads/user_images/'.$userImage))
                         <img src="{{ asset('public/images/uploads/user_images/'.$userImage) }}" alt="Profile" class="rounded-circle">
                     @else
-                        <img src="{{ asset('public/images/demo_profiles/profile1.jpg') }}" alt="Profile" class="rounded-circle">
+                        <img src="{{ asset('public/images/default_images/profiles/profile1.jpg') }}" alt="Profile" class="rounded-circle">
                     @endif
                     <span class="d-none d-md-block dropdown-toggle ps-2">{{ $userName }}</span>
                 </a>

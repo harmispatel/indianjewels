@@ -18,8 +18,8 @@ class DesignsResource extends JsonResource
         $designs = (isset($this->resource)) ? $this->resource : [];
 
         $designs_array = [];
-        
-        
+
+
 
         foreach($designs as $design)
         {
@@ -37,10 +37,13 @@ class DesignsResource extends JsonResource
             if ($mul_images) {
                 foreach ($mul_images as $mul_image)
                 {
-                    $imgs =  asset('public/images/uploads/item_image/'.$mul_image->image);
+                    $imgs =  asset('public/images/uploads/item_images/'.$design->code.'/'.$mul_image->image);
                     $images[] = $imgs;
                 }
             }
+
+            $image = (isset($design->image) && !empty($design->image) && file_exists('public/images/uploads/item_images/'.$design->code.'/'.$design->image)) ? asset('public/images/uploads/item_images/'.$design->code.'/'.$design->image) : asset('public/images/default_images/not-found/no_img1.jpg');
+
             $category_name = isset($design->categories) ? $design->categories->name : '';
             $gender_name = isset($design->gender) ? $design->gender->name : '';
             $metal_name = isset($design->metal) ? $design->metal->name : '';
@@ -69,6 +72,7 @@ class DesignsResource extends JsonResource
             $data['wastage_20k'] = isset($design->wastage3) ? $design->wastage3 : '';
             $data['wastage_22k'] = isset($design->wastage4) ? $design->wastage4 : '';
             $data['iaj_gross_weight'] = isset($design->iaj_weight) ? $design->iaj_weight : '';
+            $data['image'] = $image;
             $data['multiple_image'] = isset($mul_images) ? $images : [] ;
             $designs_array[] = $data;
         }

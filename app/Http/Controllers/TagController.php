@@ -49,37 +49,44 @@ class TagController extends Controller
                 $tag_id = isset($row->id) ? $row->id : '';
                 return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus('.$checkVal.','.$tag_id.')" id="statusBtn" '.$checked.'></div>';
             })
-            ->addColumn('actions',function($row)
+            ->addColumn('display_on_header', function ($row)
             {
-                $tag_id = isset($row->id) ? encrypt($row->id) : '';
-                 $tag_edit = Permission::where('name','tags.edit')->first();
-                 $tag_delete = Permission::where('name','tags.destroy')->first();
-                 $user_type =  Auth::guard('admin')->user()->user_type;
-                 $roles = RoleHasPermissions::where('role_id',$user_type)->pluck('permission_id');
-                 foreach ($roles as $key => $value) {
-                    $val[] = $value;
-                   }
-                $action_html = '';
-                if(in_array($tag_edit->id,$val)){
-
-                    $action_html .= '<a onclick="editTag(\''.$tag_id.'\')" class="btn btn-sm custom-btn me-1" id="editTags"><i class="bi bi-pencil"></i></a>';
-                }
-                if(in_array($tag_delete->id,$val)){
-
-                    $action_html .= '<a onclick="deleteTag(\''.$tag_id.'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
-                }
-                return $action_html;
+                $display_on_header = $row->display_on_header;
+                $checked = ($display_on_header == 1) ? 'checked' : '';
+                $tag_id = isset($row->id) ? $row->id : '';
+                return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="displayHeaderStatus('.$tag_id.')" id="statusBtn" '.$checked.'></div>';
             })
-            ->rawColumns(['changestatus','actions'])
+            // ->addColumn('actions',function($row)
+            // {
+            //     $tag_id = isset($row->id) ? encrypt($row->id) : '';
+            //      $tag_edit = Permission::where('name','tags.edit')->first();
+            //      $tag_delete = Permission::where('name','tags.destroy')->first();
+            //      $user_type =  Auth::guard('admin')->user()->user_type;
+            //      $roles = RoleHasPermissions::where('role_id',$user_type)->pluck('permission_id');
+            //      foreach ($roles as $key => $value) {
+            //         $val[] = $value;
+            //        }
+            //     $action_html = '';
+            //     if(in_array($tag_edit->id,$val)){
+
+            //         $action_html .= '<a onclick="editTag(\''.$tag_id.'\')" class="btn btn-sm custom-btn me-1" id="editTags"><i class="bi bi-pencil"></i></a>';
+            //     }
+            //     if(in_array($tag_delete->id,$val)){
+
+            //         $action_html .= '<a onclick="deleteTag(\''.$tag_id.'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
+            //     }
+            //     return $action_html;
+            // })
+            ->rawColumns(['changestatus','display_on_header'])
             ->make(true);
         }
     }
 
-    
+
     // Show the form for creating a new Tags.
     public function create()
     {
-        return view('admin.tags.create_tags');  
+        return view('admin.tags.create_tags');
     }
 
 
@@ -94,7 +101,7 @@ class TagController extends Controller
         $input = $request->except('_token');
         $input['created_at'] = Carbon::now();
 
-        try 
+        try
         {
             $tags = Tag::insert($input);
             return response()->json(
@@ -102,8 +109,8 @@ class TagController extends Controller
                 'success' => 1,
                 'message' => "Tag has been created Successfully..",
             ]);
-        } 
-        catch (\Throwable $th) 
+        }
+        catch (\Throwable $th)
         {
             return response()->json(
             [
@@ -114,12 +121,12 @@ class TagController extends Controller
     }
 
 
-    // Store a Tags status Changes resource in storage..    
+    // Store a Tags status Changes resource in storage..
     public function status(Request $request)
     {
         $status = $request->status;
         $id = $request->id;
-        try 
+        try
         {
             $input = Tag::find($id);
             $input->status =  $status;
@@ -130,8 +137,8 @@ class TagController extends Controller
                 'success' => 1,
                 'message' => "Tag Status has been Changed Successfully..",
             ]);
-        } 
-        catch (\Throwable $th) 
+        }
+        catch (\Throwable $th)
         {
             return response()->json(
             [
@@ -141,15 +148,41 @@ class TagController extends Controller
         }
     }
 
-    
+
+    public function displayHeaderStatus(Request $request)
+    {
+        try
+        {
+            $tag_id = $request->id;
+            $tag = Tag::find($tag_id);
+            $tag->display_on_header = ($tag->display_on_header == 1) ? 0 : 1;
+            $tag->update();
+
+            return response()->json(
+            [
+                'success' => 1,
+                'message' => "Display on Header Status been Changed Successfully..",
+            ]);
+        }
+        catch (\Throwable $th)
+        {
+            return response()->json(
+            [
+                'success' => 0,
+                'message' => "Internal Server Error!",
+            ]);
+        }
+    }
+
+
     // Show the form for editing the specified Tags.
     public function edit(Request $request)
     {
-        try 
+        try
         {
             $id = decrypt($request->id);
             $data = Tag::where('id',$id)->first();
-            
+
             return response()->json(
             [
                 'success' => 1,
@@ -164,7 +197,7 @@ class TagController extends Controller
                 'success' => 0,
                 'message' => "Something with wrong",
             ]);
-        } 
+        }
     }
 
 
@@ -180,19 +213,19 @@ class TagController extends Controller
         $tag_id = isset($request->id) ? $request->id : '';
         $input = $request->except('_token','id');
 
-        try 
+        try
         {
             $tags = Tag::find($tag_id);
-         
+
             $tags->update($input);
             return response()->json(
             [
                 'success' => 1,
                 'message' => "Tag updated Successfully..",
             ]);
-        } 
-        catch (\Throwable $th) 
-        { 
+        }
+        catch (\Throwable $th)
+        {
             return response()->json(
             [
                 'success' => 0,
@@ -201,11 +234,11 @@ class TagController extends Controller
         }
     }
 
-    
+
     //  Remove the specified tags from storage.
     public function destroy(Request $request)
     {
-        try 
+        try
         {
             $tags = Tag::where('id',decrypt($request->id))->delete();
             return response()->json(
@@ -213,14 +246,14 @@ class TagController extends Controller
                 'success' => 1,
                 'message' => "Tag delete Successfully..",
             ]);
-        } 
-        catch (\Throwable $th) 
+        }
+        catch (\Throwable $th)
         {
             return response()->json(
             [
                 'success' => 0,
                 'message' => "Something with wrong",
             ]);
-        }   
+        }
     }
 }

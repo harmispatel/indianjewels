@@ -39,9 +39,30 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    
+
     public function document()
     {
         return $this->hasMany(UserDocument::class);
     }
+
+    public function company_city()
+    {
+        return $this->hasOne(City::class,'id','city')->select('id','name');
+    }
+
+    public function shippingCity()
+    {
+        return $this->hasOne(City::class,'id','shipping_city')->select('id','name');
+    }
+
+    public function company_state()
+    {
+        return $this->hasOne(State::class,'id','state')->select('id','name');
+    }
+
+    public function shippingState()
+    {
+        return $this->hasOne(State::class,'id','shipping_state')->select('id','name');
+    }
+
 }

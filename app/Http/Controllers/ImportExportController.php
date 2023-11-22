@@ -13,11 +13,11 @@ use App\Models\{Category, Design};
 
 class ImportExportController extends Controller
 {
-    
+
     function __construct()
-    {  
+    {
         $this->middleware('permission:import.export', ['only' => ['index']]);
-    } 
+    }
 
 
     public function index()
@@ -25,61 +25,47 @@ class ImportExportController extends Controller
         return view('admin.import_export.import_export');
     }
 
-    public function importData(Request $request)
+    public function importDesigns(Request $request)
     {
-        $this->validate($request, 
-        [
-            'import'  => 'required|mimes:xls,xlsx'
+        $request->validate([
+            'import_file'  => 'required|mimes:xls,xlsx'
         ]);
 
-        $file = $request->file('import');
         try {
-            
-            Excel::import(new ImportData,$request->file('import'));
-            
-            return redirect()->route('import.export')->with('success', 'Excel Data Imported successfully.');
-            
-        } catch (\Throwable $th) {
-            
-            return redirect()->route('import.export')->with('error', 'Oops Something Went Wrong!');
 
+            $import_file = $request->file('import_file');
+            Excel::import(new ImportData,$import_file);
+
+            return response()->json([
+                'success' => 1,
+                'message' => 'Designs Imported Successfully.',
+            ]);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => 0,
+                'message' => 'Something went Wrong!',
+            ]);
         }
-        
     }
 
-    public function exportData(Request $request)
-    {
 
-        $cat = Design::pluck('category_id');
-        $category = $cat->unique();
-        $cats = Category::whereIn('id',$category)->get();
-        if (count($cats) > 0)
-         {
-            
-            foreach ($cats as $value)
-            {
-                $catIds[] = $value->parent_category; 
+    public function exportDesigns()
+    {
+        $total_categories_ids = Design::pluck('category_id');
+        $unique_category_ids = $total_categories_ids->unique();
+        $categories = Category::whereIn('id',$unique_category_ids)->pluck('parent_category');
+
+        if (count($categories) > 0)
+        {
+            $data['categories'] = $categories;
+            try {
+                return Excel::download(new Exportdata($data),'all_designes.xlsx');
+            } catch (\Throwable $th) {
+                return redirect()->back()->with('error','Something Went Wrong!');
             }
-             
-             $category = $catIds;
-             $data['categories'] = $category;
-             if((count($data['categories']) > 0))
-             {
-                 try {
-                     
-                     return Excel::download(new Exportdata($data),'Design_data.xlsx');
-                     
-                 } catch (\Throwable $th) {
-                     
-                     return redirect()->back()->with('error','Something Went Wrong!');
-                 }
-     
-             }
         }else{
             return redirect()->back()->with('error','Something Went Wrong!');
         }
-        
-        
-
     }
 }

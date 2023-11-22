@@ -43,7 +43,7 @@ class UserRequest extends FormRequest
                 'password' => 'required|min:6',
                 'confirm_password' => 'required|same:password|min:6',
                 'user_type' => 'required',
-                'image' => 'required|mimes:jpeg,png,jpg',
+                'image' => 'mimes:jpeg,png,jpg',
             ];
         }
 

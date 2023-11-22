@@ -1,13 +1,9 @@
 @php
     $currentRouteName = Route::currentRouteName();
-    $role = Auth::guard('admin')->user();
-    $role_id = $role->user_type;
+    $user_details = Auth::guard('admin')->user();
+    $role_id = $user_details->user_type;
 
-    $permissions = App\Models\RoleHasPermissions::where('role_id', $role_id)->pluck('permission_id');
-
-    foreach ($permissions as $permission) {
-        $permission_ids[] = $permission;
-    }
+    $permission_ids = App\Models\RoleHasPermissions::where('role_id', $role_id)->pluck('permission_id')->toArray();
 
     $category = Spatie\Permission\Models\Permission::where('name', 'categories')->first();
     $tag = Spatie\Permission\Models\Permission::where('name', 'tags')->first();
@@ -41,63 +37,65 @@
 
         {{-- Master Nav --}}
         <li class="nav-item">
-            <a class="nav-link {{ Route::currentRouteName() != 'tags' && Route::currentRouteName() != 'tags.create' && Route::currentRouteName() != 'tags.edit' && Route::currentRouteName() != 'categories' && Route::currentRouteName() != 'categories.add-category' && Route::currentRouteName() != 'categories.edit-category' && Route::currentRouteName() != 'sliders' && Route::currentRouteName() != 'sliders.edit-slider' && Route::currentRouteName() != 'sliders.add-slider' && Route::currentRouteName() != 'designs' && Route::currentRouteName() != 'designs.create' && Route::currentRouteName() != 'designs.edit' && Route::currentRouteName() != 'dealers' && Route::currentRouteName() != 'dealers.create' && Route::currentRouteName() != 'dealers.edit' && Route::currentRouteName() != 'westage.discount' && Route::currentRouteName() != 'westage.discount.create' && Route::currentRouteName() != 'westage.discount.edit' && Route::currentRouteName() != 'import.export' ? 'collapsed' : '' }}  {{ Route::currentRouteName() == 'tags' || Route::currentRouteName() == 'tags.create' || Route::currentRouteName() == 'tags.edit' || Route::currentRouteName() == 'categories' || Route::currentRouteName() == 'categories.edit-category' || Route::currentRouteName() == 'categories.add-category' || Route::currentRouteName() == 'designs' || Route::currentRouteName() == 'designs.create' || Route::currentRouteName() == 'designs.edit' || Route::currentRouteName() == 'dealers' || Route::currentRouteName() == 'dealers.create' || Route::currentRouteName() == 'dealers.edit' || Route::currentRouteName() == 'westage.discount' || Route::currentRouteName() == 'westage.discount.create' || Route::currentRouteName() == 'westage.discount.edit' || Route::currentRouteName() == 'import.export' ? 'active-tab' : '' }}"
-                data-bs-target="#catalogue-nav" data-bs-toggle="collapse" href="#"
-                aria-expanded="{{ Route::currentRouteName() == 'tags' || Route::currentRouteName() == 'tags.create' || Route::currentRouteName() == 'tags.edit' || Route::currentRouteName() == 'categories' || Route::currentRouteName() == 'categories.edit-category' || Route::currentRouteName() == 'categories.add-category' || Route::currentRouteName() == 'sliders' || Route::currentRouteName() == 'sliders.add-slider' || Route::currentRouteName() == 'sliders.edit-slider' || Route::currentRouteName() == 'designs' || Route::currentRouteName() == 'designs.create' || Route::currentRouteName() == 'designs.edit' || Route::currentRouteName() == 'dealers' || Route::currentRouteName() == 'dealers.create' || Route::currentRouteName() == 'dealers.edit' || Route::currentRouteName() == 'westage.discount' || Route::currentRouteName() == 'westage.discount.create' || Route::currentRouteName() == 'westage.discount.edit' || Route::currentRouteName() == 'import.export' ? 'true' : 'false' }}">
-                <i class="bi bi-layout-text-window-reverse"></i><span>Master</span><i
-                    class="bi bi-chevron-down ms-auto"></i>
+            <a class="nav-link {{ Route::currentRouteName() != 'tags' && Route::currentRouteName() != 'tags.create' && Route::currentRouteName() != 'tags.edit' && Route::currentRouteName() != 'categories' && Route::currentRouteName() != 'categories.add-category' && Route::currentRouteName() != 'categories.edit-category' && Route::currentRouteName() != 'sliders' && Route::currentRouteName() != 'sliders.edit-slider' && Route::currentRouteName() != 'sliders.add-slider' && Route::currentRouteName() != 'designs' && Route::currentRouteName() != 'designs.create' && Route::currentRouteName() != 'designs.edit' && Route::currentRouteName() != 'dealers' && Route::currentRouteName() != 'dealers.create' && Route::currentRouteName() != 'dealers.edit' && Route::currentRouteName() != 'westage.discount' && Route::currentRouteName() != 'westage.discount.create' && Route::currentRouteName() != 'westage.discount.edit' && Route::currentRouteName() != 'import.export' && Route::currentRouteName() != 'customers' ? 'collapsed' : '' }}  {{ Route::currentRouteName() == 'tags' || Route::currentRouteName() == 'tags.create' || Route::currentRouteName() == 'tags.edit' || Route::currentRouteName() == 'categories' || Route::currentRouteName() == 'categories.edit-category' || Route::currentRouteName() == 'categories.add-category' || Route::currentRouteName() == 'designs' || Route::currentRouteName() == 'designs.create' || Route::currentRouteName() == 'designs.edit' || Route::currentRouteName() == 'dealers' || Route::currentRouteName() == 'dealers.create' || Route::currentRouteName() == 'dealers.edit' || Route::currentRouteName() == 'westage.discount' || Route::currentRouteName() == 'westage.discount.create' || Route::currentRouteName() == 'westage.discount.edit' || Route::currentRouteName() == 'import.export' || Route::currentRouteName() == 'customers' || Route::currentRouteName() == 'customers.edit' ? 'active-tab' : '' }}" data-bs-target="#catalogue-nav" data-bs-toggle="collapse" href="#" aria-expanded="{{ Route::currentRouteName() == 'tags' || Route::currentRouteName() == 'tags.create' || Route::currentRouteName() == 'tags.edit' || Route::currentRouteName() == 'categories' || Route::currentRouteName() == 'categories.edit-category' || Route::currentRouteName() == 'categories.add-category' || Route::currentRouteName() == 'sliders' || Route::currentRouteName() == 'sliders.add-slider' || Route::currentRouteName() == 'sliders.edit-slider' || Route::currentRouteName() == 'designs' || Route::currentRouteName() == 'designs.create' || Route::currentRouteName() == 'designs.edit' || Route::currentRouteName() == 'dealers' || Route::currentRouteName() == 'dealers.create' || Route::currentRouteName() == 'dealers.edit' || Route::currentRouteName() == 'westage.discount' || Route::currentRouteName() == 'westage.discount.create' || Route::currentRouteName() == 'westage.discount.edit' || Route::currentRouteName() == 'import.export' || Route::currentRouteName() == 'customers' || Route::currentRouteName() == 'customers.edit' ? 'true' : 'false' }}">
+                <i class="bi bi-layout-text-window-reverse"></i><span>Master</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
-            <ul id="catalogue-nav"
-                class="nav-content collapse {{ Route::currentRouteName() == 'tags' || Route::currentRouteName() == 'tags.create' || Route::currentRouteName() == 'tags.edit' || Route::currentRouteName() == 'categories' || Route::currentRouteName() == 'categories.edit-category' || Route::currentRouteName() == 'categories.add-category' || Route::currentRouteName() == 'sliders' || Route::currentRouteName() == 'sliders.add-slider' || Route::currentRouteName() == 'sliders.edit-slider' || Route::currentRouteName() == 'designs' || Route::currentRouteName() == 'designs.create' || Route::currentRouteName() == 'designs.edit' || Route::currentRouteName() == 'dealers' || Route::currentRouteName() == 'dealers.create' || Route::currentRouteName() == 'dealers.edit' || Route::currentRouteName() == 'westage.discount' || Route::currentRouteName() == 'westage.discount.create' || Route::currentRouteName() == 'westage.discount.edit' || Route::currentRouteName() == 'import.export' ? 'show' : '' }}"
+            <ul id="catalogue-nav" class="nav-content collapse {{ Route::currentRouteName() == 'tags' || Route::currentRouteName() == 'tags.create' || Route::currentRouteName() == 'tags.edit' || Route::currentRouteName() == 'categories' || Route::currentRouteName() == 'categories.edit-category' || Route::currentRouteName() == 'categories.add-category' || Route::currentRouteName() == 'sliders' || Route::currentRouteName() == 'sliders.add-slider' || Route::currentRouteName() == 'sliders.edit-slider' || Route::currentRouteName() == 'designs' || Route::currentRouteName() == 'designs.create' || Route::currentRouteName() == 'designs.edit' || Route::currentRouteName() == 'dealers' || Route::currentRouteName() == 'dealers.create' || Route::currentRouteName() == 'dealers.edit' || Route::currentRouteName() == 'westage.discount' || Route::currentRouteName() == 'westage.discount.create' || Route::currentRouteName() == 'westage.discount.edit' || Route::currentRouteName() == 'import.export' || Route::currentRouteName() == 'customers' || Route::currentRouteName() == 'customers.edit' ? 'show' : '' }}"
                 data-bs-parent="#sidebar-nav">
 
+                {{-- Categories --}}
                 @if (in_array($category->id, $permission_ids))
                     <li>
-                        <a href="{{ route('categories') }}"
-                            class="{{ Route::currentRouteName() == 'categories' || Route::currentRouteName() == 'categories.edit-category' || Route::currentRouteName() == 'categories.add-category' ? 'active' : '' }}">
-                            <i
-                                class="{{ Route::currentRouteName() == 'categories' || Route::currentRouteName() == 'categories.edit-category' || Route::currentRouteName() == 'categories.add-category' ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Categories</span>
-                        </a>
-                    </li>
-                @endif
-                @if (in_array($tag->id, $permission_ids))
-                    <li>
-                        <a href="{{ route('tags') }}"
-                            class="{{ Route::currentRouteName() == 'tags' || Route::currentRouteName() == 'tags.edit' || Route::currentRouteName() == 'tags.create' ? 'active' : '' }}">
-                            <i
-                                class="{{ Route::currentRouteName() == 'tags' || Route::currentRouteName() == 'tags.edit' || Route::currentRouteName() == 'tags.create' ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Tags</span>
-                        </a>
-                    </li>
-                @endif
-                @if (in_array($slider->id, $permission_ids))
-                    <li>
-                        <a href="{{ route('sliders') }}"
-                            class="{{ Route::currentRouteName() == 'sliders' || Route::currentRouteName() == 'sliders.add-slider' || Route::currentRouteName() == 'sliders.edit-slider' ? 'active' : '' }}">
-                            <i
-                                class="{{ Route::currentRouteName() == 'sliders' || Route::currentRouteName() == 'sliders.add-slider' || Route::currentRouteName() == 'sliders.edit-slider' ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Top Banner</span>
-                        </a>
-                    </li>
-                @endif
-                @if (in_array($design->id, $permission_ids))
-                    <li>
-                        <a href="{{ route('designs') }}"
-                            class="{{ Route::currentRouteName() == 'designs' || Route::currentRouteName() == 'designs.create' || Route::currentRouteName() == 'designs.edit' ? 'active' : '' }}">
-                            <i
-                                class="{{ Route::currentRouteName() == 'designs' || Route::currentRouteName() == 'designs.create' || Route::currentRouteName() == 'designs.edit' ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Designs</span>
-                        </a>
-                    </li>
-                @endif
-                @if (in_array($dealer->id, $permission_ids))
-                    <li>
-                        <a href="{{ route('dealers') }}"
-                            class="{{ Route::currentRouteName() == 'dealers' || Route::currentRouteName() == 'dealers.create' || Route::currentRouteName() == 'dealers.edit' ? 'active' : '' }}">
-                            <i
-                                class="{{ Route::currentRouteName() == 'dealers' || Route::currentRouteName() == 'dealers.create' || Route::currentRouteName() == 'dealers.edit' ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Dealer</span>
+                        <a href="{{ route('categories') }}" class="{{ Route::currentRouteName() == 'categories' || Route::currentRouteName() == 'categories.edit-category' || Route::currentRouteName() == 'categories.add-category' ? 'active' : '' }}">
+                            <i class="{{ Route::currentRouteName() == 'categories' || Route::currentRouteName() == 'categories.edit-category' || Route::currentRouteName() == 'categories.add-category' ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Categories</span>
                         </a>
                     </li>
                 @endif
 
-                @if (in_array($discount->id, $permission_ids))
+                {{-- Tags --}}
+                @if (in_array($tag->id, $permission_ids))
+                    <li>
+                        <a href="{{ route('tags') }}" class="{{ Route::currentRouteName() == 'tags' || Route::currentRouteName() == 'tags.edit' || Route::currentRouteName() == 'tags.create' ? 'active' : '' }}">
+                            <i class="{{ Route::currentRouteName() == 'tags' || Route::currentRouteName() == 'tags.edit' || Route::currentRouteName() == 'tags.create' ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Tags</span>
+                        </a>
+                    </li>
+                @endif
+
+                {{-- Top Banners --}}
+                @if (in_array($slider->id, $permission_ids))
+                    <li>
+                        <a href="{{ route('sliders') }}" class="{{ Route::currentRouteName() == 'sliders' || Route::currentRouteName() == 'sliders.add-slider' || Route::currentRouteName() == 'sliders.edit-slider' ? 'active' : '' }}">
+                            <i class="{{ Route::currentRouteName() == 'sliders' || Route::currentRouteName() == 'sliders.add-slider' || Route::currentRouteName() == 'sliders.edit-slider' ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Top Banner</span>
+                        </a>
+                    </li>
+                @endif
+
+                {{-- Designs --}}
+                @if (in_array($design->id, $permission_ids))
+                    <li>
+                        <a href="{{ route('designs') }}" class="{{ Route::currentRouteName() == 'designs' || Route::currentRouteName() == 'designs.create' || Route::currentRouteName() == 'designs.edit' ? 'active' : '' }}">
+                            <i class="{{ Route::currentRouteName() == 'designs' || Route::currentRouteName() == 'designs.create' || Route::currentRouteName() == 'designs.edit' ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Designs</span>
+                        </a>
+                    </li>
+                @endif
+
+                {{-- Dealers --}}
+                @if (in_array($dealer->id, $permission_ids))
+                    <li>
+                        <a href="{{ route('dealers') }}" class="{{ Route::currentRouteName() == 'dealers' || Route::currentRouteName() == 'dealers.create' || Route::currentRouteName() == 'dealers.edit' ? 'active' : '' }}">
+                            <i class="{{ Route::currentRouteName() == 'dealers' || Route::currentRouteName() == 'dealers.create' || Route::currentRouteName() == 'dealers.edit' ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Dealer</span>
+                        </a>
+                    </li>
+                @endif
+
+                {{-- Customers --}}
+                <li>
+                    <a href="{{ route('customers') }}" class="{{( Route::currentRouteName() == 'customers' || Route::currentRouteName() == 'customers.edit') ? 'active' : '' }}">
+                        <i class="{{ Route::currentRouteName() == 'customers' ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Customers</span>
+                    </a>
+                </li>
+
+                {{-- @if (in_array($discount->id, $permission_ids))
                     <li>
                         <a href="{{ route('westage.discount') }}"
                             class="{{ Route::currentRouteName() == 'westage.discount' || Route::currentRouteName() == 'westage.discount.create' || Route::currentRouteName() == 'westage.discount.edit' ? 'active' : '' }}">
@@ -106,13 +104,13 @@
                                 Discount</span>
                         </a>
                     </li>
-                @endif
+                @endif --}}
                 @if (in_array($import_export->id, $permission_ids))
                 <li>
                     <a href="{{ route('import.export') }}"
                         class="{{ Route::currentRouteName() == 'import.export'  ? 'active' : '' }}">
                         <i
-                            class="{{ Route::currentRouteName() == 'import.export'  ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Import/Export</span>
+                            class="{{ Route::currentRouteName() == 'import.export'  ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Import / Export</span>
                     </a>
                 </li>
                 @endif

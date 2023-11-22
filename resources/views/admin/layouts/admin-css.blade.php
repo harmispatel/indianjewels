@@ -7,9 +7,10 @@
 <link href="{{ asset('public/assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
 <link href="{{ asset('public/assets/vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
 <link href="{{ asset('public/assets/vendor/remixicon/remixicon.css') }}" rel="stylesheet">
-<link href="{{ asset('public/assets/vendor/simple-datatables/style.css') }}" rel="stylesheet">
 
-
+{{-- Datatable --}}
+{{-- <link href="{{ asset('public/assets/vendor/simple-datatables/style.css') }}" rel="stylesheet"> --}}
+<link rel="stylesheet" href="//cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 
 {{-- Toastr --}}
 <link href="{{ asset('public/assets/vendor/toastr/css/toastr.min.css') }}" rel="stylesheet">
@@ -26,8 +27,6 @@
 
 {{-- sweetAlert 2 --}}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.min.css">
-
-<link rel="stylesheet" href="//cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 
 <style>
 

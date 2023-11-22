@@ -19,25 +19,24 @@ class CategoriesRequest extends FormRequest
     // Get the validation rules that apply to the request.
     public function rules()
     {
-        
-         $ex = Category::get();
-         foreach($ex as $value)
-         {
+
+        $ex = Category::get();
+        foreach($ex as $value)
+        {
             $val[] = $value->parent_category;
-         }
+        }
+
         if($this->id)
         {
-            
             if ($this->parent_category == 0) {
                 $rules = [
                     'name' => 'required|unique:categories,name,'.$this->id,
-                    
                     'image' => 'mimes:jpeg,png,jpg,gif,svg|max:3072',
                 ];
             }else{
                 if(in_array($this->parent_category,$val))
                 {
-                    
+
                     $id = $this->id;
                     $request = $this;
                     $rules = [
@@ -48,13 +47,13 @@ class CategoriesRequest extends FormRequest
                                     ->where('id', '<>', $id);
                             }),
                         ],
-                        
+
                         'image' => 'mimes:jpeg,png,jpg,gif,svg|max:3072',
                     ];
                 }else{
 
                     $rules = [
-                        
+
                         'name' => 'required',
                         'image' => 'mimes:jpeg,png,jpg,gif,svg|max:3072',
                     ];
@@ -64,10 +63,11 @@ class CategoriesRequest extends FormRequest
 
         }
         else
-        {   
+        {
             if($this->parent_category == null)
             {
                 $rules = [
+                    'category_id' => 'unique:categories,id',
                     'name' => 'required|unique:categories,name',
                     'image' => 'mimes:jpeg,png,jpg,gif,svg|max:3072',
                 ];
@@ -76,11 +76,13 @@ class CategoriesRequest extends FormRequest
                 if (in_array($this->parent_category,$val)) {
                     # code...
                     $rules = [
+                        'category_id' => 'unique:categories,id',
                         'name' => 'required|unique:categories,name',
                         'image' => 'mimes:jpeg,png,jpg,gif,svg|max:3072',
                     ];
                 }else{
                     $rules = [
+                        'category_id' => 'unique:categories,id',
                         'name' => 'required',
                         'image' => 'mimes:jpeg,png,jpg,gif,svg|max:3072',
                     ];

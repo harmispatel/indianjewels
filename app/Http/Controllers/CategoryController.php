@@ -44,16 +44,19 @@ class CategoryController extends Controller
     public function store(CategoriesRequest $request)
     {
 
-        $input = $request->except('_token','image','parent_category','parent_cat');
+        $input = $request->except('_token','image','parent_category','parent_cat','category_id');
 
         try
         {
-
             // Parent Category
             if ($request->parent_cat) {
                 $input['parent_category'] = 0;
             }else{
                 $input['parent_category'] = $request->parent_category;
+            }
+
+            if(isset($request->category_id) && !empty($request->category_id)){
+                $input['id'] = $request->category_id;
             }
 
             // $input['parent_category'] = (isset($request->parent_category) && !empty($request->parent_category)) ? $request->parent_category : 0;
@@ -95,21 +98,24 @@ class CategoryController extends Controller
     // Show the form for editing the specified resource.
     public function edit(Request $request)
     {
-
         $category_id =  decrypt($request->id);
-try {
-    //code...
-    // Existing Category Details
-    $category_details = Category::where('id',$category_id)->first();
+        try {
+            // Existing Category Details
+            $category_details = Category::where('id',$category_id)->first();
+            $cat_image_html = '';
 
-    // Get All Parent Categories
-    // $categories = Category::where('parent_category',0)->where('id','!=',$category_id)->get();
+            if(isset($category_details['image']) && !empty($category_details['image']) && file_exists('public/images/uploads/category_images/'.$category_details['image'])){
+                $cat_image_html .= '<img src="'.asset('public/images/uploads/category_images/'.$category_details['image']).'" width="70">';
+            }else{
+                $cat_image_html .= '<img src="'.asset('public/images/default_images/not-found/no_img1.jpg').'" width="70">';
+            }
+            $category_details['image'] = $cat_image_html;
 
-    return $this->sendResponse(true,"Category has been Retrive SuccessFully...",$category_details);
-} catch (\Throwable $th) {
-    //throw $th;
-    return $this->sendResponse(false, "500, Internal Server Error!");
-}
+            return $this->sendResponse(true,"Category has been Retrive SuccessFully...",$category_details);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->sendResponse(false, "500, Internal Server Error!");
+        }
 
     }
 
@@ -119,9 +125,8 @@ try {
     public function update(CategoriesRequest $request)
     {
 
-
         $category_id = isset($request->id) ? $request->id : '';
-        $input = $request->except('_token','category_id','image','parent_category','parent_cat');
+        $input = $request->except('_token','category_id','image','parent_category','parent_cat','category_id');
 
         try
         {

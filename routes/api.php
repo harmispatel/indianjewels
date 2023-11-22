@@ -24,7 +24,7 @@ Route::get('latest-designs', [CustomerApiController::class, 'getLatestDesign']);
 Route::get('slider',[CustomerApiController::class,'getSlider']);
 Route::post('design-detail',[CustomerApiController::class,'getDesignDetail']);
 Route::post('designs',[CustomerApiController::class,'getDesigns']);
-Route::get('alldesigns',[CustomerApiController::class,'getalldesigns']);
+Route::post('alldesigns',[CustomerApiController::class,'getalldesigns']);
 
 
 Route::get('metal',[CustomerApiController::class,'getMetal']);
@@ -35,7 +35,7 @@ Route::post('filter-design',[CustomerApiController::class,'filterDesign']);
 Route::post('related-designs',[CustomerApiController::class,'relatedDesigns']);
 Route::post('user-login',[AuthApiController::class,'userlogin']);
 
-Route::post('profile',[CustomerApiController::class,'profile'])->middleware('auth:api');
+Route::post('profile',[CustomerApiController::class,'profile']);
 Route::post('update-profile',[CustomerApiController::class,'updateProfile'])->middleware('auth:api');
 
 Route::post('add-collection-design',[CustomerApiController::class,'dealerAddCollectionDesign']);
@@ -57,4 +57,11 @@ Route::post('dealer/order-list',[CustomerApiController::class,'dealerOrderList']
 
 Route::post('user/cart-store',[CustomerApiController::class,'userCartStore']);
 Route::post('user/cart-list',[CustomerApiController::class,'userCartList']);
+Route::post('user/cart-update',[CustomerApiController::class,'userCartUpdate']);
 Route::post('user/cart-remove',[CustomerApiController::class,'userCartRemove']);
+Route::post('user/purchase-order',[CustomerApiController::class,'userPurchaseOrder']);
+
+Route::post('state/cities',[CustomerApiController::class,'getStateCities']);
+
+Route::get('header-tags', [CustomerApiController::class, 'getHeaderTags']);
+Route::post('apply-dealer-code',[CustomerApiController::class, 'applyDealerCode']);

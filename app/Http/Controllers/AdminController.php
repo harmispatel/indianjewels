@@ -3,62 +3,49 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\{Role, Permission};
 use App\Http\Requests\UserRequest;
 use Yajra\DataTables\Facades\DataTables;
 use App\Traits\ImageTrait;
 use App\Models\{Admin, RoleHasPermissions};
 use Hash;
 use DB;
-use Illuminate\Support\Arr;
 use Auth;
-use Spatie\Permission\Models\Permission;
-
-
-
-
-
 
 class AdminController extends Controller
 {
-    //
     use ImageTrait;
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     function __construct()
     {
-         $this->middleware('permission:users|users.create|users.edit|users.destroy', ['only' => ['index','store']]);
-         $this->middleware('permission:users.create', ['only' => ['create','store']]);
-         $this->middleware('permission:users.edit', ['only' => ['edit','update']]);
-         $this->middleware('permission:users.destroy', ['only' => ['destroy']]);
-
+        $this->middleware('permission:users|users.create|users.edit|users.destroy', ['only' => ['index','store']]);
+        $this->middleware('permission:users.create', ['only' => ['create','store']]);
+        $this->middleware('permission:users.edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:users.destroy', ['only' => ['destroy']]);
     }
 
-
+    // Display a listing of the resource.
     public function index()
     {
         return view('admin.users.users');
     }
 
+    // Create User Form
     public function create()
     {
         $roles = Role::all();
-
         return view('admin.users.create_users', compact('roles'));
     }
 
+    // Load All User by Ajax Datatable
     public function loadUsers(Request $request)
     {
         if ($request->ajax())
         {
-            // Get all Amenities
-            $sliders = Admin::get();
+            // Get all Admins
+            $admins = Admin::get();
 
-            return DataTables::of($sliders)
+            return DataTables::of($admins)
             ->addIndexColumn()
             ->addColumn('name', function ($row)
             {
@@ -69,14 +56,12 @@ class AdminController extends Controller
             })
             ->addColumn('image', function ($row)
             {
-                // dd($row->image);
-                $default_image = asset("public/images/uploads/user_images/no_image.jpg");
-                $image = ($row->image) ? asset('public/images/uploads/user_images/'.$row->image) : $default_image;
-                $image_html = '';
-                $image_html .= '<img class="me-2" src="'.$image.'" width="50" height="50">';
+                $default_image = asset("public/images/default_images/not-found/no_img1.jpg");
+                $image = (isset($row->image) && !empty($row->image) && file_exists('public/images/uploads/user_images/'.$row->image)) ? asset('public/images/uploads/user_images/'.$row->image) : $default_image;
+                $image_html = '<img class="me-2" src="'.$image.'" width="50" height="50">';
                 return $image_html;
             })
-            ->addColumn('usertype', function ($row)
+            ->addColumn('role', function ($row)
             {
                 $usertype = $row->user_type;
                 $role = Role::where('id',$usertype)->first();
@@ -86,10 +71,9 @@ class AdminController extends Controller
             {
                 $status = $row->status;
                 $checked = ($status == 1) ? 'checked' : '';
-                $checkVal = ($status == 1) ? 0 : 1;
                 $user_id = isset($row->id) ? $row->id : '';
                 if($user_id != 1){
-                    return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus('.$checkVal.','.$user_id.')" id="statusBtn" '.$checked.'></div>';
+                    return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus('.$user_id.')" id="statusBtn" '.$checked.'></div>';
                 }
             })
             ->addColumn('actions',function($row)
@@ -115,71 +99,73 @@ class AdminController extends Controller
 
                 return $action_html;
             })
-            ->rawColumns(['status','usertype','actions','image','name'])
+            ->rawColumns(['status','role','actions','image','name'])
             ->make(true);
         }
     }
 
+    // Store a newly created User
     public function store(UserRequest $request)
     {
-
-            try {
-                $input = $request->except('_token','image','confirm_password','password');
-                $input['password'] = Hash::make($request->password);
-                if ($request->hasFile('image'))
-                    {
-                        $file = $request->file('image');
-                        $image_url = $this->addSingleImage('user','user_images',$file, $old_image = '',"300*300");
-                        $input['image'] = $image_url;
-                    }
-                $user = Admin::create($input);
-
-                $user_type = $user->user_type;
-                $roles = Role::where('id',$user_type)->first();
-                $user->assignRole($roles->name);
-
-                return redirect()->route('users')->with('success','User created successfully');
-            } catch (\Throwable $th) {
-                return redirect()->route('users')->with('error','Something with wrong');
-
+        try {
+            $input = $request->except('_token','image','confirm_password','password');
+            $input['password'] = Hash::make($request->password);
+            if ($request->hasFile('image'))
+            {
+                $file = $request->file('image');
+                $image_url = $this->addSingleImage('user','user_images',$file, $old_image = '',"300*300");
+                $input['image'] = $image_url;
             }
+            $user = Admin::create($input);
 
+            $user_type = $user->user_type;
+            $roles = Role::where('id',$user_type)->first();
+            $user->assignRole($roles->name);
+
+            return redirect()->route('users')->with('success','User created successfully');
+        } catch (\Throwable $th) {
+            return redirect()->route('users')->with('error','Something with wrong');
+
+        }
     }
 
-     // Store a Users status Changes resource in storage..
-     public function status(Request $request)
-     {
-         $status = $request->status;
-         $id = $request->id;
-         try {
-             $input = Admin::find($id);
-             $input->status =  $status;
-             $input->update();
-
-             return response()->json([
-                 'success' => 1,
-                 'message' => "User Status has been Changed Successfully..",
-             ]);
-         } catch (\Throwable $th) {
-             return response()->json([
-                 'success' => 0,
-                 'message' => "Internal Server Error!",
-             ]);
-         }
-     }
-
-     public function edit(Request $request, $id)
-     {
-        $id = decrypt($id);
-        $data = Admin::where('id',$id)->first();
-        $roles = Role::all();
-        return view('admin.users.edit_users',compact('data','roles'));
-     }
-
-     public function update(UserRequest $request)
-     {
+    // Change status of User
+    public function status(Request $request)
+    {
         try {
-            //code...
+            $id = $request->id;
+            $admin = Admin::find($id);
+            $admin->status =  ($admin->status == 1) ? 0 : 1;
+            $admin->update();
+            return response()->json([
+                'success' => 1,
+                'message' => "User Status has been Changed Successfully..",
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => 0,
+                'message' => "Internal Server Error!",
+            ]);
+        }
+    }
+
+    // Edit Specific User
+    public function edit(Request $request, $id)
+    {
+        try {
+            $id = decrypt($id);
+            $data = Admin::where('id',$id)->first();
+            $roles = Role::all();
+            return view('admin.users.edit_users',compact('data','roles'));
+        } catch (\Throwable $th) {
+            return back()->with('error', 'Something went Wrong!');
+        }
+    }
+
+    // Update Specific User
+    public function update(UserRequest $request)
+    {
+        try {
             $input = $request->except('_token','id','password','confirm_password','image');
             $id = decrypt($request->id);
 
@@ -187,44 +173,40 @@ class AdminController extends Controller
             {
                 $input['password'] = Hash::make($request->password);
             }
-                         if ($request->hasFile('image'))
-                        {
-                            $img = Admin::where('id',$id)->first();
-                            $old_image = $img->image;
-                            $file = $request->file('image');
-                            $image_url = $this->addSingleImage('user','user_images',$file, $old_image = '',"300*300");
-                            $input['image'] = $image_url;
-                        }
-                        $user = Admin::find($id);
-                        $user->update($input);
-                        DB::table('model_has_roles')->where('model_id',$id)->delete();
-                        $user_type = $user->user_type;
-                        $roles = Role::where('id',$user_type)->first();
-                        $user->assignRole($roles->name);
 
+            if ($request->hasFile('image'))
+            {
+                $img = Admin::where('id',$id)->first();
+                $old_image = $img->image;
+                $file = $request->file('image');
+                $image_url = $this->addSingleImage('user','user_images',$file, $old_image = '',"300*300");
+                $input['image'] = $image_url;
+            }
 
-                    return redirect()->route('users')->with('success','User updated successfully');
+            $user = Admin::find($id);
+            $user->update($input);
+            DB::table('model_has_roles')->where('model_id',$id)->delete();
+            $user_type = $user->user_type;
+            $roles = Role::where('id',$user_type)->first();
+            $user->assignRole($roles->name);
+
+            return redirect()->route('users')->with('success','User updated successfully');
         } catch (\Throwable $th) {
             return redirect()->route('users')->with('error','Something with wrong');
-
         }
+    }
 
-
-     }
-
-     public function destroy(Request $request)
-     {
+    // Delete a Specific User
+    public function destroy(Request $request)
+    {
         try {
-            //code...
             $id = decrypt($request->id);
-
             $user = Admin::where('id',$id)->first();
-
             $img = isset($user->image) ? $user->image : '';
 
             if (!empty($img) && file_exists('public/images/uploads/user_images/'.$img))
             {
-                  unlink('public/images/uploads/user_images/'.$img);
+                unlink('public/images/uploads/user_images/'.$img);
             }
 
             Admin::where('id',$id)->delete();
@@ -233,13 +215,18 @@ class AdminController extends Controller
                 'message' => "User delete Successfully..",
             ]);
         } catch (\Throwable $th) {
-            //throw $th;
             return response()->json([
                 'success' => 0,
                 'message' => "Something with wrong",
             ]);
         }
+    }
 
-     }
+    // Logout Admin
+    public function AdminLogout()
+    {
+        Auth::guard('admin')->logout();
+        return redirect()->route('admin.login');
+    }
 
 }

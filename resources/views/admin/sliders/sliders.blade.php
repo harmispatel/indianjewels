@@ -9,7 +9,7 @@ $role = Auth::guard('admin')->user()->user_type;
 $slider_add = Spatie\Permission\Models\Permission::where('name','sliders.add-slider')->first();
 $slider_edit = Spatie\Permission\Models\Permission::where('name','sliders.edit-slider')->first();
 $slider_delete = Spatie\Permission\Models\Permission::where('name','sliders.destroy')->first();
-$permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('permission_id');  
+$permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('permission_id');
 
 $Days = ['0'=>'Sunday','1'=>'Monday','2'=>'Tuesday','3'=>'Wendesday','4'=>'Thursday','5'=>'Friday','6'=>'Saturday'];
 
@@ -39,33 +39,11 @@ $Days = ['0'=>'Sunday','1'=>'Monday','2'=>'Tuesday','3'=>'Wendesday','4'=>'Thurs
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <div class="form-group">
-                                            <label for="image" class="form-label">Image <span
-                                                class="text-danger">*</span></label>
-                                            <input type="file" name="image" id= "image" class="form-control @error('image') is-invalid @enderror" placeholder="image">
-                                            <div class="form-group" id="sliderimage" style="display: none;"></div>
-                                            @if ($errors->has('image'))
-                                                <div class="invalid-feedback">
-                                                    {{ $errors->first('image') }}
-                                                </div>
-                                            @endif<br>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <div class="form-group">
-                                            <label for="banner_text" class="form-label">Banner Text </label>
-                                            <textarea name="banner_text" id="banner_text" class="form-control" placeholder="Enter Banner Text"></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <div class="form-group">
                                             <label for="days" class="form-label">Days<span class="text-danger">*</span></label>
                                             <select name="days" id="days" class="form-control">
                                                 <option value="">-- Select Days --</option>
                                                 @foreach ($Days as $key => $day)
-                                                    <option value="{{$day}}">{{$day}}</option>    
+                                                    <option value="{{$day}}">{{$day}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -84,6 +62,27 @@ $Days = ['0'=>'Sunday','1'=>'Monday','2'=>'Tuesday','3'=>'Wendesday','4'=>'Thurs
 
                                         </div>
 
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-group">
+                                            <label for="banner_text" class="form-label">Banner Text </label>
+                                            <textarea name="banner_text" rows="5" id="banner_text" class="form-control" placeholder="Enter Banner Text"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-group">
+                                            <label for="image" class="form-label">Image <span
+                                                class="text-danger">*</span></label>
+                                            <input type="file" name="image" id= "image" class="form-control @error('image') is-invalid @enderror" placeholder="image">
+                                            @if ($errors->has('image'))
+                                                <div class="invalid-feedback">
+                                                    {{ $errors->first('image') }}
+                                                </div>
+                                            @endif<br>
+                                        </div>
+                                        <div class="form-group" id="sliderimage" style="display: none;"></div>
                                     </div>
                                 </div>
                             </div>
@@ -111,9 +110,9 @@ $Days = ['0'=>'Sunday','1'=>'Monday','2'=>'Tuesday','3'=>'Wendesday','4'=>'Thurs
                 </nav>
             </div>
             <div class="col-md-4" style="text-align: right;">
-                
-                @if((in_array($slider_add->id, $permission_ids))) 
-                
+
+                @if((in_array($slider_add->id, $permission_ids)))
+
                     @if($slider < 7)
                     <a data-bs-toggle="modal" data-bs-target="#sliderModal" class="btn btn-sm new-slider custom-btn">
                         <i class="bi bi-plus-lg"></i>
@@ -127,12 +126,12 @@ $Days = ['0'=>'Sunday','1'=>'Monday','2'=>'Tuesday','3'=>'Wendesday','4'=>'Thurs
 {{-- Slider Section --}}
     <section class="section dashboard">
         <div class="row">
-           
-     
+
+
     <div class="col-md-12">
         <div class="card">
             <div class="card-body">
-                
+
                 <div class="table-responsive custom_dt_table">
                     <table class="table w-100" id="slidersTable">
                         <thead>
@@ -149,7 +148,7 @@ $Days = ['0'=>'Sunday','1'=>'Monday','2'=>'Tuesday','3'=>'Wendesday','4'=>'Thurs
                 </div>
             </div>
         </div>
-    </section>    
+    </section>
 
 @endsection
 
@@ -161,7 +160,7 @@ $Days = ['0'=>'Sunday','1'=>'Monday','2'=>'Tuesday','3'=>'Wendesday','4'=>'Thurs
     $(document).ready(function()
     {
         // Toastr Options
-        toastr.options = 
+        toastr.options =
         {
             "closeButton": true,
             "progressBar": true,
@@ -226,33 +225,33 @@ $Days = ['0'=>'Sunday','1'=>'Monday','2'=>'Tuesday','3'=>'Wendesday','4'=>'Thurs
             serverSide: true,
             pageLength: 100,
             ajax: "{{ route('sliders.load-sliders') }}",
-            columns: 
+            columns:
             [
                 {
-                    data: 'id', 
+                    data: 'id',
                     name: 'id'
                 },
                 {
-                    data: 'image', 
-                    name: 'image', 
+                    data: 'image',
+                    name: 'image',
                     orderable: false,
                     searchable: false
                 },
                 {
-                    data: 'banner_text', 
+                    data: 'banner_text',
                     name: 'banner_text',
                     orderable: false,
                     searchable: false
                 },
                 {
-                    data: 'status', 
-                    name: 'status', 
+                    data: 'status',
+                    name: 'status',
                     orderable: false,
                     searchable: false
                 },
                 {
-                    data: 'actions', 
-                    name: 'actions', 
+                    data: 'actions',
+                    name: 'actions',
                     orderable: false,
                     searchable: false
                 },
@@ -317,7 +316,7 @@ $Days = ['0'=>'Sunday','1'=>'Monday','2'=>'Tuesday','3'=>'Wendesday','4'=>'Thurs
             {
                 // All Validation Errors
                 const validationErrors = (response?.responseJSON?.errors) ? response.responseJSON.errors : '';
-                
+
                 if (validationErrors != '')
                 {
                     // image Error
@@ -326,7 +325,7 @@ $Days = ['0'=>'Sunday','1'=>'Monday','2'=>'Tuesday','3'=>'Wendesday','4'=>'Thurs
                     {
                         $('#image').addClass('is-invalid');
                         toastr.error(ImageError);
-                        
+
                     }
                     var DayError = (validationErrors.days) ? validationErrors.days : '';
                     if (DayError != ''){
@@ -340,7 +339,7 @@ $Days = ['0'=>'Sunday','1'=>'Monday','2'=>'Tuesday','3'=>'Wendesday','4'=>'Thurs
                         toastr.error(TagError);
                     }
 
-                    
+
                 }
             }
         });
@@ -370,7 +369,7 @@ $Days = ['0'=>'Sunday','1'=>'Monday','2'=>'Tuesday','3'=>'Wendesday','4'=>'Thurs
             type: "POST",
             url: "{{ route('sliders.edit-slider') }}",
             dataType: "JSON",
-            data: 
+            data:
             {
                 '_token': "{{ csrf_token() }}",
                 'id': slidersID,
@@ -381,8 +380,6 @@ $Days = ['0'=>'Sunday','1'=>'Monday','2'=>'Tuesday','3'=>'Wendesday','4'=>'Thurs
                 {
                     // Sliders Data's
                     const sliders = response.data;
-                    const default_image = "public/images/uploads/slider_image/no_image.jpg";
-                    const Simage = (sliders.image) ? sliders.image : default_image;
                     const Slider_tags = sliders.slider_tags;
 
                     // Add values in SliderForm
@@ -403,7 +400,7 @@ $Days = ['0'=>'Sunday','1'=>'Monday','2'=>'Tuesday','3'=>'Wendesday','4'=>'Thurs
                         });
 
                     $('#sliderimage').html('')
-                    $('#sliderimage').append('<img src="{{ asset('public/images/uploads/slider_image') }}/'+Simage+'" width="70" height="70">');
+                    $('#sliderimage').append(sliders.image);
                     $('#sliderimage').show();
 
                     $("#tags").select2({
@@ -434,7 +431,7 @@ $Days = ['0'=>'Sunday','1'=>'Monday','2'=>'Tuesday','3'=>'Wendesday','4'=>'Thurs
 
 
     // Function for Delete Table
-    function deleteSliders(slidersID) 
+    function deleteSliders(slidersID)
     {
         swal(
         {
@@ -443,64 +440,64 @@ $Days = ['0'=>'Sunday','1'=>'Monday','2'=>'Tuesday','3'=>'Wendesday','4'=>'Thurs
             buttons: true,
             dangerMode: true,
         })
-        .then((willDeleteSliders) => 
+        .then((willDeleteSliders) =>
         {
-            if (willDeleteSliders) 
+            if (willDeleteSliders)
             {
                 $.ajax(
                 {
                     type: "POST",
                     url: '{{ route('sliders.destroy') }}',
-                    data: 
+                    data:
                     {
                         "_token": "{{ csrf_token() }}",
                         'id': slidersID,
                     },
                     dataType: 'JSON',
-                    success: function(response) 
+                    success: function(response)
                     {
-                        if (response.success == 1) 
+                        if (response.success == 1)
                         {
                             toastr.success(response.message);
                             $('#slidersTable').DataTable().ajax.reload();
                             setTimeout(() => {
                                 location.reload();
                             }, 1500);
-                        } 
-                        else 
+                        }
+                        else
                         {
                             swal(response.message, "", "error");
                         }
                     }
                 });
-            } 
-            else 
+            }
+            else
             {
                 swal("Cancelled", "", "error");
             }
         });
     }
 
-    function changeStatus(status, id) 
+    function changeStatus(status, id)
     {
         $.ajax(
         {
             type: "POST",
             url: '{{ route('sliders.status') }}',
-            data: 
+            data:
             {
                 "_token": "{{ csrf_token() }}",
                 "status": status,
                 "id": id
             },
             dataType: 'JSON',
-            success: function(response) 
+            success: function(response)
             {
-                if (response.success == 1) 
+                if (response.success == 1)
                 {
                     toastr.success(response.message);
-                } 
-                else 
+                }
+                else
                 {
                     toastr.error(response.message);
                 }
@@ -508,7 +505,7 @@ $Days = ['0'=>'Sunday','1'=>'Monday','2'=>'Tuesday','3'=>'Wendesday','4'=>'Thurs
         })
     }
 
-   
+
 
 </script>
 

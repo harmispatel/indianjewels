@@ -23,7 +23,7 @@ class HighestDesignResource extends JsonResource
             foreach ($designs as $design)
             {
                 $data['id'] = $design->id;
-                $data['image'] = (isset($design->image) && !empty($design->image)) ? asset('public/images/uploads/item_image/'.$design->image) : asset('public/images/uploads/item_image/no_image.jpg');
+                $data['image'] = (isset($design->image) && !empty($design->image) && file_exists('public/images/uploads/item_images/'.$design->code.'/'.$design->image)) ? asset('public/images/uploads/item_images/'.$design->code.'/'.$design->image) : asset('public/images/default_images/not-found/no_img1.jpg');
                 $designs_array[] = $data;
             }
         }

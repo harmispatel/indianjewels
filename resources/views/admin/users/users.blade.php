@@ -1,18 +1,18 @@
+@php
+    $role = Auth::guard('admin')->user()->user_type;
+    $user_add = Spatie\Permission\Models\Permission::where('name','users.create')->first();
+
+    $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('permission_id');
+    foreach ($permissions as $permission) {
+        $permission_ids[] = $permission;
+    }
+@endphp
+
 @extends('admin.layouts.admin-layout')
 
 @section('title', 'Users')
 
 @section('content')
-
-@php
-$role = Auth::guard('admin')->user()->user_type;
-$user_add = Spatie\Permission\Models\Permission::where('name','users.create')->first();
-
-$permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('permission_id');  
-    foreach ($permissions as $permission) {
-        $permission_ids[] = $permission;
-    }
-@endphp
 
 <div class="pagetitle">
     <h1>Users</h1>
@@ -26,24 +26,18 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
             </nav>
         </div>
         <div class="col-md-4" style="text-align: right;">
-            @if((in_array($user_add->id, $permission_ids))) 
-            <a href="{{ route('users.create') }}" class="btn btn-sm new-category custom-btn">
-                <i class="bi bi-plus-lg"></i>
-            </a>
-            @else
-            {{-- <a href="{{ route('users.create') }}" class="btn btn-sm new-category custom-btn disabled">
-                <i class="bi bi-plus-lg"></i>
-            </a> --}}
+            @if((in_array($user_add->id, $permission_ids)))
+                <a href="{{ route('users.create') }}" class="btn btn-sm new-category custom-btn">
+                    <i class="bi bi-plus-lg"></i>
+                </a>
             @endif
         </div>
     </div>
 </div>
 
- {{-- Category Section --}}
+ {{-- Users Section --}}
  <section class="section dashboard">
     <div class="row">
-
-        {{-- Categories Card --}}
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
@@ -55,8 +49,8 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                                 <tr>
                                     <th>Id</th>
                                     <th>Name</th>
+                                    <th>Role</th>
                                     <th>Image</th>
-                                    <th>User Type</th>
                                     <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
@@ -80,7 +74,6 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
 
     <script type="text/javascript">
         $(function() {
-
             var table = $('#UsersTable').DataTable({
                 processing: true,
                 serverSide: true,
@@ -95,18 +88,21 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                         name: 'name'
                     },
                     {
-                        data: 'image',
-                        name: 'image'
+                        data: 'role',
+                        name: 'role',
+
                     },
                     {
-                        data: 'usertype', 
-                        name: 'usertype', 
-                        
+                        data: 'image',
+                        name: 'image',
+                        orderable: false,
+                        searchable: false
                     },
                     {
                         data: 'status',
-                        name: 'status'
-                        
+                        name: 'status',
+                        orderable: false,
+                        searchable: false
                     },
                     {
                         data: 'actions',
@@ -116,16 +112,15 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                     },
                 ]
             });
-
         });
 
-        function changeStatus(status, id) {
+        // Change Status of User
+        function changeStatus(id) {
             $.ajax({
                 type: "POST",
-                url: '{{ route('users.status') }}',
+                url: "{{ route('users.status') }}",
                 data: {
                     "_token": "{{ csrf_token() }}",
-                    "status": status,
                     "id": id
                 },
                 dataType: 'JSON',
@@ -138,7 +133,8 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                 }
             })
         }
-        // Function for Delete Table
+
+        // Delete Specific User
         function deleteUsers(userId) {
             swal({
                     title: "Are you sure You want to Delete It ?",

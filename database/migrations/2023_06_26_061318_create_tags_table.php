@@ -17,6 +17,7 @@ class CreateTagsTable extends Migration
             $table->id();
             $table->string('name');
             $table->tinyInteger('status')->default(1);
+            $table->tinyInteger('display_on_header')->default(1);
             $table->timestamps();
         });
     }

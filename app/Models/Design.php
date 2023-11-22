@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Design extends Model
 {
-    
+
     use HasFactory;
     protected $guarded = [];
 
@@ -36,6 +36,8 @@ class Design extends Model
         return $this->hasMany(User::class, 'id', 'company');
     }
 
-    
+    public function dealer_collections(){
+        return $this->hasMany(DealerCollection::class, 'design_id', 'id');
+    }
 
 }
