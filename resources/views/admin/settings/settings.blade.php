@@ -56,6 +56,31 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="form_box_inr">
+                                <div class="box_title">
+                                    <h2>Social Links Settings</h2>
+                                </div>
+                                <div class="form_box_info">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="instagram_link" class="form-label">Instagram Link</label>
+                                            <input type="text" name="settings[instagram_link]" id="instagram_link" class="form-control" value="{{ (isset($settings['instagram_link'])) ? $settings['instagram_link'] : '' }}">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="facebook_link" class="form-label">Facebook Link</label>
+                                            <input type="text" name="settings[facebook_link]" id="facebook_link" class="form-control" value="{{ (isset($settings['facebook_link'])) ? $settings['facebook_link'] : '' }}">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="twitter_link" class="form-label">Twitter Link</label>
+                                            <input type="text" name="settings[twitter_link]" id="twitter_link" class="form-control" value="{{ (isset($settings['twitter_link'])) ? $settings['twitter_link'] : '' }}">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="youtube_link" class="form-label">Youtube Link</label>
+                                            <input type="text" name="settings[youtube_link]" id="youtube_link" class="form-control" value="{{ (isset($settings['youtube_link'])) ? $settings['youtube_link'] : '' }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="card-footer text-center">

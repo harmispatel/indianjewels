@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\APIController;
 
 use App\Http\Controllers\Controller;
-use App\Models\{Category,Design,Metal,Gender,Tag,User,UserDocument, DealerCollection,UserWishlist,CartDealer, OrderDealerReport, CartUser, City, Order, State};
+use App\Models\{AdminSetting, Category,Design,Metal,Gender,Tag,User,UserDocument, DealerCollection,UserWishlist,CartDealer, OrderDealerReport, CartUser, City, Order, State};
 use Illuminate\Http\Request;
 use App\Http\Resources\{CategoryResource,FlashDesignResource, HighestDesignResource, SliderResource, DetailDesignResource, DesignsResource, MetalResource, GenderResource, CustomerResource, DesignsCollectionFirstResource,DesignCollectionListResource, CartDelaerListResource, OrderDelaerListResource, CartUserListResource, HeaderTagsResource, StateCitiesResource};
 use App\Http\Requests\APIRequest\{DesignDetailRequest, DesignsRequest, SubCategoryRequest, UserProfileRequest};
@@ -1008,6 +1008,35 @@ class CustomerApiController extends Controller
                 return $this->sendApiResponse(false, 0,'Please Enter a Dealer Code!', (object)[]);
             }
         } catch (\Throwable $th) {
+            return $this->sendApiResponse(false, 0,'Something went Wrong!', (object)[]);
+        }
+    }
+
+
+    // Function for Get Settings
+    function getSiteSettings()
+    {
+        try
+        {
+            $keys = [
+                'instagram_link',
+                'facebook_link',
+                'twitter_link',
+                'youtube_link',
+            ];
+
+            $settings = [];
+            foreach($keys as $key_val)
+            {
+                $setting = AdminSetting::where('setting_key', $key_val)->first();
+                $settings[$key_val] = (isset($setting->value) && !empty($setting->value)) ? $setting->value : '';
+            }
+
+            return $this->sendApiResponse(true, 0,'Site Settings has been Fetched.', $settings);
+
+        }
+        catch (\Throwable $th)
+        {
             return $this->sendApiResponse(false, 0,'Something went Wrong!', (object)[]);
         }
     }
