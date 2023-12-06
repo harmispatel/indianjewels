@@ -253,36 +253,36 @@ class CustomerApiController extends Controller
                                 $query->orwhereJsonContains('tags',$tag);
                             }
                         })->when($minprice, function ($query) use ($minprice){
-                                $query->where('price','>=',$minprice);
+                                $query->where('total_price_18k','>=',$minprice);
                         })->when($maxprice, function ($query) use ($maxprice){
-                            $query->where('price','<=',$maxprice);
-                        })->get();
+                            $query->where('total_price_18k','<=',$maxprice);
+                        })->limit(500)->get();
                 }
                 else if(!empty($sort_by) && empty($search))
                 {
                     if($sort_by == "new_added")
                     {
-                        $designs = Design::where('status', 1)->orderBy('created_at', 'DESC')->get();
+                        $designs = Design::where('status', 1)->orderBy('created_at', 'DESC')->limit(500)->get();
                     }
                     else if($sort_by == "featured")
                     {
-                        $designs = Design::where('is_flash',1)->where('status',1)->get();
+                        $designs = Design::where('is_flash',1)->where('status',1)->limit(500)->get();
                     }
                     else if($sort_by == "low_to_high")
                     {
-                        $designs = Design::orderByRaw('CAST(price as DECIMAL(8,2)) ASC')->where('status',1)->get();
+                        $designs = Design::orderByRaw('CAST(total_price_18k as DECIMAL(8,2)) ASC')->where('status',1)->limit(500)->get();
                     }
                     else if($sort_by == "high_to_low")
                     {
-                        $designs = Design::orderByRaw('CAST(price as DECIMAL(8,2)) DESC')->where('status',1)->get();
+                        $designs = Design::orderByRaw('CAST(total_price_18k as DECIMAL(8,2)) DESC')->where('status',1)->limit(500)->get();
                     }
                     else if($sort_by == "clear_all")
                     {
-                        $designs = Design::get();
+                        $designs = Design::limit(500)->get();
                     }
                     else if($sort_by == "highest_selling")
                     {
-                        $designs = Design::where('highest_selling', 1)->where('status', 1)->get();
+                        $designs = Design::where('highest_selling', 1)->where('status', 1)->limit(500)->get();
                     }
                 }
                 else
@@ -310,7 +310,7 @@ class CustomerApiController extends Controller
                         $designs = $designs->orWhereJsonContains('tags',"$tagid");
                     }
 
-                    $designs = $designs->get();
+                    $designs = $designs->limit(500)->get();
                 }
 
                 $data = new DesignsResource($designs);
@@ -365,13 +365,13 @@ class CustomerApiController extends Controller
                 $designs = $designs->limit(500)->get();
             }
             $data = new DesignsResource($designs);
-            $minprice = Design::min('price');
-            $maxprice = Design::max('price');
+            $minprice = Design::min('total_price_18k');
+            $maxprice = Design::max('total_price_18k');
 
             return response()->json(
                 [
                     'success' => true,
-                    'message' => 'Related Design Loaded SuccessFully',
+                    'message' => 'All Design Loaded SuccessFully',
                     'minprice' => round($minprice),
                     'maxprice' => round($maxprice),
                     'data'    => $data,

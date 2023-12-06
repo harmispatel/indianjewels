@@ -28,11 +28,15 @@ class CartUserListResource extends JsonResource
             $data['gold_type'] = (isset($cart->gold_type)) ? $cart->gold_type : '';
             $data['gold_color'] = (isset($cart->gold_color)) ? $cart->gold_color : '';
             $data['price'] = (isset($cart->designs->price)) ? $cart->designs->price : 0;
-            $data['image'] = isset($cart->designs) ?  asset('public/images/uploads/item_image/'.$cart->designs->image) : '' ;
+            $data['image'] = isset($cart->designs) ?  asset('public/images/uploads/item_images/'.$cart->designs->code.'/'.$cart->designs->image) : '' ;
             $data['gross_weight_22k'] = isset($cart->designs['gweight4']) ?  $cart->designs['gweight4'] : '' ;
             $data['gross_weight_20k'] = isset($cart->designs['gweight3']) ?  $cart->designs['gweight3'] : '' ;
             $data['gross_weight_18k'] = isset($cart->designs['gweight2']) ?  $cart->designs['gweight2'] : '' ;
             $data['gross_weight_14k'] = isset($cart->designs['gweight1']) ?  $cart->designs['gweight1'] : '' ;
+            $data['total_price_14k'] = isset($cart->designs->total_price_14k) ? round($cart->designs->total_price_14k,2) : 0;
+            $data['total_price_18k'] = isset($cart->designs->total_price_18k) ? round($cart->designs->total_price_18k,2) : 0;
+            $data['total_price_20k'] = isset($cart->designs->total_price_20k) ? round($cart->designs->total_price_20k,2) : 0;
+            $data['total_price_22k'] = isset($cart->designs->total_price_22k) ? round($cart->designs->total_price_22k,2) : 0;
             $cart_array[] = $data;
         }
         $main_array['cart_items'] = $cart_array;

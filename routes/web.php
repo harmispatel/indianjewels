@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\{AuthController,DashboardController,CategoryController,TagController, DesignController, SliderController, RoleController, AdminController, CommonController, CustomerController, DealerController,WestageDiscountController , OrderController, MarketingController, ReportController, ImportExportController};
+use App\Http\Controllers\{AuthController,DashboardController,CategoryController,TagController, DesignController, SliderController, RoleController, AdminController, AdminSettingsController, CommonController, CustomerController, DealerController,WestageDiscountController , OrderController, MarketingController, ReportController, ImportExportController};
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
@@ -160,6 +160,10 @@ Route::group(['prefix' => 'admin'], function ()
         Route::get('import-export',[ImportExportController::class,'index'])->name('import.export');
         Route::post('import-designs',[ImportExportController::class,'importDesigns'])->name('import.designs');
         Route::get('export-designs',[ImportExportController::class,'exportDesigns'])->name('export.designs');
+
+        // Settings
+        Route::get('settings', [AdminSettingsController::class, 'index'])->name('settings');
+        Route::post('settings/update', [AdminSettingsController::class, 'update'])->name('settings.update');
 
     });
 });

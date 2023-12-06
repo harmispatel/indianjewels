@@ -17,14 +17,13 @@ class DesignCollectionListResource extends JsonResource
         $designscollections = (isset($this->resource)) ? $this->resource : [];
         $designscollections_array = [];
 
-        
-            
+
+
             foreach($designscollections as $designscollection)
             {
-             
                 $data['id'] = $designscollection->designs->id;
                 $data['name'] = $designscollection->designs->name;
-                $data['image'] = isset($designscollection->designs->image) ? asset('public/images/uploads/item_image/'.$designscollection->designs->image) : asset('public/images/uploads/item_image/no_image.jpg');
+                $data['image'] = (isset($designscollection->designs->image) && file_exists('public/images/uploads/item_images/'.$designscollection->designs->code.'/'.$designscollection->designs->image)) ? asset('public/images/uploads/item_images/'.$designscollection->designs->code.'/'.$designscollection->designs->image) : asset('public/images/default_images/not-found/no_img1.jpg');
                 $designscollections_array[] = $data;
             }
 

@@ -245,12 +245,22 @@
         </li>
 
         {{-- Marketing Nav --}}
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <a class="nav-link {{ $currentRouteName == 'marketing' ? '' : 'collapsed' }}"
                 href="{{ route('marketing') }}">
                 <i class="bi bi-megaphone"></i>
                 <!-- <i class="fa-regular fa-megaphone"></i> -->
                 <span>Marketing</span>
+            </a>
+        </li> --}}
+
+        {{-- Settings Nav --}}
+        <li class="nav-item">
+            <a class="nav-link {{ $currentRouteName == 'settings' ? '' : 'collapsed' }}"
+                href="{{ route('settings') }}">
+                <i class="bi bi-gear"></i>
+                <!-- <i class="fa-regular fa-megaphone"></i> -->
+                <span>Settings</span>
             </a>
         </li>
 

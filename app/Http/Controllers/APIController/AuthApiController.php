@@ -14,6 +14,7 @@ class AuthApiController extends Controller
     //
     public function userlogin(Request $request)
     {
+
         try {
             $find_user = User::where('email',$request->email)->first();
             if(isset($find_user)){
@@ -28,6 +29,7 @@ class AuthApiController extends Controller
                         return $this->sendResponse(true, 'User Logged In Successfully...', $data);
                     }
                     else{
+
                         return $this->sendApiResponse(false, 0,'Failed to Login!', (object)[]);
                     }
                 }
@@ -39,6 +41,7 @@ class AuthApiController extends Controller
             }
 
         } catch (\Throwable $th) {
+
             return $this->sendApiResponse(false, 0,'Failed to Login!', (object)[]);
         }
     }
@@ -51,7 +54,7 @@ class AuthApiController extends Controller
             if (!isset($customer->id) && empty($customer->id)) {
                 $new_customer = new User;
                 $new_customer->phone = $request->phone;
-                $new_customer->new_customer_type = 2;
+                $new_customer->user_type = 2;
                 $new_customer->status = 1;
                 $new_customer->verification = 1;
                 $new_customer->save();
@@ -89,6 +92,7 @@ class AuthApiController extends Controller
                 }
             }
         } catch (\Throwable $th) {
+
             return $this->sendApiResponse(false, 0,'Failed to Login!', (object)[]);
         }
     }
