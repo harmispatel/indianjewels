@@ -1023,6 +1023,7 @@ class CustomerApiController extends Controller
                 'facebook_link',
                 'twitter_link',
                 'youtube_link',
+                'frontend_copyright',
             ];
 
             $settings = [];
