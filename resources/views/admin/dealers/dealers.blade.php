@@ -1,7 +1,5 @@
 @extends('admin.layouts.admin-layout')
-
-@section('title', 'Dealers')
-
+@section('title', 'Impel Jewellers | Dealers')
 @section('content')
 
 @php

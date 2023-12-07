@@ -1,7 +1,5 @@
 @extends('admin.layouts.admin-layout')
-
-@section('title', 'Orders')
-
+@section('title', 'Impel Jewellers | Orders')
 @section('content')
 
     {{-- Page Title --}}
@@ -41,7 +39,7 @@
 
     <script type="text/javascript">
 
-        toastr.options = 
+        toastr.options =
         {
             "closeButton": true,
             "progressBar": true,

@@ -1,6 +1,5 @@
 @extends('admin.layouts.admin-layout')
-
-@section('title', 'Roles')
+@section('title', 'Impel Jewellers | Roles')
 
 @section('content')
 @php
@@ -14,13 +13,13 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
 @endphp
 
     <div class="pagetitle">
-        <h1>User Type</h1>
+        <h1>Roles</h1>
         <div class="row">
             <div class="col-md-8">
                 <nav>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item active">User Type</li>
+                        <li class="breadcrumb-item active">Roles</li>
                     </ol>
                 </nav>
             </div>

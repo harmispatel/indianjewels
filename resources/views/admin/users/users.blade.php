@@ -9,9 +9,7 @@
 @endphp
 
 @extends('admin.layouts.admin-layout')
-
-@section('title', 'Users')
-
+@section('title', 'Impel Jewellers | Users')
 @section('content')
 
 <div class="pagetitle">

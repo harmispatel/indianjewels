@@ -1,7 +1,5 @@
 @extends('admin.layouts.admin-layout')
-
-@section('title', 'IMPEL | Create Dealer')
-
+@section('title', 'Impel Jewellers | Create Dealer')
 @section('content')
 
 {{-- Page Title --}}

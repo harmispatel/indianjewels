@@ -1,18 +1,18 @@
 @extends('admin.layouts.admin-layout')
 
-@section('title', 'Roles')
+@section('title', 'Impel Jewellers | Edit Role')
 
 @section('content')
 
     {{-- Page Title --}}
     <div class="pagetitle">
-        <h1>User Type</h1>
+        <h1>Roles</h1>
         <div class="row">
             <div class="col-md-8">
                 <nav>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
-                        <li class="breadcrumb-item "><a href="{{ route('roles') }}">User Type</a></li>
+                        <li class="breadcrumb-item "><a href="{{ route('roles') }}">Roles</a></li>
                         <li class="breadcrumb-item active">Edit</li>
                     </ol>
                 </nav>
@@ -35,7 +35,7 @@
                             <div class="form_box">
                                 <div class="form_box_inr">
                                     <div class="box_title">
-                                        <h2>User Type Details</h2>
+                                        <h2>Role Details</h2>
                                     </div>
                                     <div class="form_box_info">
                                         <input type="hidden" name="id" value="{{ encrypt($role->id) }}">

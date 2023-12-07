@@ -1,7 +1,5 @@
 @extends('admin.layouts.admin-layout')
-
-@section('title', 'Dashboard')
-
+@section('title', 'Impel Jewellers | Dashboard')
 @section('content')
 
     {{-- Page Title --}}
@@ -17,7 +15,7 @@
             </div>
         </div>
     </div>
-    
+
 
     {{-- Dashboard Section --}}
     <section class="section dashboard">
@@ -95,7 +93,7 @@
 
     <script type="text/javascript">
 
-        toastr.options = 
+        toastr.options =
         {
             "closeButton": true,
             "progressBar": true,

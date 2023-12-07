@@ -1,6 +1,6 @@
 @extends('admin.layouts.admin-layout')
 
-@section('title', 'Designs')
+@section('title', 'Impel Jewellers | Edit Design')
 
 @section('content')
 

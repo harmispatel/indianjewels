@@ -10,9 +10,7 @@
 @endphp
 
 @extends('admin.layouts.admin-layout')
-
-@section('title', 'Categories')
-
+@section('title', 'Impel Jewellers | Categories')
 @section('content')
 
     {{-- Modal for Add New Category & Edit Category --}}

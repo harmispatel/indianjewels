@@ -5,14 +5,12 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>Impel Jewelers | Forget Password</title>
-    <link href="{{ asset('public/images/demo_logos/inj.png') }}" rel="icon">
-    <meta content="" name="description">
-    <meta content="" name="keywords">
+    <title>Impel Jewellers | Forget Password</title>
+    <link href="{{ asset('public/images/default_images/favicons/impel_apple_touch.png') }}" rel="icon">
 
     <!-- Favicons -->
-    <link href="assets/img/favicon.png" rel="icon">
-    <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+    <link href="{{ asset('public/images/default_images/favicons/impel.png') }}" rel="icon">
+    <link sizes="180x180" href="{{ asset('public/images/default_images/favicons/impel_apple_touch.png') }}" rel="apple-touch-icon">
 
     <!-- Google Fonts -->
     <link href="https://fonts.gstatic.com" rel="preconnect">

@@ -105,7 +105,7 @@
                         </a>
                     </li>
                 @endif --}}
-                @if (in_array($import_export->id, $permission_ids))
+                {{-- @if (in_array($import_export->id, $permission_ids))
                 <li>
                     <a href="{{ route('import.export') }}"
                         class="{{ Route::currentRouteName() == 'import.export'  ? 'active' : '' }}">
@@ -113,7 +113,7 @@
                             class="{{ Route::currentRouteName() == 'import.export'  ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Import / Export</span>
                     </a>
                 </li>
-                @endif
+                @endif --}}
             </ul>
         </li>
 
@@ -227,8 +227,7 @@
                         <a href="{{ route('roles') }}"
                             class="{{ Route::currentRouteName() == 'roles' || Route::currentRouteName() == 'roles.create' || Route::currentRouteName() == 'roles.edit' ? 'active-link' : '' }}">
                             <i
-                                class="{{ Route::currentRouteName() == 'roles' || Route::currentRouteName() == 'roles.create' || Route::currentRouteName() == 'roles.edit' ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>User
-                                Type</span>
+                                class="{{ Route::currentRouteName() == 'roles' || Route::currentRouteName() == 'roles.create' || Route::currentRouteName() == 'roles.edit' ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Roles</span>
                         </a>
                     </li>
                 @endif
@@ -237,7 +236,7 @@
                         <a href="{{ route('users') }}"
                             class="{{ Route::currentRouteName() == 'users' || Route::currentRouteName() == 'users.create' || Route::currentRouteName() == 'users.edit' ? 'active-link' : '' }}">
                             <i
-                                class="{{ Route::currentRouteName() == 'users' || Route::currentRouteName() == 'users.create' || Route::currentRouteName() == 'users .edit' ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Users</span>
+                                class="{{ Route::currentRouteName() == 'users' || Route::currentRouteName() == 'users.create' || Route::currentRouteName() == 'users.edit' ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Users</span>
                         </a>
                     </li>
                 @endif
