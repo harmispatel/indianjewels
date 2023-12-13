@@ -319,28 +319,29 @@ class CustomerApiController extends Controller
                 }
                 else
                 {
-                    $tagids = Tag::where('name','like','%'.$search.'%')->pluck('id')->toArray();
+                    // $tagids = Tag::where('name','like','%'.$search.'%')->pluck('id')->toArray();
                     $designs = Design::query();
 
                     $designs->with('categories','gender','metal');
 
-                    $designs = $designs->whereHas('gender', function ($que) use ($search){
-                        $que->where('name','like','%'.$search.'%');
-                    });
+                    // $designs = $designs->whereHas('gender', function ($que) use ($search){
+                    //     $que->where('name','like','%'.$search.'%');
+                    // });
 
-                    $designs = $designs->orwhereHas('metal', function ($que) use ($search){
-                        $que->where('name','like','%'.$search.'%');
-                    });
+                    // $designs = $designs->orwhereHas('metal', function ($que) use ($search){
+                    //     $que->where('name','like','%'.$search.'%');
+                    // });
 
-                    $designs = $designs->orwhereHas('categories', function ($que) use ($search){
-                        $que->where('name','like','%'.$search.'%');
-                    });
+                    // $designs = $designs->orwhereHas('categories', function ($que) use ($search){
+                    //     $que->where('name','like','%'.$search.'%');
+                    // });
 
-                    $designs = $designs->orwhere('name','like','%'.$search.'%');
+                    // $designs = $designs->orwhere('name','like','%'.$search.'%');
+                    $designs = $designs->where('code',$search);
 
-                    foreach($tagids as $tagid){
-                        $designs = $designs->orWhereJsonContains('tags',"$tagid");
-                    }
+                    // foreach($tagids as $tagid){
+                    //     $designs = $designs->orWhereJsonContains('tags',"$tagid");
+                    // }
 
                     $designs = $designs->limit(500)->get();
                 }

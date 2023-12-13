@@ -33,10 +33,21 @@ class CartUserListResource extends JsonResource
             $data['gross_weight_20k'] = isset($cart->designs['gweight3']) ?  $cart->designs['gweight3'] : '' ;
             $data['gross_weight_18k'] = isset($cart->designs['gweight2']) ?  $cart->designs['gweight2'] : '' ;
             $data['gross_weight_14k'] = isset($cart->designs['gweight1']) ?  $cart->designs['gweight1'] : '' ;
+            $data['metal_price_14k'] = isset($cart->designs->price_14k) ? round($cart->designs->price_14k,2) : 0;
+            $data['metal_price_18k'] = isset($cart->designs->price_18k) ? round($cart->designs->price_18k,2) : 0;
+            $data['metal_price_20k'] = isset($cart->designs->price_20k) ? round($cart->designs->price_20k,2) : 0;
+            $data['metal_price_22k'] = isset($cart->designs->price_22k) ? round($cart->designs->price_22k,2) : 0;
+
             $data['total_price_14k'] = isset($cart->designs->total_price_14k) ? round($cart->designs->total_price_14k,2) : 0;
             $data['total_price_18k'] = isset($cart->designs->total_price_18k) ? round($cart->designs->total_price_18k,2) : 0;
             $data['total_price_20k'] = isset($cart->designs->total_price_20k) ? round($cart->designs->total_price_20k,2) : 0;
             $data['total_price_22k'] = isset($cart->designs->total_price_22k) ? round($cart->designs->total_price_22k,2) : 0;
+
+            $data['cz_stone_charge'] = isset($cart->designs->cz_stone_price) ? round($cart->designs->cz_stone_price,2) : 0;
+            $data['gemstone_charge'] = isset($cart->designs->gemstone_price) ? round($cart->designs->gemstone_price,2) : 0;
+            $data['making_charge'] = isset($cart->designs->making_charge) ? round($cart->designs->making_charge,2) : 0;
+
+
             $cart_array[] = $data;
         }
         $main_array['cart_items'] = $cart_array;
