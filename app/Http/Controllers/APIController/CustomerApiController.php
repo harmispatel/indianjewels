@@ -3,10 +3,48 @@
 namespace App\Http\Controllers\APIController;
 
 use App\Http\Controllers\Controller;
-use App\Models\{AdminSetting, Category,Design,Metal,Gender,Tag,User,UserDocument, DealerCollection,UserWishlist,CartDealer, OrderDealerReport, CartUser, City, Order, State};
 use Illuminate\Http\Request;
-use App\Http\Resources\{CategoryResource,FlashDesignResource, HighestDesignResource, SliderResource, DetailDesignResource, DesignsResource, MetalResource, GenderResource, CustomerResource, DesignsCollectionFirstResource,DesignCollectionListResource, CartDelaerListResource, OrderDelaerListResource, CartUserListResource, HeaderTagsResource, StateCitiesResource};
-use App\Http\Requests\APIRequest\{DesignDetailRequest, DesignsRequest, SubCategoryRequest, UserProfileRequest};
+use App\Models\{
+    AdminSetting,
+    Category,
+    Design,
+    Metal,
+    Gender,
+    Tag,
+    User,
+    UserDocument,
+    DealerCollection,
+    UserWishlist,
+    CartDealer,
+    OrderDealerReport,
+    CartUser,
+    City,
+    Order
+};
+use App\Http\Resources\{
+    BannerResource,
+    CategoryResource,
+    DesignsResource,
+    DetailDesignResource,
+    FlashDesignResource,
+    HighestDesignResource,
+    MetalResource,
+    GenderResource,
+    CustomerResource,
+    DesignsCollectionFirstResource,
+    DesignCollectionListResource,
+    CartDelaerListResource,
+    OrderDelaerListResource,
+    CartUserListResource,
+    HeaderTagsResource,
+    StateCitiesResource
+};
+use App\Http\Requests\APIRequest\{
+    DesignDetailRequest,
+    DesignsRequest,
+    SubCategoryRequest,
+    UserProfileRequest
+};
 use Illuminate\Http\Response;
 use Hash;
 use Carbon\Carbon;
@@ -80,21 +118,15 @@ class CustomerApiController extends Controller
     }
 
     // Function for fetch Slider
-    public function getSlider()
+    public function getAllBanners()
     {
         try
         {
-             // Get the current day of the week (0 = Sunday, 6 = Saturday)
-                $currentDayIndex = Carbon::now()->dayOfWeek;
-
-            // List of days of the week
-            $daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
-            // Reorder the days of the week starting from today
-            $reorderedDays = array_merge(array_slice($daysOfWeek, $currentDayIndex), array_slice($daysOfWeek, 0, $currentDayIndex));
-
-            $data = new SliderResource($reorderedDays);
-            return $this->sendApiResponse(true, 0,'Slider Loaded SuccessFully', $data);
+            $currentDayIndex = Carbon::now()->dayOfWeek;
+            $days_array = ["0", "1", "2", "3", "4", "5", "6"];
+            $reorderder_days = array_merge(array_slice($days_array, $currentDayIndex), array_slice($days_array, 0, $currentDayIndex));
+            $data = new BannerResource($reorderder_days);
+            return $this->sendApiResponse(true, 0,'Banners Loaded SuccessFully', $data);
         }
         catch (\Throwable $th)
         {

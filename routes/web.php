@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\{AuthController,DashboardController,CategoryController,TagController, DesignController, SliderController, RoleController, AdminController, AdminSettingsController, CommonController, CustomerController, DealerController,WestageDiscountController , OrderController, MarketingController, ReportController, ImportExportController};
+use App\Http\Controllers\{AuthController,DashboardController,CategoryController,TagController, DesignController, SliderController, RoleController, AdminController, AdminSettingsController, BottomBannerController, CommonController, CustomerController, DealerController,WestageDiscountController , OrderController, ReportController, ImportExportController, MiddleBannerController, TopBannerController};
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
@@ -113,15 +113,35 @@ Route::group(['prefix' => 'admin'], function ()
         Route::post('tags/destroy',[TagController::class,'destroy'])->name('tags.destroy');
         Route::post('tags/display-header/status',[TagController::class,'displayHeaderStatus'])->name('tags.display_header_status');
 
-        // Sliders
-        Route::get('sliders',[SliderController::class,'index'])->name('sliders');
-        Route::get('sliders/load-sliders',[SliderController::class,'loadSliders'])->name('sliders.load-sliders');
-        Route::get('sliders/add',[SliderController::class,'create'])->name('sliders.add-slider');
-        Route::post('sliders/store',[SliderController::class,'store'])->name('sliders.store-slider');
-        Route::post('sliders/edit',[SliderController::class,'edit'])->name('sliders.edit-slider');
-        Route::post('sliders/update',[SliderController::class,'update'])->name('sliders.update-slider');
-        Route::post('sliders/status',[SliderController::class,'status'])->name('sliders.status');
-        Route::post('sliders/destroy',[SliderController::class,'destroy'])->name('sliders.destroy');
+        // Top Banners
+        Route::get('top-banners',[TopBannerController::class,'index'])->name('top-banners');
+        Route::get('top-banners/load',[TopBannerController::class,'loadTopBanners'])->name('top-banners.load');
+        Route::get('top-banners/create',[TopBannerController::class,'create'])->name('top-banners.create');
+        Route::post('top-banners/store',[TopBannerController::class,'store'])->name('top-banners.store');
+        Route::get('top-banners/edit/{id}',[TopBannerController::class,'edit'])->name('top-banners.edit');
+        Route::post('top-banners/update',[TopBannerController::class,'update'])->name('top-banners.update');
+        Route::post('top-banners/status',[TopBannerController::class,'status'])->name('top-banners.status');
+        Route::post('top-banners/destroy',[TopBannerController::class,'destroy'])->name('top-banners.destroy');
+
+        // Middle Banners
+        Route::get('middle-banners',[MiddleBannerController::class,'index'])->name('middle-banners');
+        Route::get('middle-banners/load',[MiddleBannerController::class,'loadMiddleBanners'])->name('middle-banners.load');
+        Route::get('middle-banners/create',[MiddleBannerController::class,'create'])->name('middle-banners.create');
+        Route::post('middle-banners/store',[MiddleBannerController::class,'store'])->name('middle-banners.store');
+        Route::get('middle-banners/edit/{id}',[MiddleBannerController::class,'edit'])->name('middle-banners.edit');
+        Route::post('middle-banners/update',[MiddleBannerController::class,'update'])->name('middle-banners.update');
+        Route::post('middle-banners/status',[MiddleBannerController::class,'status'])->name('middle-banners.status');
+        Route::post('middle-banners/destroy',[MiddleBannerController::class,'destroy'])->name('middle-banners.destroy');
+
+        // Bottom Banners
+        Route::get('bottom-banners',[BottomBannerController::class,'index'])->name('bottom-banners');
+        Route::get('bottom-banners/load',[BottomBannerController::class,'loadBottomBanners'])->name('bottom-banners.load');
+        Route::get('bottom-banners/create',[BottomBannerController::class,'create'])->name('bottom-banners.create');
+        Route::post('bottom-banners/store',[BottomBannerController::class,'store'])->name('bottom-banners.store');
+        Route::get('bottom-banners/edit/{id}',[BottomBannerController::class,'edit'])->name('bottom-banners.edit');
+        Route::post('bottom-banners/update',[BottomBannerController::class,'update'])->name('bottom-banners.update');
+        Route::post('bottom-banners/status',[BottomBannerController::class,'status'])->name('bottom-banners.status');
+        Route::post('bottom-banners/destroy',[BottomBannerController::class,'destroy'])->name('bottom-banners.destroy');
 
         // Design
         Route::get('designs',[DesignController::class,'index'])->name('designs');
@@ -152,9 +172,6 @@ Route::group(['prefix' => 'admin'], function ()
 
         // Orders
         Route::get('orders', [OrderController::class,'index'])->name('order');
-
-        // Marketing
-        Route::get('marketings', [MarketingController::class,'index'])->name('marketing');
 
         // Import/Export
         Route::get('import-export',[ImportExportController::class,'index'])->name('import.export');

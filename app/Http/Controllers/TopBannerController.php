@@ -1,0 +1,209 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\TopBannerRequest;
+use App\Models\{TopBanner, Tag};
+use App\Traits\ImageTrait;
+use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
+
+class TopBannerController extends Controller
+{
+    use ImageTrait;
+
+    // Display a listing of the resource.
+    public function index()
+    {
+        $total_top_banner = TopBanner::count();
+        return view('admin.top_banners.top_banners', compact(['total_top_banner']));
+    }
+
+
+    // Load a listing of the resource.
+    public function loadTopBanners(Request $request)
+    {
+        if ($request->ajax()){
+
+            $top_banners = TopBanner::with(['tag'])->get();
+
+            return DataTables::of($top_banners)
+            ->addIndexColumn()
+            ->addColumn('image', function ($row)
+            {
+                $default_image = asset("public/images/default_images/not-found/no_img1.jpg");
+                $banner = (isset($row->image) && !empty($row->image) && file_exists('public/images/uploads/top_banners/'.$row->image)) ? asset('public/images/uploads/top_banners/'.$row->image) : $default_image;
+                return '<img class="me-2" src="'.$banner.'" width="100" height="50">';
+            })
+            ->addColumn('day', function ($row)
+            {
+                $days = [
+                    '0' => 'Sunday',
+                    '1' => 'Monday',
+                    '2' => 'Tuesday',
+                    '3' => 'Wednesday',
+                    '4' => 'Thursday',
+                    '5' => 'Friday',
+                    '6' => 'Saturday',
+                ];
+                return $days[$row->day];
+            })
+            ->addColumn('status', function ($row)
+            {
+                $isChecked = ($row->status == 1) ? 'checked' : '';
+                return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus(\''.encrypt($row->id).'\')" id="statusBtn" '.$isChecked.'></div>';
+            })
+            ->addColumn('tag', function ($row)
+            {
+                $tag_name = (isset($row['tag']['name'])) ? $row['tag']['name'] : '';
+                return $tag_name;
+            })
+            ->addColumn('actions',function($row)
+            {
+                $action_html = '';
+                $action_html .= '<a href="'.route('top-banners.edit',encrypt($row->id)).'" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>';
+                $action_html .= '<a onclick="deleteTopBanner(\''.encrypt($row->id).'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
+                return $action_html;
+            })
+            ->rawColumns(['status','actions','image','tag','day'])
+            ->make(true);
+        }
+    }
+
+
+    // Show the form for creating a new resource.
+    public function create()
+    {
+        $tags = Tag::get();
+        return view('admin.top_banners.create_top_banner', compact(['tags']));
+    }
+
+
+    // Store a newly created resource in storage.
+    public function store(TopBannerRequest $request)
+    {
+        try
+        {
+            $input = $request->except(['_token', 'image','tag']);
+            $input['tag_id'] = $request->tag;
+
+            if($request->hasFile('image')){
+                $file = $request->image;
+                $image = $this->addSingleImage('top_banner', 'top_banners', $file, '', "1200*500");
+                $input['image'] = $image;
+            }
+
+            TopBanner::insert($input);
+
+            return redirect()->route('top-banners')->with('success', 'Record has been Inserted.');
+        }
+        catch (\Throwable $th)
+        {
+            return redirect()->back()->with('error', 'Something went wrong!');
+        }
+    }
+
+
+    // Change Status of the specified resource.
+    public function status(Request $request)
+    {
+        try
+        {
+            $banner_id = decrypt($request->id);
+            $top_banner = TopBanner::find($banner_id);
+            $top_banner->status = ($top_banner->status == 1) ? 0 : 1;
+            $top_banner->update();
+
+            return response()->json([
+                'success' => 1,
+                'message' => "Status has been Changed.",
+            ]);
+        }
+        catch (\Throwable $th)
+        {
+            return response()->json([
+                'success' => 0,
+                'message' => "Something went wrong!",
+            ]);
+        }
+    }
+
+
+    // Show the form for editing the specified resource.
+    public function edit($id)
+    {
+        try
+        {
+            $banner_id = decrypt($id);
+            $top_banner = TopBanner::find($banner_id);
+            $tags = Tag::all();
+
+            return view('admin.top_banners.edit_top_banner', compact(['top_banner','tags']));
+        }
+        catch (\Throwable $th)
+        {
+            return redirect()->back()->with('error', 'Something went wrong!');
+        }
+    }
+
+
+    // Update the specified resource in storage.
+    public function update(TopBannerRequest $request)
+    {
+        try
+        {
+            $banner_id = decrypt($request->id);
+            $top_banner = TopBanner::find($banner_id);
+
+            $input = $request->except(['_token', 'image','tag','id']);
+            $input['tag_id'] = $request->tag;
+
+            if($request->hasFile('image')){
+                $file = $request->image;
+                $old_image = (isset($top_banner['image'])) ? $top_banner['image'] : '';
+                $image = $this->addSingleImage('top_banner', 'top_banners', $file, $old_image, "1200*500");
+                $input['image'] = $image;
+            }
+
+           $top_banner->update($input);
+
+            return redirect()->route('top-banners')->with('success', 'Record has been Updated.');
+        }
+        catch (\Throwable $th)
+        {
+            return redirect()->back()->with('error', 'Something went wrong!');
+        }
+    }
+
+
+    // Remove the specified resource from storage.
+    public function destroy(Request $request)
+    {
+        try
+        {
+            $banner_id = decrypt($request->id);
+            $top_banner = TopBanner::find($banner_id);
+
+            // Delete old Image
+            $old_image = isset($top_banner->image) ? $top_banner->image : '';
+            if (!empty($old_image) && file_exists('public/images/uploads/top_banners/'.$old_image))
+            {
+                unlink('public/images/uploads/top_banners/'.$old_image);
+            }
+
+            $top_banner->delete();
+
+            return response()->json([
+                'success' => 1,
+                'message' => "Record has been Removed.",
+            ]);
+        }
+        catch (\Throwable $th)
+        {
+            return response()->json([
+                'success' => 0,
+                'message' => "Something went wrong!",
+            ]);
+        }
+    }
+}

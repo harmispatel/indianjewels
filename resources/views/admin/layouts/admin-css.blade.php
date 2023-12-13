@@ -59,4 +59,7 @@
     .select2-container--default .select2-selection--multiple{
         border: 1px solid #ced4da!important;
     }
+
+    /* Ckeditor */
+    .ck-editor__editable {min-height: 400px;}
 </style>

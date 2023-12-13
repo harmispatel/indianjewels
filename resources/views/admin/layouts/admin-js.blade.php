@@ -1,24 +1,12 @@
 <!-- Vendor JS Files -->
 <script src="{{ asset('public/assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-
-{{-- Jquery --}}
 <script src="{{ asset('public/assets/js/jquery.min.js') }}"></script>
-
-{{-- Datatables --}}
-{{-- <script src="{{ asset('public/assets/vendor/simple-datatables/simple-datatables.js') }}"></script> --}}
 <script src="//cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-
-{{-- Sweet Alert --}}
 <script src="{{ asset('public/assets/js/sweet-alert.js') }}"></script>
-
-{{-- Toastr --}}
 <script src="{{ asset('public/assets/vendor/toastr/js/toastr.min.js') }}"></script>
-
-<!-- Template Main JS File -->
 <script src="{{ asset('public/assets/js/main.js') }}"></script>
-
-<!-- Select 2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/super-build/ckeditor.js"></script>
 
 @php
     $route = Route::current()->getName();
@@ -39,8 +27,13 @@
         "positionClass": "toast-top-right",
         timeOut: 4000
     }
+
     @if(Session::has('message'))
         toastr.success("{{ session('message') }}");
+    @endif
+
+    @if(Session::has('success'))
+        toastr.success("{{ session('success') }}");
     @endif
 
     @if(Session::has('error'))
