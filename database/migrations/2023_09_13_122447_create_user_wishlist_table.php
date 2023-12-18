@@ -19,6 +19,9 @@ class CreateUserWishlistTable extends Migration
             $table->foreign('user_id')->references('id')->on('users');
             $table->unsignedBigInteger('design_id');
             $table->foreign('design_id')->references('id')->on('designs');
+            $table->string('design_name');
+            $table->string('gold_color');
+            $table->string('gold_type');
             $table->timestamps();
         });
     }

@@ -600,50 +600,45 @@ class CustomerApiController extends Controller
     {
         try {
             $phone = $request->phone;
-            $designId = $request->design_id;
+            $design_id = $request->design_id;
+            $design_name = $request->design_name;
+            $gold_color = $request->gold_color;
+            $gold_type = $request->gold_type;
 
             $user = User::where('phone',$phone)->first();
-            $userId = $user->id;
 
-
-            $wishlist = UserWishlist::where('user_id',$userId)->where('design_id',$designId)->first();
-
-            if (empty($wishlist)) {
-
-                $insert = new UserWishlist;
-                $insert->user_id = $userId;
-                $insert->design_id = $designId;
-                $insert->save();
-                return response()->json(
-                    [
+            if(isset($user->id)){
+                $wishlist = UserWishlist::where('user_id',$user->id)->where('design_id',$design_id)->first();
+                if (empty($wishlist)) {
+                    $new_wishlist = new UserWishlist;
+                    $new_wishlist->user_id = $user->id;
+                    $new_wishlist->design_id = $design_id;
+                    $new_wishlist->design_name = $design_name;
+                    $new_wishlist->gold_color = $gold_color;
+                    $new_wishlist->gold_type = $gold_type;
+                    $new_wishlist->save();
+                    return response()->json([
                         'success' => true,
-                        'message' => 'Added User wishlist SuccessFully',
+                        'message' => 'Design has been Added to Wishlist.',
                         'wishlist_status' => 1,
                     ], Response::HTTP_OK);
-
-            }
-            else{
-
-                // $deletewishlist = UserWishlist::find($wishlist->id);
-                // $deletewishlist->delete();
-                // return response()->json(
-                //     [
-                //         'success' => true,
-                //         'message' => 'Remove User wishlist SuccessFully',
-                //         'wishlist_status' => 0,
-                //     ], Response::HTTP_OK);
-
-                return response()->json(
-                    [
+                }
+                else{
+                    return response()->json([
                         'success' => true,
-                        'message' => 'Already User wishlist Exits',
+                        'message' => 'This design is already exists in your wishlist!',
                         'wishlist_status' => 0,
                     ], Response::HTTP_OK);
-
+                }
+            }else{
+                return response()->json([
+                    'success' => true,
+                    'message' => 'User not Found!',
+                    'wishlist_status' => 0,
+                ], Response::HTTP_OK);
             }
-
         } catch (\Throwable $th) {
-            return $this->sendApiResponse(false, 0,'Failed to Load Collection Design!', (object)[]);
+            return $this->sendApiResponse(false, 0,'Something went wrong!', (object)[]);
         }
 
     }
@@ -738,13 +733,16 @@ class CustomerApiController extends Controller
         try {
             $phone = $request->phone;
             $user = User::where('phone',$phone)->first();
-            $userId = $user->id;
-            $collection = UserWishlist::where('user_id',$userId)->with('designs')->get();
-            $data = new DesignCollectionListResource($collection);
-            return $this->sendApiResponse(true, 0,'User Wishlist Loaded SuccessFully', $data);
-
+            if(isset($user->id)){
+                $user_id = $user->id;
+                $collection = UserWishlist::where('user_id',$user_id)->with('designs')->get();
+                $data = new DesignCollectionListResource($collection);
+                return $this->sendApiResponse(true, 0,'User Wishlist Loaded SuccessFully', $data);
+            }else{
+                return $this->sendApiResponse(false, 0,'User not Found!', (object)[]);
+            }
         } catch (\Throwable $th) {
-            return $this->sendApiResponse(false, 0,'Failed to Load User Profile!', (object)[]);
+            return $this->sendApiResponse(false, 0,'Failed to Load User Wishlist!', (object)[]);
         }
     }
 

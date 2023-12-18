@@ -17,15 +17,15 @@ class DesignCollectionListResource extends JsonResource
         $designscollections = (isset($this->resource)) ? $this->resource : [];
         $designscollections_array = [];
 
-
-
-            foreach($designscollections as $designscollection)
-            {
-                $data['id'] = $designscollection->designs->id;
-                $data['name'] = $designscollection->designs->name;
-                $data['image'] = (isset($designscollection->designs->image) && file_exists('public/images/uploads/item_images/'.$designscollection->designs->code.'/'.$designscollection->designs->image)) ? asset('public/images/uploads/item_images/'.$designscollection->designs->code.'/'.$designscollection->designs->image) : asset('public/images/default_images/not-found/no_img1.jpg');
-                $designscollections_array[] = $data;
-            }
+        foreach($designscollections as $designscollection)
+        {
+            $data['id'] = $designscollection->designs->id;
+            $data['name'] = $designscollection->designs->name;
+            $data['gold_type'] = $designscollection->gold_type;
+            $data['gold_color'] = $designscollection->gold_color;
+            $data['image'] = (isset($designscollection->designs->image) && file_exists('public/images/uploads/item_images/'.$designscollection->designs->code.'/'.$designscollection->designs->image)) ? asset('public/images/uploads/item_images/'.$designscollection->designs->code.'/'.$designscollection->designs->image) : asset('public/images/default_images/not-found/no_img1.jpg');
+            $designscollections_array[] = $data;
+        }
 
         return $designscollections_array;
     }
