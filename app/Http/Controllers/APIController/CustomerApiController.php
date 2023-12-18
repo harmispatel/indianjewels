@@ -842,13 +842,26 @@ class CustomerApiController extends Controller
         try {
             $phone = $request->phone;
             $user = User::where('phone',$phone)->first();
-            $userId = $user->id;
-            $input = $request->except('phone');
-            $input['user_id'] = $userId;
-            $input['quantity'] = (isset($request->quantity) && !empty($request->quantity)) ? $request->quantity : 1;
-            $data = CartUser::create($input);
-            $data['total_quantity'] =  CartUser::where('user_id',$userId)->sum('quantity');
-            return $this->sendApiResponse(true, 0,'Add To Cart SuccessFully', $data);
+
+            if($user->id){
+                $user_id = $user->id;
+                $input = $request->except('phone');
+                $input['user_id'] = $user_id;
+                $input['quantity'] = (isset($request->quantity) && !empty($request->quantity)) ? $request->quantity : 1;
+
+                $is_exists = CartUser::where('user_id',$user_id)->where('design_id', $request->design_id)->where('gold_type', $request->gold_type)->where('gold_color', $request->gold_color)->first();
+                if(isset($is_exists->id)){
+                    UserWishlist::where('user_id',$user_id)->where('design_id', $request->design_id)->where('gold_type', $request->gold_type)->where('gold_color', $request->gold_color)->delete();
+                    return $this->sendApiResponse(false, 0,'Design has already exists in Your Cart!', (object)[]);
+                }else{
+                    $data = CartUser::create($input);
+                    $data['total_quantity'] =  CartUser::where('user_id',$user_id)->sum('quantity');
+                    UserWishlist::where('user_id',$user_id)->where('design_id', $request->design_id)->where('gold_type', $request->gold_type)->where('gold_color', $request->gold_color)->delete();
+                    return $this->sendApiResponse(true, 0,'Design has been Added to Your Cart.', $data);
+                }
+            }else{
+                return $this->sendApiResponse(false, 0,'User not Found!', (object)[]);
+            }
         } catch (\Throwable $th) {
             return $this->sendApiResponse(false, 0,'Failed to Add to Cart!', (object)[]);
         }
