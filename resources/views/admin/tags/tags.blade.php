@@ -184,16 +184,16 @@
                 serverSide: true,
                 pageLength: 10,
                 ajax: "{{ route('tags.load') }}",
-                columns:
-                [
+                columns:[
                     {
                         data: 'id',
-                        name: 'id'
+                        name: 'id',
+                        orderable: false,
                     },
                     {
                         data: 'name',
                         name: 'name',
-
+                        orderable: false,
                     },
                     {
                         data: 'changestatus',

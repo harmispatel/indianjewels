@@ -38,7 +38,7 @@ class TagController extends Controller
     {
         if ($request->ajax())
         {
-            $tags= Tag::get();
+            $tags= Tag::orderBy('name','ASC')->get();
             return DataTables::of($tags)
             ->addIndexColumn()
             ->addColumn('changestatus', function ($row)

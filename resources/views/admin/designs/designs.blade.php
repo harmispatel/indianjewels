@@ -53,7 +53,8 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                                         <th>Item Name</th>
                                         <th>Item Code</th>
                                         <th>Status</th>
-                                        <th>Actions</th>
+                                        <th>Top Selling</th>
+                                        {{-- <th>Actions</th> --}}
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -102,27 +103,33 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                         searchable: false
                     },
                     {
-                        data: 'actions',
-                        name: 'actions',
+                        data: 'top_selling',
+                        name: 'top_selling',
                         orderable: false,
                         searchable: false
                     },
+                    // {
+                    //     data: 'actions',
+                    //     name: 'actions',
+                    //     orderable: false,
+                    //     searchable: false
+                    // },
                 ]
             });
 
         });
 
-        function changeStatus(status, id) {
+        function changeStatus(id) {
             $.ajax({
                 type: "POST",
                 url: '{{ route('designs.status') }}',
                 data: {
                     "_token": "{{ csrf_token() }}",
-                    "status": status,
                     "id": id
                 },
                 dataType: 'JSON',
                 success: function(response) {
+                    toastr.clear();
                     if (response.success == 1) {
                         toastr.success(response.message);
                     } else {
@@ -131,6 +138,29 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                 }
             })
         }
+
+
+        function changeTopSelling(id) {
+            $.ajax({
+                type: "POST",
+                url: "{{ route('designs.top-selling') }}",
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "id": id
+                },
+                dataType: 'JSON',
+                success: function(response) {
+                    toastr.clear();
+                    if (response.success == 1) {
+                        toastr.success(response.message);
+                    } else {
+                        toastr.error(response.message);
+                    }
+                }
+            })
+        }
+
+
         // Function for Delete Table
         function deleteDesign(designId) {
             swal({

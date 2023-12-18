@@ -68,7 +68,7 @@
                                     <div class="row">
                                         <div class="col-md-6 mb-3 sub_category"  style="display:block">
                                             <div class="form-group">
-                                                <label for = "parent_category" class="form-label">Sub Category</label>
+                                                <label for = "parent_category" class="form-label">Parent Category ?</label>
                                                 <select name="parent_category" id="parent_category" class="form-select">
                                                     @if(count($categories) > 0)
                                                         @foreach($categories as $category)

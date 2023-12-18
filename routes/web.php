@@ -153,6 +153,7 @@ Route::group(['prefix' => 'admin'], function ()
         Route::post('designs/status',[DesignController::class,'status'])->name('designs.status');
         Route::post('designs/image/destroy',[DesignController::class,'imagedestroy'])->name('designs-image.destroy');
         Route::post('designs/destroy',[DesignController::class,'destroy'])->name('designs.destroy');
+        Route::post('designs/top-selling',[DesignController::class,'topSelling'])->name('designs.top-selling');
 
         // westage Discount
         Route::get('westage-discount',[WestageDiscountController::class,'index'])->name('westage.discount');

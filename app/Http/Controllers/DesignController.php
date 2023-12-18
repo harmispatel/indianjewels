@@ -67,11 +67,15 @@ class DesignController extends Controller
                     $item['name'] = (isset($design['name'])) ? $design['name'] : '';
                     $item['code'] = (isset($design['code'])) ? $design['code'] : '';
 
-                    // Status Buttons
+                    // Status Button
                     $status = $design->status;
                     $checked = ($status == 1) ? 'checked' : '';
-                    $checkVal = ($status == 1) ? 0 : 1;
-                    $item['changestatus'] = '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus('.$checkVal.','.$design_id.')" id="statusBtn" '.$checked.'></div>';
+                    $item['changestatus'] = '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus('.$design_id.')" id="statusBtn" '.$checked.'></div>';
+
+                    // Top Selling Button
+                    $top_selling = $design->highest_selling;
+                    $isCheckedTopSelling = ($top_selling == 1) ? 'checked' : '';
+                    $item['top_selling'] = '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeTopSelling('.$design_id.')" id="statusBtn" '.$isCheckedTopSelling.'></div>';
 
                     // Actions Buttons
                     $action_html = '';
@@ -88,7 +92,7 @@ class DesignController extends Controller
                     // if(in_array($design_delete->id,$val)){
                     //     $action_html .= '<a onclick="deleteDesign(\''.$design_id.'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
                     // }
-                    $item['actions'] = $action_html;
+                    // $item['actions'] = $action_html;
 
                     $all_items[] = $item;
                 }
@@ -158,19 +162,42 @@ class DesignController extends Controller
     // Change Status of Specific Design
     public function status(Request $request)
     {
-        try {
-
-            $status = $request->status;
+        try
+        {
             $id = $request->id;
-            $input = Design::find($id);
-            $input->status =  $status;
-            $input->update();
+            $design = Design::find($id);
+            $design->status =  ($design->status == 1) ? 0 : 1;
+            $design->update();
 
             return response()->json([
                 'success' => 1,
                 'message' => "Design Status has been Changed Successfully..",
             ]);
         } catch (\Throwable $th) {
+            return response()->json([
+                'success' => 0,
+                'message' => "Internal Server Error!",
+            ]);
+        }
+    }
+
+    // Change Status of Top Selling
+    public function topSelling(Request $request)
+    {
+        try
+        {
+            $id = $request->id;
+            $design = Design::find($id);
+            $design->highest_selling =  ($design->highest_selling == 1) ? 0 : 1;
+            $design->update();
+            $message = ($design->highest_selling == 1) ? 'Design has been Added to Top Selling.' : 'Design has been Removed from Top Selling.';
+            return response()->json([
+                'success' => 1,
+                'message' => $message,
+            ]);
+        }
+        catch (\Throwable $th)
+        {
             return response()->json([
                 'success' => 0,
                 'message' => "Internal Server Error!",
