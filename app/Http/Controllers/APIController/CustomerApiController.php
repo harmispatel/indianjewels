@@ -696,21 +696,21 @@ class CustomerApiController extends Controller
     {
         try {
             $id = $request->id;
-            $input = $request->except('id','image');
+            $input = $request->except('id','user_image');
             $user = User::find($id);
 
-            if ($request->has('image'))
-            {
-                $old_logo = (isset($user->logo)) ? $user->logo : '';
-                if( $request->hasFile('image'))
-                {
-                    $file = $request->file('image');
-                    $image_url = $this->addSingleImage('comapany_logo','companies_logos',$file, $old_image = $old_logo,"300*300");
-                    $input['logo'] = $image_url;
+            if (isset($user->id)){
+
+                if ($request->has('user_image')){
+                    $old_logo = (isset($user->logo)) ? $user->logo : '';
+                    if( $request->hasFile('user_image'))
+                    {
+                        $file = $request->file('image');
+                        $image_url = $this->addSingleImage('user_image','user_images',$file, $old_logo,"300*300");
+                        $input['profile'] = $image_url;
+                    }
                 }
-            }
-            if ($user)
-            {
+
                 $user->update($input);
 
                 if(isset($user->name) && !empty($user->name) && isset($user->email) && !empty($user->email) && isset($user->phone) && !empty($user->phone) && isset($user->pincode) && !empty($user->pincode) && isset($user->address) && !empty($user->address) && isset($user->city) && !empty($user->city) && isset($user->state) && !empty($user->state))
@@ -719,12 +719,13 @@ class CustomerApiController extends Controller
                 }else{
                     $user->update(['verification' => 2]);
                 }
+                $data = new CustomerResource($user);
+                return $this->sendApiResponse(true, 0,'Profile has been Updated.', $data);
+            }else{
+                return $this->sendApiResponse(false, 0,'User not Found!', (object)[]);
             }
-            $data = new CustomerResource($user);
-
-            return $this->sendApiResponse(true, 0,'User Profile Update SuccessFully', $data);
         } catch (\Throwable $th) {
-            return $this->sendApiResponse(false, 0,'Failed to Update User Profile!', (object)[]);
+            return $this->sendApiResponse(false, 0,'Failed to Update Profile!', (object)[]);
         }
     }
 

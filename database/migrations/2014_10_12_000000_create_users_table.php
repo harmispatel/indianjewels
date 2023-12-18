@@ -27,7 +27,8 @@ class CreateUsersTable extends Migration
             $table->text('state')->nullable();
             $table->text('shipping_state')->nullable();
             $table->string('ref_name')->nullable();
-            $table->string('logo')->nullable();
+            $table->string('profile')->nullable();
+            $table->string('company_logo')->nullable();
             $table->string('comapany_name')->nullable();
             $table->tinyInteger('status')->default('1');
             $table->tinyInteger('verification')->default('1');
