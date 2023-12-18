@@ -696,23 +696,11 @@ class CustomerApiController extends Controller
     {
         try {
             $id = $request->id;
-            $input = $request->except('id','user_image');
+            $input = $request->except('id');
             $user = User::find($id);
 
             if (isset($user->id)){
-
-                if ($request->has('user_image')){
-                    $old_logo = (isset($user->logo)) ? $user->logo : '';
-                    if( $request->hasFile('user_image'))
-                    {
-                        $file = $request->file('image');
-                        $image_url = $this->addSingleImage('user_image','user_images',$file, $old_logo,"300*300");
-                        $input['profile'] = $image_url;
-                    }
-                }
-
                 $user->update($input);
-
                 if(isset($user->name) && !empty($user->name) && isset($user->email) && !empty($user->email) && isset($user->phone) && !empty($user->phone) && isset($user->pincode) && !empty($user->pincode) && isset($user->address) && !empty($user->address) && isset($user->city) && !empty($user->city) && isset($user->state) && !empty($user->state))
                 {
                     $user->update(['verification' => 3]);
@@ -726,6 +714,28 @@ class CustomerApiController extends Controller
             }
         } catch (\Throwable $th) {
             return $this->sendApiResponse(false, 0,'Failed to Update Profile!', (object)[]);
+        }
+    }
+
+    function uploadUserImage(Request $request)
+    {
+        try {
+            $user = User::find($request->user_id);
+            if(isset($user->id)){
+                if($request->hasFile('user_image')){
+                    $old_image = $user->profile;
+                    $file = $request->file('user_image');
+                    $image_url = $this->addSingleImage('user_image','user_images',$file, $old_image,"300*300");
+                    $user->profile = $image_url;
+                    $user->update();
+                }
+                $data = new CustomerResource($user);
+                return $this->sendApiResponse(true, 0,'Image has been Uploaded.', $data);
+            }else{
+                return $this->sendApiResponse(false, 0,'User Not Found!', (object)[]);
+            }
+        } catch (\Throwable $th) {
+            return $this->sendApiResponse(false, 0,'Failed to Upload Image!', (object)[]);
         }
     }
 

@@ -48,6 +48,7 @@ Route::post('remove-user-wishlist',[CustomerApiController::class,'userReomveWish
 Route::post('login',[AuthApiController::class,'login']);
 Route::post('user-profile',[CustomerApiController::class,'userProfile']);
 Route::post('update-user-profile',[CustomerApiController::class,'updateUserProfile']);
+Route::post('upload-user-image',[CustomerApiController::class, 'uploadUserImage']);
 Route::post('user-wishlist',[CustomerApiController::class,'getuserWishlist']);
 Route::post('dealer/cart-store',[CustomerApiController::class,'delaerCartStore']);
 Route::post('dealer/cart-list',[CustomerApiController::class,'dealerCartList']);
