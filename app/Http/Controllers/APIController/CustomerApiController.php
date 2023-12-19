@@ -19,7 +19,8 @@ use App\Models\{
     OrderDealerReport,
     CartUser,
     City,
-    Order
+    Order,
+    Page
 };
 use App\Http\Resources\{
     BannerResource,
@@ -36,6 +37,7 @@ use App\Http\Resources\{
     CartDelaerListResource,
     OrderDelaerListResource,
     CartUserListResource,
+    CustomPagesResource,
     HeaderTagsResource,
     StateCitiesResource
 };
@@ -1093,6 +1095,19 @@ class CustomerApiController extends Controller
         }
         catch (\Throwable $th)
         {
+            return $this->sendApiResponse(false, 0,'Something went Wrong!', (object)[]);
+        }
+    }
+
+
+    // Function for Get Page Settings
+    function customPages()
+    {
+        try {
+            $pages = Page::where('status',1)->get();
+            $data = new CustomPagesResource($pages);
+            return $this->sendApiResponse(true, 0,'Pages retrived SuccessFully..', $data);
+        } catch (\Throwable $th) {
             return $this->sendApiResponse(false, 0,'Something went Wrong!', (object)[]);
         }
     }

@@ -141,6 +141,15 @@
             </ul>
         </li>
 
+        {{-- Pages Nav --}}
+        <li class="nav-item">
+            <a class="nav-link {{ ($currentRouteName == 'pages' || $currentRouteName == 'pages.create' || $currentRouteName == 'pages.edit') ? '' : 'collapsed' }}"
+                href="{{ route('pages') }}">
+                <i class="bi bi-file-text"></i>
+                <span>Pages</span>
+            </a>
+        </li>
+
         {{-- Reports --}}
         <li class="nav-item">
             <a class="nav-link {{ Route::currentRouteName() != 'reports.summary.items' && Route::currentRouteName() != 'reports.star' && Route::currentRouteName() != 'reports.scheme' && Route::currentRouteName() != 'reports.dealer.performace' ? 'collapsed' : '' }} {{ Route::currentRouteName() == 'reports.summary.items' || Route::currentRouteName() == 'reports.star' || Route::currentRouteName() == 'reports.scheme' || Route::currentRouteName() == 'reports.dealer.performace' ? 'active-tab' : '' }}"

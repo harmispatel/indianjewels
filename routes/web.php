@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\{AuthController,DashboardController,CategoryController,TagController, DesignController, SliderController, RoleController, AdminController, AdminSettingsController, BottomBannerController, CommonController, CustomerController, DealerController,WestageDiscountController , OrderController, ReportController, ImportExportController, MiddleBannerController, TopBannerController};
+use App\Http\Controllers\{AuthController,DashboardController,CategoryController,TagController, DesignController, SliderController, RoleController, AdminController, AdminSettingsController, BottomBannerController, CommonController, CustomerController, DealerController,WestageDiscountController , OrderController, ReportController, ImportExportController, MiddleBannerController, PageController, TopBannerController};
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
@@ -178,6 +178,16 @@ Route::group(['prefix' => 'admin'], function ()
         Route::get('import-export',[ImportExportController::class,'index'])->name('import.export');
         Route::post('import-designs',[ImportExportController::class,'importDesigns'])->name('import.designs');
         Route::get('export-designs',[ImportExportController::class,'exportDesigns'])->name('export.designs');
+
+        // Pages
+        Route::get('pages',[PageController::class, 'index'])->name('pages');
+        Route::get('pages/load',[PageController::class, 'loadPages'])->name('pages.load');
+        Route::get('pages/create',[PageController::class, 'create'])->name('pages.create');
+        Route::post('pages/store',[PageController::class, 'store'])->name('pages.store');
+        Route::get('pages/edit/{id}',[PageController::class, 'edit'])->name('pages.edit');
+        Route::post('pages/update',[PageController::class, 'update'])->name('pages.update');
+        Route::post('pages/status',[PageController::class, 'status'])->name('pages.status');
+        Route::post('pages/destroy',[PageController::class, 'destroy'])->name('pages.destroy');
 
         // Settings
         Route::get('settings', [AdminSettingsController::class, 'index'])->name('settings');
