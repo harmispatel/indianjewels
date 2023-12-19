@@ -7,8 +7,8 @@ use Yajra\DataTables\Facades\DataTables;
 use App\Http\Requests\DealerRequest;
 use App\Models\{City, User, UserDocument, RoleHasPermissions, State};
 use App\Traits\ImageTrait;
-use Hash;
-use Auth;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
 
 
@@ -50,14 +50,21 @@ class DealerController extends Controller
 
             return DataTables::of($dealers)
             ->addIndexColumn()
-
-            ->addColumn('logo', function ($row)
+            ->addColumn('company_logo', function ($row)
             {
-                $default_image = asset('public/images/default_images/not-found/no_img1.jpg');
-                $image = ($row->logo && file_exists('public/images/uploads/companies_logos/'.$row->logo)) ? asset('public/images/uploads/companies_logos/'.$row->logo) : $default_image;
-                $image_html = '';
-                $image_html .= '<img class="me-2" src="'.$image.'" width="50" height="50">';
-                return $image_html;
+                $default_logo = asset('public/images/default_images/not-found/no_img1.jpg');
+                $logo = ($row->company_logo && file_exists('public/images/uploads/companies_logos/'.$row->company_logo)) ? asset('public/images/uploads/companies_logos/'.$row->company_logo) : $default_logo;
+                $logo_html = '';
+                $logo_html .= '<img class="me-2" src="'.$logo.'" width="50" height="50">';
+                return $logo_html;
+            })
+            ->addColumn('profile_picture', function ($row)
+            {
+                $default_profile_picture = asset('public/images/default_images/profiles/profile1.jpg');
+                $profile_picture = ($row->profile && file_exists('public/images/uploads/user_images/'.$row->profile)) ? asset('public/images/uploads/user_images/'.$row->profile) : $default_profile_picture;
+                $logo_html = '';
+                $logo_html .= '<img class="me-2" style="border-radius:50%;" src="'.$profile_picture.'" width="50" height="50">';
+                return $logo_html;
             })
             ->addColumn('status', function ($row)
             {
@@ -89,7 +96,7 @@ class DealerController extends Controller
                 // }
                 return $action_html;
             })
-            ->rawColumns(['status','actions','logo'])
+            ->rawColumns(['status','actions','company_logo', 'profile_picture'])
             ->make(true);
         }
     }
@@ -99,32 +106,38 @@ class DealerController extends Controller
     public function store(DealerRequest $request)
     {
         try {
-            $input = $request->except('_token','password','confirm_password','logo','document');
+            $input = $request->except('_token','password','confirm_password','company_logo','document','profile_picture');
             $input['password'] = Hash::make($request->password);
 
+            // Upload Company Logo
+            if ($request->hasFile('company_logo')){
+                $file = $request->file('company_logo');
+                $image_url = $this->addSingleImage('comapany_logo','companies_logos',$file, '',"300*300");
+                $input['company_logo'] = $image_url;
+            }
 
-            if ($request->hasFile('logo'))
-            {
-                $file = $request->file('logo');
-                $image_url = $this->addSingleImage('comapany_logo','companies_logos',$file, $old_image = '',"300*300");
-                $input['logo'] = $image_url;
+            // Upload Dealer Profile Picture
+            if ($request->hasFile('profile_picture')){
+                $file = $request->file('profile_picture');
+                $image_url = $this->addSingleImage('user_image','user_images',$file, '',"300*300");
+                $input['profile'] = $image_url;
             }
 
             $dealer = User::create($input);
 
-            if($request->hasFile('document'))
-            {
-                $multiple = $request->file('document');
-                foreach ($multiple as $value)
+            // Upload Dealers Documents
+            if($request->hasFile('document')) {
+                $documents = $request->file('document');
+                foreach ($documents as $doc)
                 {
-                    $doc = new UserDocument;
-                    $doc->user_id = $dealer->id;
-                    $multiDoc = $this->addSingleImage('document','documents',$value,$old_image = '','default');
-                    $doc->document = $multiDoc;
-                    $doc->save();
+                    $new_document = new UserDocument;
+                    $new_document->user_id = $dealer->id;
+                    $doc_name = $this->addSingleImage('document','documents',$doc, '','default');
+                    $new_document->document = $doc_name;
+                    $new_document->save();
                 }
             }
-            return redirect()->route('dealers')->with('success','Dealers created successfully');
+            return redirect()->route('dealers')->with('success','Dealers has been created successfully');
         } catch (\Throwable $th) {
             return redirect()->route('dealers')->with('error','Oops Something Went Wrong!');
         }
@@ -167,7 +180,7 @@ class DealerController extends Controller
             $cities = City::where('state_id',$data->state)->get();
             return view('admin.dealers.edit_dealer',compact('data','documents','states','cities'));
         } catch (\Throwable $th) {
-            return back()->with('error', 'Internal Server Error!');
+            return back()->with('error', 'Something went wrong!');
         }
     }
 
@@ -175,52 +188,60 @@ class DealerController extends Controller
     // Update the specified resource in storage.
     public function update(DealerRequest $request)
     {
-
         try {
             $id = decrypt($request->id);
-            $input = $request->except('_token','id','password','confirm_password','logo','document');
+            $input = $request->except('_token','id','password','confirm_password','company_logo','document','profile_picture');
 
             if ($request->password || $request->password != null) {
                 $input['password'] = Hash::make($request->password);
             }
-                $dealer = User::find($id);
 
-            if ($request->has('logo'))
-            {
-                $old_logo = (isset($dealer->logo)) ? $dealer->logo : '';
-                if( $request->hasFile('logo'))
-                {
-                    $file = $request->file('logo');
-                    $image_url = $this->addSingleImage('comapany_logo','companies_logos',$file, $old_image = $old_logo,"300*300");
-                    $input['logo'] = $image_url;
-                }
-            }
-
-            if ($request->hasFile('document')) {
-
-                $multiple = $request->file('document');
-                foreach ($multiple as $value)
-                {
-                    $doc = new UserDocument;
-                    $doc->user_id = $id;
-                    $multiDoc = $this->addSingleImage('document','documents',$value,$old_image = '','default');
-                    $doc->document = $multiDoc;
-                    $doc->save();
-                }
-            }
+            $dealer = User::find($id);
 
             if ($dealer)
             {
+                // Upload Company Logo
+                if ($request->has('company_logo')){
+                    $old_company_logo = (isset($dealer->company_logo)) ? $dealer->company_logo : '';
+                    if( $request->hasFile('company_logo'))
+                    {
+                        $file = $request->file('company_logo');
+                        $image_url = $this->addSingleImage('comapany_logo','companies_logos',$file, $old_company_logo,"300*300");
+                        $input['company_logo'] = $image_url;
+                    }
+                }
+
+                // Upload Dealer Profile Picture
+                if ($request->has('profile_picture')){
+                    $old_profile = (isset($dealer->profile)) ? $dealer->profile : '';
+                    if( $request->hasFile('profile_picture'))
+                    {
+                        $file = $request->file('profile_picture');
+                        $image_url = $this->addSingleImage('user_image','user_images',$file, $old_profile,"300*300");
+                        $input['profile'] = $image_url;
+                    }
+                }
+
+                // Upload Dealer Documents
+                if ($request->hasFile('document')){
+                    $documents = $request->file('document');
+                    foreach ($documents as $doc){
+                        $new_document = new UserDocument;
+                        $new_document->user_id = $id;
+                        $doc_name = $this->addSingleImage('document','documents',$doc, '','default');
+                        $new_document->document = $doc_name;
+                        $new_document->save();
+                    }
+                }
+
                 $dealer->update($input);
             }
 
-            return redirect()->route('dealers')->with('success','Dealers Updated successfully');
+            return redirect()->route('dealers')->with('success','Dealers has been Updated.');
         } catch (\Throwable $th) {
 
-            return redirect()->route('dealers')->with('error','Something with wrong');
-
+            return redirect()->route('dealers')->with('error','Something went wrong!');
         }
-        //
     }
 
 
@@ -229,37 +250,42 @@ class DealerController extends Controller
     {
         try {
             $id = decrypt($request->id);
-            $findLogo = User::where('id',$id)->first();
-            $findMulDocs = UserDocument::where('user_id',$id)->get();
-            $img = isset($findLogo->logo) ? $findLogo->logo : '';
+            $user = User::find($id);
+            $company_logo = (isset($user->company_logo)) ? $user->company_logo : '';
+            $profile_picture = (isset($user->profile)) ? $user->profile : '';
 
-            foreach($findMulDocs as $value)
+            // Delete Company Logo
+            if (!empty($company_logo) && file_exists('public/images/uploads/companies_logos/'.$company_logo))
             {
-                   if (!empty($value->document) && file_exists('public/images/uploads/documents/'.$value->document))
-                   {
-                       unlink('public/images/uploads/documents/'.$value->document);
-                   }
+                unlink('public/images/uploads/companies_logos/'.$company_logo);
             }
 
-            if (!empty($img) && file_exists('public/images/uploads/companies_logos/'.$img))
-             {
-                   unlink('public/images/uploads/companies_logos/'.$img);
-             }
+            // Delete Profile Picture
+            if (!empty($profile_picture) && file_exists('public/images/uploads/user_images/'.$profile_picture))
+            {
+                unlink('public/images/uploads/user_images/'.$profile_picture);
+            }
 
-             UserDocument::where('user_id',$id)->delete();
+            // Delete Dealer Documents
+            $documents = UserDocument::where('user_id',$id)->get();
+            foreach($documents as $doc)
+            {
+                if (!empty($doc->document) && file_exists('public/images/uploads/documents/'.$doc->document))
+                {
+                    unlink('public/images/uploads/documents/'.$doc->document);
+                }
+            }
+            UserDocument::where('user_id',$id)->delete();
 
-             User::where('id',$id)->delete();
-
-             return response()->json([
+            $user->delete();
+            return response()->json([
                'success' => 1,
-               'message' => "Dealer delete Successfully..",
-           ]);
+               'message' => "Dealer has been Deleted.",
+            ]);
         } catch (\Throwable $th) {
-
-            //throw $th;
             return response()->json([
                 'success' => 0,
-                'message' => "Something with wrong",
+                'message' => "Something went wrong!",
             ]);
         }
 

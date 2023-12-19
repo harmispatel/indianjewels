@@ -276,25 +276,44 @@
 
                         <div class="form_box_inr">
                             <div class="box_title">
-                                <h2>Dealer Document & Company Logo Information</h2>
+                                <h2>Dealer Documents, Image & Company Logo Information</h2>
                             </div>
                             <div class="form_box_info">
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <div class="form-group">
-                                            <label for="logo" class="form-label">Logo</label>
-                                            <input type="file" name="logo" id="logo" class="form-control {{ $errors->has('logo') ? 'is-invalid' : '' }}">
+                                            <label for="profile_picture" class="form-label">Profile Picture</label>
+                                            <input type="file" name="profile_picture" id="profile_picture" class="form-control {{ $errors->has('profile_picture') ? 'is-invalid' : '' }}">
                                             <div class="mt-2">
-                                                @if (isset($data->logo) && !empty($data->logo) && file_exists('public/images/uploads/companies_logos/' . $data->logo))
-                                                <img src="{{ asset('public/images/uploads/companies_logos/' . $data->logo) }}" alt="" width="100" height="100">
+                                                @if (isset($data->profile) && !empty($data->profile) && file_exists('public/images/uploads/user_images/' . $data->profile))
+                                                <img src="{{ asset('public/images/uploads/user_images/' . $data->profile) }}" alt="" width="100" height="100">
+                                                @else
+                                                <img src="{{ asset('public/images/default_images/profiles/profile1.jpg') }}" alt="" width="100" height="100">
+                                                @endif
+
+                                            </div>
+                                            @if ($errors->has('profile_picture'))
+                                            <div class="invalid-feedback">
+                                                {{ $errors->first('profile_picture') }}
+                                            </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-group">
+                                            <label for="company_logo" class="form-label">Company Logo</label>
+                                            <input type="file" name="company_logo" id="company_logo" class="form-control {{ $errors->has('company_logo') ? 'is-invalid' : '' }}">
+                                            <div class="mt-2">
+                                                @if (isset($data->company_logo) && !empty($data->company_logo) && file_exists('public/images/uploads/companies_logos/' . $data->company_logo))
+                                                <img src="{{ asset('public/images/uploads/companies_logos/' . $data->company_logo) }}" alt="" width="100" height="100">
                                                 @else
                                                 <img src="{{ asset('public/images/default_images/not-found/no_img1.jpg') }}" alt="" width="100" height="100">
                                                 @endif
 
                                             </div>
-                                            @if ($errors->has('logo'))
+                                            @if ($errors->has('company_logo'))
                                             <div class="invalid-feedback">
-                                                {{ $errors->first('logo') }}
+                                                {{ $errors->first('company_logo') }}
                                             </div>
                                             @endif
                                         </div>

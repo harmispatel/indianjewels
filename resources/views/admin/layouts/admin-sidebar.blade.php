@@ -74,7 +74,7 @@
                 @if (in_array($dealer->id, $permission_ids))
                     <li>
                         <a href="{{ route('dealers') }}" class="{{ Route::currentRouteName() == 'dealers' || Route::currentRouteName() == 'dealers.create' || Route::currentRouteName() == 'dealers.edit' ? 'active' : '' }}">
-                            <i class="{{ Route::currentRouteName() == 'dealers' || Route::currentRouteName() == 'dealers.create' || Route::currentRouteName() == 'dealers.edit' ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Dealer</span>
+                            <i class="{{ Route::currentRouteName() == 'dealers' || Route::currentRouteName() == 'dealers.create' || Route::currentRouteName() == 'dealers.edit' ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Dealers</span>
                         </a>
                     </li>
                 @endif
@@ -112,7 +112,6 @@
         <li class="nav-item">
             <a class="nav-link {{ $currentRouteName == 'order' ? '' : 'collapsed' }}"
                 href="{{ route('order') }}">
-                <!-- <i class="bi bi-cart-fill"></i> -->
                 <i class="fa-solid fa-cart-shopping"></i>
                 <span>Orders</span>
             </a>

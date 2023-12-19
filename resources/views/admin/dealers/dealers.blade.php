@@ -1,5 +1,5 @@
 @extends('admin.layouts.admin-layout')
-@section('title', 'Impel Jewellers | Dealers')
+@section('title', 'Impel Jewellers - Dealers')
 @section('content')
 
 @php
@@ -24,27 +24,17 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                 </nav>
             </div>
             <div class="col-md-4" style="text-align: right;">
-                @if((in_array($dealer_add->id, $permission_ids)))
                 <a href="{{ route('dealers.create') }}" class="btn btn-sm new-category custom-btn">
                     <i class="bi bi-plus-lg"></i>
                 </a>
-                @else
-                {{-- <a href="{{ route('dealers.create') }}" class="btn btn-sm new-category custom-btn disabled">
-                    <i class="bi bi-plus-lg"></i>
-                </a> --}}
-                @endif
             </div>
         </div>
     </div>
 
 
-    {{-- Category Section --}}
+    {{-- Dealers Section --}}
     <section class="section dashboard">
         <div class="row">
-
-
-            {{-- Categories Card --}}
-            <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">
                         <div class="card-title">
@@ -55,7 +45,8 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                                     <tr>
                                         <th>Id</th>
                                         <th>Name</th>
-                                        <th>Logo</th>
+                                        <th>Profile</th>
+                                        <th>Company Logo</th>
                                         <th>Status</th>
                                         <th>Actions</th>
                                     </tr>
@@ -75,31 +66,13 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
 
 {{-- Custom Script --}}
 @section('page-js')
-
-
     <script type="text/javascript">
         $(function() {
-
-            // Toastr Options
-            toastr.options =
-            {
-                "closeButton": true,
-                "progressBar": true,
-                "timeOut": 10000
-            }
-
-            @if (Session::has('success'))
-                toastr.success('{{ Session::get('success') }}')
-            @endif
-
-            @if (Session::has('error'))
-                toastr.error('{{ Session::get('error') }}')
-            @endif
 
             var table = $('#DealersTable').DataTable({
                 processing: true,
                 serverSide: true,
-                pageLength: 100,
+                pageLength: 50,
                 ajax: "{{ route('dealers.load') }}",
                 columns: [{
                         data: 'id',
@@ -112,14 +85,22 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                         name: 'name'
                     },
                     {
-                        data: 'logo',
-                        name: 'logo'
+                        data: 'profile_picture',
+                        name: 'profile_picture',
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: 'company_logo',
+                        name: 'company_logo',
+                        orderable: false,
+                        searchable: false
                     },
                     {
                         data: 'status',
                         name: 'status',
-                        // orderable: false,
-                        // searchable: false
+                        orderable: false,
+                        searchable: false
                     },
                     {
                         data: 'actions',
@@ -151,6 +132,7 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                 }
             })
         }
+
         // Function for Delete Table
         function deleteDealer(dealerId) {
             swal({

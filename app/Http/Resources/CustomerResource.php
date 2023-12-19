@@ -42,7 +42,7 @@ class CustomerResource extends JsonResource
         $data['shipping_pincode'] = isset($profile->shipping_pincode) ? $profile->shipping_pincode : '';
         $data['ref_name'] = isset($profile->ref_name) ? $profile->ref_name : '';
         $data['company_logo'] = isset($profile->company_logo) ? asset('public/images/uploads/companies_logos/'.$profile->company_logo) : asset("public/images/default_images/not-found/no_img1.jpg");
-        $data['profile'] = isset($profile->profile) ? asset('public/images/uploads/user_images/'.$profile->profile) : asset("public/images/default_images/not-found/no_img1.jpg");
+        $data['profile'] = isset($profile->profile) ? asset('public/images/uploads/user_images/'.$profile->profile) : asset('public/images/default_images/profiles/profile1.jpg');
         $data['comapany_name'] = isset($profile->comapany_name) ? $profile->comapany_name : '';
         $data['status'] = isset($profile->status) ? $profile->status : '';
         $data['verification'] = isset($profile->verification) ? $profile->verification : '';

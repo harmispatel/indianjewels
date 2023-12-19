@@ -20,16 +20,6 @@
     {{-- Dashboard Section --}}
     <section class="section dashboard">
         <div class="row">
-            {{-- Errors Message --}}
-            @if (session()->has('errors'))
-                <div class="col-md-12">
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        {{ session('errors') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                </div>
-            @endif
-
             <div class="col-md-12">
                 <div class="row">
                     <!-- Categories Card -->
@@ -92,23 +82,6 @@
 @section('page-js')
 
     <script type="text/javascript">
-
-        toastr.options =
-        {
-            "closeButton": true,
-            "progressBar": true,
-            "positionClass": "toast-bottom-right",
-            timeOut: 10000
-        }
-
-        @if (Session::has('success'))
-            toastr.success('{{ Session::get('success') }}')
-        @endif
-
-        // @if (Session::has('error'))
-        //     toastr.error('{{ Session::get('error') }}')
-        // @endif
-
     </script>
 
 @endsection

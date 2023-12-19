@@ -28,7 +28,7 @@ class DealerRequest extends FormRequest
             $rules = [
                 'name' => 'required',
                 'email' => 'required|email|unique:users,email,'.decrypt($this->id),
-                'phone' => 'required|numeric|digits:10',
+                'phone' => 'required|numeric|digits:10|unique:users,phone,'.decrypt($this->id),
                 'address' => 'required',
                 'comapany_name' => 'required',
                 'gst_no' => 'required',
@@ -39,13 +39,15 @@ class DealerRequest extends FormRequest
                 'document.*' => 'mimes:pdf,png,jpg,jpeg',
                 'discount_value' => 'required',
                 'dealer_code' => 'required|unique:users,dealer_code,'.decrypt($this->id),
+                'company_logo' => 'mimes:png,jpg,gif,svg',
+                'profile_picture' => 'mimes:png,jpg,gif,svg',
             ];
 
         }else{
             $rules = [
                 'name' => 'required',
                 'email' => 'required|email|unique:users,email',
-                'phone' => 'required|numeric|digits:10',
+                'phone' => 'required|numeric|digits:10|unique:users,phone',
                 'address' => 'required',
                 'comapany_name' => 'required',
                 'gst_no' => 'required',
@@ -57,6 +59,8 @@ class DealerRequest extends FormRequest
                 'document.*' => 'mimes:jpg,png,pdf,doc,docx',
                 'discount_value' => 'required',
                 'dealer_code' => 'required|unique:users,dealer_code',
+                'company_logo' => 'mimes:png,jpg,gif,svg',
+                'profile_picture' => 'mimes:png,jpg,gif,svg',
             ];
         }
         return $rules;

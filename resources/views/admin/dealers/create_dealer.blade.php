@@ -261,17 +261,28 @@
 
                             <div class="form_box_inr">
                                 <div class="box_title">
-                                    <h2>Dealer Document & Company Logo Information</h2>
+                                    <h2>Dealer Documents, Image & Company Logo Information</h2>
                                 </div>
                                 <div class="form_box_info">
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <div class="form-group">
-                                                <label for="logo" class="form-label">Logo</label>
-                                                <input type="file" name="logo" id="logo" class="form-control {{ $errors->has('logo') ? 'is-invalid' : '' }}">
-                                                @if ($errors->has('logo'))
+                                                <label for="profile_picture" class="form-label">Profile Picture</label>
+                                                <input type="file" name="profile_picture" id="profile_picture" class="form-control {{ $errors->has('profile_picture') ? 'is-invalid' : '' }}">
+                                                @if ($errors->has('profile_picture'))
                                                 <div class="invalid-feedback">
-                                                    {{ $errors->first('logo') }}
+                                                    {{ $errors->first('profile_picture') }}
+                                                </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <div class="form-group">
+                                                <label for="company_logo" class="form-label">Company Logo</label>
+                                                <input type="file" name="company_logo" id="company_logo" class="form-control {{ $errors->has('company_logo') ? 'is-invalid' : '' }}">
+                                                @if ($errors->has('company_logo'))
+                                                <div class="invalid-feedback">
+                                                    {{ $errors->first('company_logo') }}
                                                 </div>
                                                 @endif
                                             </div>
