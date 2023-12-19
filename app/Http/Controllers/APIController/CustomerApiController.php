@@ -705,9 +705,9 @@ class CustomerApiController extends Controller
                 $user->update($input);
                 if(isset($user->name) && !empty($user->name) && isset($user->email) && !empty($user->email) && isset($user->phone) && !empty($user->phone) && isset($user->pincode) && !empty($user->pincode) && isset($user->address) && !empty($user->address) && isset($user->city) && !empty($user->city) && isset($user->state) && !empty($user->state))
                 {
-                    $user->update(['verification' => 3]);
-                }else{
                     $user->update(['verification' => 2]);
+                }else{
+                    $user->update(['verification' => 1]);
                 }
                 $data = new CustomerResource($user);
                 return $this->sendApiResponse(true, 0,'Profile has been Updated.', $data);
@@ -1101,10 +1101,15 @@ class CustomerApiController extends Controller
 
 
     // Function for Get Page Settings
-    function customPages()
+    function customPages(Request $request)
     {
         try {
-            $pages = Page::where('status',1)->get();
+            $page_slug = (isset($request->page_slug)) ? $request->page_slug : '';
+            if(empty($page_slug)){
+                $pages = Page::where('status',1)->get();
+            }else{
+                $pages = Page::where('slug',$page_slug)->get();
+            }
             $data = new CustomPagesResource($pages);
             return $this->sendApiResponse(true, 0,'Pages retrived SuccessFully..', $data);
         } catch (\Throwable $th) {

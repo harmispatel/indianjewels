@@ -79,7 +79,6 @@ Route::group(['prefix' => 'admin'], function ()
         // Customers
         Route::get('customers',[CustomerController::class,'index'])->name('customers');
         Route::post('customers/load',[CustomerController::class,'loadCustomers'])->name('customers.load');
-        Route::get('customers/verify/{customer_id}',[CustomerController::class,'verify'])->name('customers.verify');
         Route::get('customers/edit/{id}',[CustomerController::class,'edit'])->name('customers.edit');
         Route::post('customers/status',[CustomerController::class,'status'])->name('customers.status');
         Route::post('customers/update',[CustomerController::class,'update'])->name('customers.update');

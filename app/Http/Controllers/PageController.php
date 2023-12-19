@@ -43,7 +43,7 @@ class PageController extends Controller
                 $action_html .= '<a onclick="deletePage(\''.encrypt($row->id).'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
                 return $action_html;
             })
-            ->rawColumns(['verification','actions','status'])
+            ->rawColumns(['actions','status'])
             ->make(true);
         }
     }

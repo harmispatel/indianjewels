@@ -30,9 +30,8 @@
                             <div class="col-md-4">
                                 <select name="verification_filter" id="verification_filter" class="form-select">
                                     <option value="">Filter By Verification</option>
-                                    <option value="2">Verified</option>
-                                    <option value="1">Unverified</option>
-                                    <option value="3">Registerd</option>
+                                    <option value="1">Half Registerd</option>
+                                    <option value="2">Full Registerd</option>
                                 </select>
                             </div>
                         </div>
@@ -45,7 +44,7 @@
                                         <th>Phone</th>
                                         <th>Verification</th>
                                         <th>Status</th>
-                                        <th>Actions</th>
+                                        {{-- <th>Actions</th> --}}
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -64,19 +63,6 @@
 @section('page-js')
 
     <script type="text/javascript">
-
-        // Toastr
-        toastr.options = {
-            "closeButton": true,
-            "progressBar": true,
-            "timeOut": 10000
-        }
-        @if (Session::has('success'))
-            toastr.success('{{ Session::get('success') }}')
-        @endif
-        @if (Session::has('error'))
-            toastr.error('{{ Session::get('error') }}')
-        @endif
 
         $(document).ready(function () {
             getCustomers($('#verification_filter :selected').val());
@@ -131,12 +117,12 @@
                         orderable: true,
                         searchable: false
                     },
-                    {
-                        data: 'actions',
-                        name: 'actions',
-                        orderable: false,
-                        searchable: false
-                    },
+                    // {
+                    //     data: 'actions',
+                    //     name: 'actions',
+                    //     orderable: false,
+                    //     searchable: false
+                    // },
                 ]
             });
         }

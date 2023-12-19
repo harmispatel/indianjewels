@@ -64,9 +64,9 @@ class AuthApiController extends Controller
                         'success' => true,
                         'message' => 'Customer has been Registerd SuccessFully.',
                         'status' => 1,
-                        'user_type' => $customer->user_type,
-                        'user_id' => $customer->id,
-                        'verification' => $customer->verification,
+                        'user_type' => $new_customer->user_type,
+                        'user_id' => $new_customer->id,
+                        'verification' => $new_customer->verification,
                     ], Response::HTTP_OK);
             }else{
                 if($customer->status == 1){
