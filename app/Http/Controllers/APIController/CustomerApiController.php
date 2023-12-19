@@ -4,23 +4,27 @@ namespace App\Http\Controllers\APIController;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Hash;
+use Carbon\Carbon;
+use App\Traits\ImageTrait;
 use App\Models\{
-    AdminSetting,
-    Category,
-    Design,
-    Metal,
-    Gender,
     Tag,
     User,
-    UserDocument,
-    DealerCollection,
-    UserWishlist,
-    CartDealer,
-    OrderDealerReport,
-    CartUser,
     City,
+    Page,
     Order,
-    Page
+    Metal,
+    Design,
+    Gender,
+    Category,
+    CartUser,
+    CartDealer,
+    AdminSetting,
+    UserDocument,
+    UserWishlist,
+    DealerCollection,
+    OrderDealerReport,
 };
 use App\Http\Resources\{
     BannerResource,
@@ -47,12 +51,7 @@ use App\Http\Requests\APIRequest\{
     SubCategoryRequest,
     UserProfileRequest
 };
-use Illuminate\Http\Response;
-use Hash;
-use Carbon\Carbon;
-use App\Traits\ImageTrait;
-
-
+use Illuminate\Support\Collection;
 
 class CustomerApiController extends Controller
 {
@@ -247,7 +246,7 @@ class CustomerApiController extends Controller
     Public function filterDesign(Request $request)
     {
         try {
-            $main_categorys = $request->categoryIds;
+            $main_category_id = $request->categoryIds;
             $metals = $request->MetalIds;
             $genders = $request->GenderIds;
             $tags = $request->TagIds;
@@ -256,69 +255,56 @@ class CustomerApiController extends Controller
             $minprice = $request->MinPrice;
             $maxprice = $request->MaxPrice;
 
-            $main_categories = Category::whereIn('parent_category',$main_categorys)->get();
+            $sub_categories = Category::whereIn('parent_category',$main_category_id)->pluck('id')->toArray();
 
-                if (count($main_categories) > 0)
-                    {
-                        foreach ($main_categories as $main_category)
-                        {
-                            $category_ids[] = strval($main_category['id']);
+            if (empty($search) && empty($sort_by))
+            {
+                    $designs = Design::query()
+                    ->when($sub_categories, function ($query) use ($sub_categories) {
+                        $query->whereIn('category_id', $sub_categories);
+                    })
+                    ->when($metals, function ($query) use ($metals) {
+                        $query->whereIn('metal_id', $metals);
+                    })
+                    ->when($genders, function ($query) use ($genders) {
+                        $query->whereIn('gender_id', $genders);
+                    })->when($tags, function ($query) use ($tags){
+                        foreach($tags as $tag){
+                            $query->orwhereJsonContains('tags',$tag);
                         }
-                    }
-                    else
-                    {
-
-                        $category_ids = [];
-                    }
-
-                if (empty($search) && empty($sort_by))
+                    })->when($minprice, function ($query) use ($minprice){
+                            $query->where('total_price_18k','>=',$minprice);
+                    })->when($maxprice, function ($query) use ($maxprice){
+                        $query->where('total_price_18k','<=',$maxprice);
+                    })->limit(500)->get();
+            }
+            else if(!empty($sort_by) && empty($search))
+            {
+                if($sort_by == "new_added")
                 {
-                        $designs = Design::query()
-                        ->when($category_ids, function ($query) use ($category_ids) {
-                            $query->whereIn('category_id', $category_ids);
-                        })
-                        ->when($metals, function ($query) use ($metals) {
-                            $query->whereIn('metal_id', $metals);
-                        })
-                        ->when($genders, function ($query) use ($genders) {
-                            $query->whereIn('gender_id', $genders);
-                        })->when($tags, function ($query) use ($tags){
-                            foreach($tags as $tag){
-                                $query->orwhereJsonContains('tags',$tag);
-                            }
-                        })->when($minprice, function ($query) use ($minprice){
-                                $query->where('total_price_18k','>=',$minprice);
-                        })->when($maxprice, function ($query) use ($maxprice){
-                            $query->where('total_price_18k','<=',$maxprice);
-                        })->limit(500)->get();
+                    $designs = Design::where('status', 1)->orderBy('created_at', 'DESC')->limit(500)->get();
                 }
-                else if(!empty($sort_by) && empty($search))
+                else if($sort_by == "featured")
                 {
-                    if($sort_by == "new_added")
-                    {
-                        $designs = Design::where('status', 1)->orderBy('created_at', 'DESC')->limit(500)->get();
-                    }
-                    else if($sort_by == "featured")
-                    {
-                        $designs = Design::where('is_flash',1)->where('status',1)->limit(500)->get();
-                    }
-                    else if($sort_by == "low_to_high")
-                    {
-                        $designs = Design::orderByRaw('CAST(total_price_18k as DECIMAL(8,2)) ASC')->where('status',1)->limit(500)->get();
-                    }
-                    else if($sort_by == "high_to_low")
-                    {
-                        $designs = Design::orderByRaw('CAST(total_price_18k as DECIMAL(8,2)) DESC')->where('status',1)->limit(500)->get();
-                    }
-                    else if($sort_by == "clear_all")
-                    {
-                        $designs = Design::limit(500)->get();
-                    }
-                    else if($sort_by == "highest_selling")
-                    {
-                        $designs = Design::where('highest_selling', 1)->where('status', 1)->limit(500)->get();
-                    }
+                    $designs = Design::where('is_flash',1)->where('status',1)->limit(500)->get();
                 }
+                else if($sort_by == "low_to_high")
+                {
+                    $designs = Design::orderByRaw('CAST(total_price_18k as DECIMAL(8,2)) ASC')->where('status',1)->limit(500)->get();
+                }
+                else if($sort_by == "high_to_low")
+                {
+                    $designs = Design::orderByRaw('CAST(total_price_18k as DECIMAL(8,2)) DESC')->where('status',1)->limit(500)->get();
+                }
+                else if($sort_by == "clear_all")
+                {
+                    $designs = Design::limit(500)->get();
+                }
+                else if($sort_by == "highest_selling")
+                {
+                    $designs = Design::where('highest_selling', 1)->where('status', 1)->limit(500)->get();
+                }
+            }
                 else
                 {
                     // $tagids = Tag::where('name','like','%'.$search.'%')->pluck('id')->toArray();
@@ -348,7 +334,7 @@ class CustomerApiController extends Controller
                     $designs = $designs->limit(500)->get();
                 }
 
-                $data = new DesignsResource($designs);
+                $data = new DesignsResource($designs, $sub_categories);
                 return $this->sendApiResponse(true, 0,'Filter Design Loaded SuccessFully', $data);
         } catch (\Throwable $th) {
             dd($th);

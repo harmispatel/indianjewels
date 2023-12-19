@@ -3,23 +3,24 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Models\{Tag, Dealer, User};
+use App\Models\{Tag, Dealer, Design, User};
+use Illuminate\Support\Collection;
 
 class DesignsResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
-     */
+    protected $subcategories;
+
+    public function __construct($resource, $subcategories = null)
+    {
+        parent::__construct($resource);
+        $this->subcategories = $subcategories;
+    }
+
     public function toArray($request)
     {
-        $designs = (isset($this->resource)) ? $this->resource : [];
-
+        $all_details = [];
         $designs_array = [];
-
-
+        $designs = (isset($this->resource)) ? $this->resource : [];
 
         foreach($designs as $design)
         {
@@ -94,6 +95,33 @@ class DesignsResource extends JsonResource
             $data['total_price_22k'] = isset($design->total_price_22k) ? round($design->total_price_22k,2) : 0;
             $designs_array[] = $data;
         }
-        return $designs_array;
+
+        if(count($this->subcategories) > 0){
+            $tags_ids = Design::whereIn('category_id', $this->subcategories)->pluck('tags')->toArray();
+            $filteredTags = (new Collection($tags_ids))->filter(function ($tag) {
+                $array = json_decode($tag, true);
+                return (is_array($array) && count($array) > 1) || (is_array($array) && count($array) > 0);
+            })->values()->toArray();
+            if(count($filteredTags) > 0){
+                $all_tags = [];
+                foreach($filteredTags as $filteredTag){
+                    $filteredTag = json_decode($filteredTag);
+                    if(count($filteredTag) > 0){
+                        foreach($filteredTag as $tag){
+                            $all_tags[] = $tag;
+                        }
+                    }
+                }
+                $categories_tags = Tag::whereIn('id',$all_tags)->where('status',1)->get(['id','name']);
+            }else{
+                $categories_tags = [];
+            }
+        }else{
+            $categories_tags = Tag::where('status',1)->get(['id','name']);
+        }
+
+        $all_details['designs'] = $designs_array;
+        $all_details['tags'] = $categories_tags;
+        return $all_details;
     }
 }
