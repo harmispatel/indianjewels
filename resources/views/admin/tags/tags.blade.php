@@ -1,15 +1,6 @@
 @extends('admin.layouts.admin-layout')
-@section('title', 'Impel Jewellers | Tags')
+@section('title', 'TAGS - IMPEL JEWELLERS')
 @section('content')
-
-@php
-    $tag_add = Spatie\Permission\Models\Permission::where('name','tags.create')->first();
-    $user_type =  Auth::guard('admin')->user()->user_type;
-    $roles = App\Models\RoleHasPermissions::where('role_id',$user_type)->pluck('permission_id');
-    foreach ($roles as $key => $value) {
-        $val[] = $value;
-        }
-@endphp
 
     {{-- Modal for Add New Tag & Edit Tag --}}
     <div class="modal fade" id="tagModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="tagModalLabel" aria-hidden="true">
@@ -24,13 +15,12 @@
                         @csrf
                         <input type="hidden" name="id" id="id" value="">
                         <div class="row">
-                            {{-- Name --}}
                             <div class="col-md-12 mb-2">
                                 <div class="form-group">
                                     <label for="name" class="form-label">Name
                                         <span class="text-danger">*</span>
                                     </label>
-                                    <input type="text" id="name" name="name" class="form-control" placeholder="Enter Tags Name">
+                                    <input type="text" id="name" name="name" class="form-control" placeholder="Enter Tag Name">
                                 </div>
                             </div>
                         </div>
@@ -44,8 +34,7 @@
         </div>
     </div>
 
-
-        {{-- Page Title --}}
+    {{-- Page Title --}}
     <div class="pagetitle">
         <h1>Tags</h1>
         <div class="row">
@@ -57,54 +46,26 @@
                     </ol>
                 </nav>
             </div>
-            <div class="col-md-4" style="text-align: right;">
-            @if(in_array($tag_add->id,$val))
-                {{-- <a data-bs-toggle="modal" data-bs-target="#tagModal" class="btn btn-sm new-tag custom-btn">
+            {{-- <div class="col-md-4" style="text-align: right;">
+                <a data-bs-toggle="modal" data-bs-target="#tagModal" class="btn btn-sm new-tag custom-btn">
                     <i class="bi bi-plus-lg"></i>
-                </a> --}}
-                @else
-                {{-- <a data-bs-toggle="modal" data-bs-target="#tagModal" class="btn btn-sm new-tag custom-btn disabled">
-                    <i class="bi bi-plus-lg"></i>
-                </a> --}}
-                @endif
-            </div>
+                </a>
+            </div> --}}
         </div>
     </div>
 
-        {{-- Tags Section --}}
+    {{-- Tags Section --}}
     <section class="section dashboard">
         <div class="row">
-            {{-- Error Message Section --}}
-            @if (session()->has('error'))
-                <div class="col-md-12">
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        {{ session('error') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                </div>
-            @endif
-
-            {{-- Success Message Section --}}
-            @if (session()->has('success'))
-                <div class="col-md-12">
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('success') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                </div>
-            @endif
-
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">
-                        {{-- <div class="card-title">
-                        </div> --}}
                         <div class="table-responsive custom_dt_table">
                             <table class="table w-100" id="TagsTable">
                                 <thead>
                                     <tr>
                                         <th>Id</th>
-                                        <th>Name</th>
+                                        <th style="width: 40%">Name</th>
                                         <th>Status</th>
                                         <th>Display on Header</th>
                                         {{-- <th>Actions</th> --}}
@@ -122,25 +83,12 @@
 @endsection
 
 
-
 {{-- Custom Script --}}
 @section('page-js')
-
     <script type="text/javascript">
-        // Dcoument
-        $(document).ready(function()
-        {
-            // Toastr Options
-            toastr.options = {
-                "closeButton": true,
-                "progressBar": true,
-                timeOut: 10000
-            }
-        });
 
-          // Reset Tag Modal
-        $('.new-tag').on('click', function()
-        {
+        // Reset Tag Modal
+        $('.new-tag').on('click', function(){
             // Reset TagForm
             $('#TagForm').trigger('reset');
 
@@ -164,14 +112,12 @@
 
             // Change Button Value
             $('#saveupdatebtn').attr('onclick', "saveUpdateTag('add')");
-
         });
 
-                // Load all Tags Records
+        // Load all Tags Records
         loadTags();
         // Function for get all Tags Records.
-        function loadTags()
-        {
+        function loadTags(){
             // Assign Tags Table to Variable;
             var tagsTable = $('#TagsTable').DataTable();
 
@@ -196,8 +142,8 @@
                         orderable: false,
                     },
                     {
-                        data: 'changestatus',
-                        name: 'changestatus',
+                        data: 'status',
+                        name: 'status',
                         orderable: false,
                         searchable: false
                     },
@@ -218,16 +164,12 @@
         }
 
         // Function for Save & Update Tags
-        function saveUpdateTag(type)
-        {
+        function saveUpdateTag(type){
             // Data Type (Save/Update)
             var dType = type;
-            if (dType == 'add')
-            {
+            if (dType == 'add'){
                 var redirectUrl = "{{ route('tags.store') }}";
-            }
-            else
-            {
+            }else{
                 var redirectUrl = "{{ route('tags.update') }}";
             }
 
@@ -248,33 +190,26 @@
                 cache: false,
                 processData: false,
                 dataType: "JSON",
-                success: function(response)
-                {
-                    if (response.success == 1)
-                    {
+                success: function(response){
+                    if (response.success == 1){
                         $('#TagForm').trigger('reset');
                         $('#tagModal').modal('hide');
                         toastr.success(response.message);
                         loadTags();
-                    }
-                    else
-                    {
+                    }else{
                         $('#TagForm').trigger('reset');
                         $('#tagModal').modal('hide');
                         toastr.error(response.message);
                     }
                 },
-                error: function(response)
-                {
+                error: function(response){
                     // All Validation Errors
                     const validationErrors = (response?.responseJSON?.errors) ? response.responseJSON.errors : '';
 
-                    if (validationErrors != '')
-                    {
+                    if (validationErrors != ''){
                         // Name Error
                         var nameError = (validationErrors.name) ? validationErrors.name : '';
-                        if (nameError != '')
-                        {
+                        if (nameError != ''){
                             $('#name').addClass('is-invalid');
                             toastr.error(nameError);
                         }
@@ -283,9 +218,8 @@
             });
         }
 
-        // Function for Get Edit Tags Data's
-        function editTag(tagID)
-        {
+        // Function for Edit Tag
+        function editTag(id){
             // Reset TagForm
             $('#TagForm').trigger('reset');
 
@@ -301,15 +235,12 @@
                 dataType: "JSON",
                 data: {
                     '_token': "{{ csrf_token() }}",
-                    'id': tagID,
+                    'id': id,
                 },
-                success: function(response)
-                {
-                    if (response.success)
-                    {
+                success: function(response){
+                    if (response.success){
                         // Tags Data's
                         const tags = response.data;
-
 
                         // Add values in TagForm
                         $('#name').val(tags.name);
@@ -328,9 +259,7 @@
 
                         // Change Button Value
                         $('#saveupdatebtn').attr('onclick', "saveUpdateTag('edit')");
-                    }
-                    else
-                    {
+                    }else{
                         toastr.error(response.message);
                     }
                 }
@@ -338,72 +267,53 @@
         }
 
         // Function for Delete Tags
-        function deleteTag(tagId)
-        {
-            swal(
-            {
+        function deleteTag(id){
+            swal({
                 title: "Are you sure You want to Delete It ?",
                 icon: "warning",
                 buttons: true,
                 dangerMode: true,
             })
-            .then((willDeleteTags) =>
-            {
-                if (willDeleteTags)
-                {
-                    $.ajax(
-                    {
+            .then((willDeleteTag) => {
+                if (willDeleteTag){
+                    $.ajax({
                         type: "POST",
-                        url: '{{ route('tags.destroy') }}',
-                        data:
-                        {
+                        url: "{{ route('tags.destroy') }}",
+                        data:{
                             "_token": "{{ csrf_token() }}",
-                            'id': tagId,
+                            'id': id,
                         },
                         dataType: 'JSON',
-                        success: function(response)
-                        {
-                            if (response.success == 1)
-                            {
-                                toastr.success(response.message);
+                        success: function(response){
+                            if (response.success == 1){
+                                swal(response.message, "", "success");
                                 $('#TagsTable').DataTable().ajax.reload();
-                            }
-                            else
-                            {
+                            }else{
                                 swal(response.message, "", "error");
                             }
                         }
                     });
-                }
-                else
-                {
+                }else{
                     swal("Cancelled", "", "error");
                 }
             });
         }
 
-
-        function changeStatus(status, id)
-        {
-            $.ajax(
-            {
+        // Function for change status of Tag
+        function changeStatus(id){
+            toastr.clear();
+            $.ajax({
                 type: "POST",
-                url: '{{ route('tags.status') }}',
-                data:
-                {
+                url: "{{ route('tags.status') }}",
+                data:{
                     "_token": "{{ csrf_token() }}",
-                    "status": status,
                     "id": id
                 },
                 dataType: 'JSON',
-                success: function(response)
-                {
-                    if (response.success == 1)
-                    {
+                success: function(response){
+                    if (response.success == 1){
                         toastr.success(response.message);
-                    }
-                    else
-                    {
+                    }else{
                         toastr.error(response.message);
                     }
                 }
@@ -411,8 +321,8 @@
         }
 
         // Function for Change Display on Header Status
-        function displayHeaderStatus(id)
-        {
+        function displayHeaderStatus(id){
+            toastr.clear();
             $.ajax({
                 type: "POST",
                 url: "{{ route('tags.display_header_status') }}",
@@ -421,14 +331,11 @@
                     "id": id
                 },
                 dataType: 'JSON',
-                success: function(response)
-                {
-                    if (response.success == 1)
-                    {
+                success: function(response){
+                    if (response.success == 1){
                         toastr.success(response.message);
                     }
-                    else
-                    {
+                    else{
                         toastr.error(response.message);
                     }
                 }
