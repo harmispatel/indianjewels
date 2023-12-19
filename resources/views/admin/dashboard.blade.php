@@ -1,5 +1,5 @@
 @extends('admin.layouts.admin-layout')
-@section('title', 'Impel Jewellers | Dashboard')
+@section('title', 'DASHBOARD - IMPEL JEWELLERS')
 @section('content')
 
     {{-- Page Title --}}

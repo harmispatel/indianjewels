@@ -86,7 +86,6 @@ Route::group(['prefix' => 'admin'], function ()
         // Categories
         Route::get('/categories',[CategoryController::class,'index'])->name('categories');
         Route::get('categories/load',[CategoryController::class,'loadCategories'])->name('categories.load');
-        Route::get('categories/add',[CategoryController::class,'create'])->name('categories.add');
         Route::post('categories/store',[CategoryController::class,'store'])->name('categories.store');
         Route::post('categories/edit',[CategoryController::class,'edit'])->name('categories.edit');
         Route::post('categories/update',[CategoryController::class,'update'])->name('categories.update');

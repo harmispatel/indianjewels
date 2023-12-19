@@ -1,16 +1,5 @@
-@php
-    $role = Auth::guard('admin')->user()->user_type;
-    $cat_add = Spatie\Permission\Models\Permission::where('name','categories.add')->first();
-    $cat_edit = Spatie\Permission\Models\Permission::where('name','categories.edit')->first();
-    $cat_delete = Spatie\Permission\Models\Permission::where('name','categories.destroy')->first();
-    $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('permission_id');
-    foreach ($permissions as $permission) {
-        $permission_ids[] = $permission;
-    }
-@endphp
-
 @extends('admin.layouts.admin-layout')
-@section('title', 'Impel Jewellers | Categories')
+@section('title', 'CATEGORIES - IMPEL JEWELLERS')
 @section('content')
 
     {{-- Modal for Add New Category & Edit Category --}}
@@ -127,15 +116,9 @@
                 </nav>
             </div>
             <div class="col-md-4" style="text-align: right;">
-                @if((in_array($cat_add->id, $permission_ids)))
                 <a data-bs-toggle="modal" data-bs-target="#categoryModal" class="btn btn-sm new-category custom-btn">
                     <i class="bi bi-plus-lg"></i>
                 </a>
-                @else
-                {{-- <a data-bs-toggle="modal" data-bs-target="#categoryModal" class="btn btn-sm new-category custom-btn disabled" >
-                    <i class="bi bi-plus-lg"></i>
-                </a> --}}
-                 @endif
             </div>
         </div>
     </div>
@@ -160,12 +143,6 @@
                                 <tbody>
                                     @if (isset($categories))
                                         @foreach ($categories as $category)
-                                            @php
-                                                $status = $category->status;
-                                                $checked = $status == 1 ? 'checked' : '';
-                                                $checkVal = $status == 1 ? 0 : 1;
-                                                $quote = "";
-                                            @endphp
                                             <tr>
                                                 <td>{{ $category->id }}</td>
                                                 <td>{{ $category->name }}</td>
@@ -178,19 +155,17 @@
                                                 </td>
                                                 <td>
                                                     <div class="form-check form-switch">
-                                                        <input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus('{{ $checkVal }}','{{ encrypt($category->id) }}')" id="statusBtn" {{ $checked }}>
+                                                        <input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus('{{ encrypt($category->id) }}')" id="statusBtn" {{ ($category->status == 1) ? 'checked' : '' }}>
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    @if((in_array($cat_edit->id, $permission_ids)))
-                                                        <a onclick="editCategory('{{ encrypt($category->id) }}')" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>
-                                                    @endif
-
-                                                    @if((in_array($cat_delete->id, $permission_ids)))
-                                                        <a onclick="deleteCategory('{{ encrypt($category->id) }}')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>
-                                                    @endif
+                                                    <a onclick="editCategory('{{ encrypt($category->id) }}')" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>
+                                                    <a onclick="deleteCategory('{{ encrypt($category->id) }}')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>
                                                 </td>
                                             </tr>
+                                            @php
+                                                $quote = '';
+                                            @endphp
                                             @if (count($category->subcategories))
                                                 @include('admin.categories.sub_categories', ['subcategories' => $category->subcategories,])
                                             @endif
@@ -209,39 +184,21 @@
 
 {{-- Custom Script --}}
 @section('page-js')
-
     <script type="text/javascript">
 
-        // Toastr Options
-        toastr.options = {
-            "closeButton": true,
-            "progressBar": true,
-            "timeOut": 10000
-        }
-        @if (Session::has('success'))
-            toastr.success('{{ Session::get('success') }}')
-        @endif
-        @if (Session::has('error'))
-            toastr.error('{{ Session::get('error') }}')
-        @endif
-
-        $(document).ready(function()
-        {
+        $(document).ready(function(){
             $('#categoriesTable').DataTable({
                 "ordering": false,
                 "pageLength" : 50
             });
-        });
 
-        $(function() {
             $("#parent_cat").on("click",function() {
                 $(".sub_category").toggle(this.unchecked);
             });
         });
 
         // Reset Category Modal
-        $('.new-category').on('click', function()
-        {
+        $('.new-category').on('click', function(){
             // Reset CategoryForm
             $('#CategoryForm').trigger('reset');
             $('.category_id').show();
@@ -274,18 +231,15 @@
             $('#saveupdatebtn').attr('onclick', "saveUpdateCategory('add')");
         });
 
-
         // Function for Save & Update Category
         function saveUpdateCategory(type)
         {
             // Data Type (Save/Update)
             var dType = type;
-            if (dType == 'add')
-            {
+            if (dType == 'add'){
                 var redirectUrl = "{{ route('categories.store') }}";
             }
-            else
-            {
+            else{
                 var redirectUrl = "{{ route('categories.update') }}";
             }
 
@@ -306,64 +260,52 @@
                 cache: false,
                 processData: false,
                 dataType: "JSON",
-                success: function(response)
-                {
-
-                    if (response.success)
-                    {
+                success: function(response){
+                    if (response.success){
                         $('#CategoryForm').trigger('reset');
                         $('#categoryModal').modal('hide');
                         toastr.success(response.message);
                         setTimeout(() => {
                             location.reload();
                         }, 1200);
-                    }
-                    else
-                    {
+                    }else{
                         $('#CategoryForm').trigger('reset');
                         $('#categoryModal').modal('hide');
                         toastr.error(response.message);
                     }
                 },
-                error: function(response)
-                {
+                error: function(response){
                     // All Validation Errors
                     const validationErrors = (response?.responseJSON?.errors) ? response.responseJSON.errors : '';
 
-                    if (validationErrors != '')
-                    {
+                    if (validationErrors != ''){
                         // ID Error
                         var idError = (validationErrors.category_id) ? validationErrors.category_id : '';
-                        if (idError != '')
-                        {
+                        if (idError != ''){
                             $('#category_id').addClass('is-invalid');
                             toastr.error(idError);
                         }
 
                         // Name Error
                         var nameError = (validationErrors.name) ? validationErrors.name : '';
-                        if (nameError != '')
-                        {
+                        if (nameError != ''){
                             $('#name').addClass('is-invalid');
                             toastr.error(nameError);
                         }
 
                         // Image Error
                         var imageError = (validationErrors.image) ? validationErrors.image : '';
-                        if (imageError != '')
-                        {
+                        if (imageError != ''){
                             $('#image').addClass('is-invalid');
                             toastr.error(imageError);
                         }
-
                     }
                 }
             });
         }
 
-        // Function for Get Edit Coupon Data's
-        function editCategory(categoryID)
-        {
+        // Function for Edit Category
+        function editCategory(id){
             // Reset CategoryForm
             $('#CategoryForm').trigger('reset');
 
@@ -383,13 +325,10 @@
                 dataType: "JSON",
                 data: {
                     '_token': "{{ csrf_token() }}",
-                    'id': categoryID,
+                    'id': id,
                 },
-                success: function(response)
-                {
-
-                    if (response.success)
-                    {
+                success: function(response){
+                    if (response.success) {
                         // Category Data's
                         const category = response.data;
 
@@ -403,7 +342,6 @@
                             $('#parent_cat').prop('checked',false);
                             $('.sub_category').show();
                             $("#parent_category option[value='" + category.parent_category + "']").attr("selected", "selected");
-
                         }
 
                         // Show Image in CategoryForm
@@ -424,10 +362,7 @@
 
                         // Change Button Value
                         $('#saveupdatebtn').attr('onclick', "saveUpdateCategory('edit')");
-
-                    }
-                    else
-                    {
+                    }else{
                         toastr.error(response.message);
                     }
                 }
@@ -435,25 +370,19 @@
         }
 
         // Function for Change Status of Category
-        function changeStatus(status, catId)
-        {
+        function changeStatus(id){
             $.ajax({
                 type: "POST",
                 url: "{{ route('categories.status') }}",
                 data: {
                     "_token": "{{ csrf_token() }}",
-                    "status": status,
-                    "id": catId
+                    "id": id
                 },
                 dataType: 'JSON',
-                success: function(response)
-                {
-                    if (response.success == 1)
-                    {
+                success: function(response){
+                    if (response.success == 1){
                         toastr.success(response.message);
-                    }
-                    else
-                    {
+                    }else{
                         toastr.error(response.message);
                         setTimeout(() => {
                             location.reload();
@@ -464,44 +393,35 @@
         }
 
         // Function for Delete Category
-        function deleteCategory(catId)
-        {
+        function deleteCategory(id){
             swal({
                 title: "Are you sure You want to Delete It ?",
                 icon: "warning",
                 buttons: true,
                 dangerMode: true,
             })
-            .then((deleteCategory) =>
-            {
-                if (deleteCategory)
-                {
+            .then((deleteCategory) =>{
+                if (deleteCategory){
                     $.ajax({
                         type: "POST",
                         url: "{{ route('categories.destroy') }}",
                         data: {
                             "_token": "{{ csrf_token() }}",
-                            'id': catId,
+                            'id': id,
                         },
                         dataType: 'JSON',
-                        success: function(response)
-                        {
-                            if (response.success == 1)
-                            {
+                        success: function(response){
+                            if (response.success == 1){
                                 swal(response.message, "", "success");
                                 setTimeout(() => {
                                     location.reload();
                                 }, 1300);
-                            }
-                            else
-                            {
+                            }else{
                                 swal(response.message, "", "error");
                             }
                         }
                     });
-                }
-                else
-                {
+                }else{
                     swal("Cancelled", "", "error");
                 }
             });

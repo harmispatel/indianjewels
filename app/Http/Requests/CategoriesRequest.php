@@ -3,8 +3,10 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\{Category, Design};
 use Illuminate\Validation\Rule;
+use App\Models\{
+    Category
+};
 
 
 class CategoriesRequest extends FormRequest
@@ -20,47 +22,39 @@ class CategoriesRequest extends FormRequest
     public function rules()
     {
 
-        $ex = Category::get();
-        foreach($ex as $value)
-        {
-            $val[] = $value->parent_category;
+        $categories = Category::get();
+        foreach($categories as $category){
+            $parent_cats[] = $category->parent_category;
         }
 
-        if($this->id)
-        {
+        if($this->id){
             if ($this->parent_category == 0) {
                 $rules = [
                     'name' => 'required|unique:categories,name,'.$this->id,
                     'image' => 'mimes:jpeg,png,jpg,gif,svg|max:3072',
                 ];
             }else{
-                if(in_array($this->parent_category,$val))
-                {
-
-                    $id = $this->id;
+                if(in_array($this->parent_category,$parent_cats)){
+                    $category_id = $this->id;
                     $request = $this;
                     $rules = [
                         'name' => [
                             'required',
-                            Rule::unique('categories')->where(function ($query) use ($request, $id) {
+                            Rule::unique('categories')->where(function ($query) use ($request, $category_id) {
                                 return $query->where('parent_category', $request->parent_category)
-                                    ->where('id', '<>', $id);
+                                    ->where('id', '<>', $category_id);
                             }),
                         ],
-
                         'image' => 'mimes:jpeg,png,jpg,gif,svg|max:3072',
                     ];
                 }else{
-
                     $rules = [
 
                         'name' => 'required',
                         'image' => 'mimes:jpeg,png,jpg,gif,svg|max:3072',
                     ];
                 }
-
             }
-
         }
         else
         {
@@ -73,8 +67,7 @@ class CategoriesRequest extends FormRequest
                 ];
 
             }else{
-                if (in_array($this->parent_category,$val)) {
-                    # code...
+                if (in_array($this->parent_category,$parent_cats)) {
                     $rules = [
                         'category_id' => 'unique:categories,id',
                         'name' => 'required|unique:categories,name',
