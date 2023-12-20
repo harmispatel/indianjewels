@@ -23,23 +23,22 @@ class CustomerRequest extends FormRequest
      */
     public function rules()
     {
-        if($this->customer_id)
-        {
-            $rules = [
-                'name' => 'required',
-                'email' => 'required|email|unique:users,email,'.decrypt($this->customer_id),
-                'phone' => 'required|numeric|digits:10',
-                'gst_no' => 'nullable|min:15',
-                'pan_no' => 'nullable|min:10',
-            ];
+        $rules = [
+            'name' => 'required',
+            'gst_no' => 'nullable|min:15',
+            'pan_no' => 'nullable|min:10',
+            'profile_picture' => 'mimes:png,jpg,svg,gif'
+        ];
 
+        if($this->customer_id) {
+            $rules += [
+                'email' => 'required|email|unique:users,email,'.decrypt($this->customer_id),
+                'phone' => 'required|unique:users,phone,'.decrypt($this->customer_id),
+            ];
         }else{
-            $rules = [
-                'name' => 'required',
+            $rules += [
                 'email' => 'required|email|unique:users,email',
-                'phone' => 'required|numeric|digits:10',
-                'gst_no' => 'nullable|min:15',
-                'pan_no' => 'nullable|min:10',
+                'phone' => 'required|unique:users,phone',
             ];
         }
         return $rules;

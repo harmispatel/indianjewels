@@ -1,7 +1,5 @@
 @extends('admin.layouts.admin-layout')
-
-@section('title', 'Impel Jewellers | Customers')
-
+@section('title', 'CUSTOMERS - IMPEL JEWELLERS')
 @section('content')
 
     {{-- Page Title --}}
@@ -18,7 +16,6 @@
             </div>
         </div>
     </div>
-
 
     {{-- Customers Section --}}
     <section class="section dashboard">
@@ -39,12 +36,13 @@
                             <table class="table w-100" id="customersTable">
                                 <thead>
                                     <tr>
-                                        <th>Id</th>
-                                        <th>Name</th>
-                                        <th>Phone</th>
-                                        <th>Verification</th>
-                                        <th>Status</th>
-                                        {{-- <th>Actions</th> --}}
+                                        <th scope="col">Id</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Phone</th>
+                                        <th scope="col">Profile</th>
+                                        <th scope="col">Verification</th>
+                                        <th scope="col">Status</th>
+                                        {{-- <th scope="col">Actions</th> --}}
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -74,8 +72,7 @@
         });
 
         // Function for get all Customers
-        function getCustomers(verificationFilter)
-        {
+        function getCustomers(verificationFilter){
             var customerTable = $('#customersTable').DataTable();
             customerTable.destroy();
             customerTable = $('#customersTable').DataTable({
@@ -91,7 +88,8 @@
                         'verification_filter':verificationFilter,
                     },
                 },
-                columns: [{
+                columns: [
+                    {
                         data: 'id',
                         name: 'id',
                         orderable: false,
@@ -104,6 +102,12 @@
                         data: 'phone',
                         name: 'phone',
                         orderable: false,
+                    },
+                    {
+                        data: 'profile',
+                        name: 'profile',
+                        orderable: false,
+                        searchable: false
                     },
                     {
                         data: 'verification',

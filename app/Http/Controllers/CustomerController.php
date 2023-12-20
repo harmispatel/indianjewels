@@ -2,17 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Traits\ImageTrait;
+use Illuminate\Http\Request;
 use App\Http\Requests\CustomerRequest;
+use Yajra\DataTables\Facades\DataTables;
 use App\Models\{
     User,
     City,
     State,
 };
-use Illuminate\Http\Request;
-use Yajra\DataTables\Facades\DataTables;
 
 class CustomerController extends Controller
 {
+    use ImageTrait;
+
     // Display a listing of the resource.
     public function index()
     {
@@ -23,10 +26,8 @@ class CustomerController extends Controller
     // Function for Get all Customers
     public function loadCustomers(Request $request)
     {
-        if ($request->ajax())
-        {
+        if ($request->ajax()){
             $verification_filter = (isset($request->verification_filter)) ? $request->verification_filter : '';
-
             // Get all Customers
             $customers = User::where('user_type',2);
             if(!empty($verification_filter)){
@@ -38,105 +39,94 @@ class CustomerController extends Controller
 
             return DataTables::of($customers)
             ->addIndexColumn()
-
-            ->addColumn('verification', function ($row)
-            {
-                $verification = $row->verification;
-                if($verification == 1){
+            ->addColumn('verification', function ($row) {
+                if($row->verification == 1){
                     return '<span class="badge bg-danger">Half Registerd</span>';
-                }elseif($verification == 2){
+                }elseif($row->verification == 2){
                     return '<span class="badge bg-success">Full Registerd</span>';
                 }
             })
-            ->addColumn('status', function ($row)
-            {
-                $status = $row->status;
-                $checked = ($status == 1) ? 'checked' : '';
+            ->addColumn('profile', function ($row) {
+                $profile = (isset($row->profile) && !empty($row->profile) && file_exists('public/images/uploads/user_images/'.$row->profile)) ? asset('public/images/uploads/user_images/'.$row->profile) : asset('public/images/default_images/profiles/profile1.jpg');
+                return '<img src="'.$profile.'" width="50" style="border-radius:50%;">';
+            })
+            ->addColumn('status', function ($row){
+                $checked = ($row->status == 1) ? 'checked' : '';
                 $customer_id = isset($row->id) ? $row->id : '';
-
                 return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus('.$customer_id.')" id="statusBtn" '.$checked.'></div>';
             })
-            // ->addColumn('actions',function($row)
-            // {
-            //     $customer_id = isset($row->id) ? $row->id : '';
+            // ->addColumn('actions',function($row){
             //     $action_html = '';
-
             //     // Edit Button
-            //     $action_html .= '<a href="'.route('customers.edit',encrypt($customer_id)).'" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>';
-
+            //     $action_html .= '<a href="'.route('customers.edit',encrypt($row->id)).'" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>';
             //     return $action_html;
             // })
-            ->rawColumns(['verification','actions','status'])
+            ->rawColumns(['verification','profile','actions','status'])
             ->make(true);
         }
     }
+
 
     // Show the form for editing the specified resource.
     public function edit($id)
     {
         try {
-            $customer_id = decrypt($id);
-            $customer = User::find($customer_id);
-
-            // State & Cities
+            $customer = User::find(decrypt($id));
             $states = State::get();
             $cities = City::where('state_id',$customer->state)->get();
-
             return view('admin.customers.edit_customer',compact('customer','states','cities'));
-
         } catch (\Throwable $th) {
-            return redirect()->back()->with('error', 'Something Went Wrong!');
+            return redirect()->back()->with('error', 'Oops, Something went wrong!');
         }
     }
+
 
     // Function for Change Customer Status
     public function status(Request $request)
     {
         try {
-            $id = $request->id;
-            $customer = User::find($id);
+            $customer = User::find($request->id);
             $customer->status =  ($customer->status == 1) ? 0 : 1;
             $customer->update();
-
             return response()->json([
                 'success' => 1,
-                'message' => "Customer Status has been Changed Successfully..",
+                'message' => "Status has been Changed.",
             ]);
         } catch (\Throwable $th) {
             return response()->json([
                 'success' => 0,
-                'message' => "Something went wrong!",
+                'message' => "Oops, Something went wrong!",
             ]);
         }
     }
+
 
     // Function for Update Existing Record
     public function update(CustomerRequest $request)
     {
         try {
+            $input = $request->except('_token','customer_id','profile_picture');
+            $customer = User::find(decrypt($request->customer_id));
 
-            $customer_id = decrypt($request->customer_id);
-            $input = $request->except('_token','customer_id');
+            if(isset($customer->id)){
 
-            $customer = User::find($customer_id);
-            if($customer)
-            {
+                $old_image = (isset($customer->profile)) ? $customer->profile : '';
+                if($request->hasFile('profile_picture')){
+                    $profile = $this->addSingleImage('user_image', 'user_images',$request->file('profile_picture'), $old_image,'300*300');
+                    $input['profile'] = $profile;
+                }
+
                 $customer->update($input);
 
-                if(isset($customer->name) && !empty($customer->name) && isset($customer->email) && !empty($customer->email) && isset($customer->phone) && !empty($customer->phone) && isset($customer->pincode) && !empty($customer->pincode) && isset($customer->address) && !empty($customer->address) && isset($customer->city) && !empty($customer->city) && isset($customer->state) && !empty($customer->state))
-                {
+                if(isset($customer->name) && !empty($customer->name) && isset($customer->email) && !empty($customer->email) && isset($customer->phone) && !empty($customer->phone) && isset($customer->pincode) && !empty($customer->pincode) && isset($customer->address) && !empty($customer->address) && isset($customer->city) && !empty($customer->city) && isset($customer->state) && !empty($customer->state)){
                     $customer->update(['verification' => 2]);
-                }
-                else
-                {
+                }else{
                     $customer->update(['verification' => 1]);
                 }
             }
-
-            return redirect()->route('customers')->with('success','Customer has been Updated Successfully...');
-
+            return redirect()->route('customers')->with('success','Customer has been Updated.');
         } catch (\Throwable $th) {
-            return redirect()->back()->with('error','Something went wrong!');
+            return redirect()->back()->with('error','oops, Something went wrong!');
         }
     }
 
