@@ -1,16 +1,7 @@
 @extends('admin.layouts.admin-layout')
-@section('title', 'Impel Jewellers - Dealers')
+@section('title', 'DEALERS - IMPEL JEWELLERS')
 @section('content')
 
-@php
-$role = Auth::guard('admin')->user()->user_type;
-$dealer_add = Spatie\Permission\Models\Permission::where('name','dealers.create')->first();
-
-$permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('permission_id');
-    foreach ($permissions as $permission) {
-        $permission_ids[] = $permission;
-    }
-@endphp
     {{-- Page Title --}}
     <div class="pagetitle">
         <h1>Dealers</h1>
@@ -31,7 +22,6 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
         </div>
     </div>
 
-
     {{-- Dealers Section --}}
     <section class="section dashboard">
         <div class="row">
@@ -45,9 +35,10 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                                     <tr>
                                         <th>Id</th>
                                         <th>Name</th>
+                                        <th>Code</th>
                                         <th>Profile</th>
-                                        <th>Company Logo</th>
                                         <th>Status</th>
+                                        <th>Joined At</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -63,18 +54,19 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
 @endsection
 
 
-
 {{-- Custom Script --}}
 @section('page-js')
     <script type="text/javascript">
-        $(function() {
 
+        // Load All Dealers
+        $(function() {
             var table = $('#DealersTable').DataTable({
                 processing: true,
                 serverSide: true,
                 pageLength: 50,
                 ajax: "{{ route('dealers.load') }}",
-                columns: [{
+                columns: [
+                    {
                         data: 'id',
                         name: 'id',
                         orderable: false,
@@ -85,20 +77,24 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                         name: 'name'
                     },
                     {
+                        data: 'dealer_code',
+                        name: 'dealer_code'
+                    },
+                    {
                         data: 'profile_picture',
                         name: 'profile_picture',
                         orderable: false,
                         searchable: false
                     },
                     {
-                        data: 'company_logo',
-                        name: 'company_logo',
+                        data: 'status',
+                        name: 'status',
                         orderable: false,
                         searchable: false
                     },
                     {
-                        data: 'status',
-                        name: 'status',
+                        data: 'joined_at',
+                        name: 'joined_at',
                         orderable: false,
                         searchable: false
                     },
@@ -110,16 +106,15 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                     },
                 ]
             });
-
         });
 
-        function changeStatus(status, id) {
+        // Change Status of Dealer
+        function changeStatus(id) {
             $.ajax({
                 type: "POST",
-                url: '{{ route('dealers.status') }}',
+                url: "{{ route('dealers.status') }}",
                 data: {
                     "_token": "{{ csrf_token() }}",
-                    "status": status,
                     "id": id
                 },
                 dataType: 'JSON',
@@ -128,42 +123,45 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                         toastr.success(response.message);
                     } else {
                         toastr.error(response.message);
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1000);
                     }
                 }
             })
         }
 
-        // Function for Delete Table
-        function deleteDealer(dealerId) {
+        // Delete Dealer
+        function deleteDealer(id) {
             swal({
-                    title: "Are you sure You want to Delete It ?",
-                    icon: "warning",
-                    buttons: true,
-                    dangerMode: true,
-                })
-                .then((willDeleteDealer) => {
-                    if (willDeleteDealer) {
-                        $.ajax({
-                            type: "POST",
-                            url: '{{ route('dealers.destroy') }}',
-                            data: {
-                                "_token": "{{ csrf_token() }}",
-                                'id': dealerId,
-                            },
-                            dataType: 'JSON',
-                            success: function(response) {
-                                if (response.success == 1) {
-                                    toastr.success(response.message);
-                                    $('#DealersTable').DataTable().ajax.reload();
-                                } else {
-                                    swal(response.message, "", "error");
-                                }
+                title: "Are you sure You want to Delete It ?",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((willDeleteDealer) => {
+                if (willDeleteDealer) {
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('dealers.destroy') }}",
+                        data: {
+                            "_token": "{{ csrf_token() }}",
+                            'id': id,
+                        },
+                        dataType: 'JSON',
+                        success: function(response) {
+                            if (response.success == 1) {
+                                swal(response.message, "", "success");
+                                $('#DealersTable').DataTable().ajax.reload();
+                            } else {
+                                swal(response.message, "", "error");
                             }
-                        });
-                    } else {
-                        swal("Cancelled", "", "error");
-                    }
-                });
+                        }
+                    });
+                } else {
+                    swal("Cancelled", "", "error");
+                }
+            });
         }
     </script>
 
