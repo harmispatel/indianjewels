@@ -1,5 +1,5 @@
 @extends('admin.layouts.admin-layout')
-@section('title', 'Impel Jewellers | Create - Top Banners')
+@section('title', 'CREATE - TOP BANNERS - IMPEL JEWELLERS')
 @section('content')
 
     {{-- Page Title --}}
@@ -19,14 +19,14 @@
         </div>
     </div>
 
-    {{-- New Top Banner Section --}}
+    {{-- Create Top Banner Section --}}
     <section class="section dashboard">
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
                     <form action="{{ route('top-banners.store') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
                         <div class="card-body">
-                            @csrf
                             <div class="form_box">
                                 <div class="form_box_inr">
                                     <div class="box_title">
@@ -92,6 +92,9 @@
                     </form>
                 </div>
             </div>
+        </div>
+    </section>
+
 @endsection
 
 @section('page-js')

@@ -1,5 +1,5 @@
 @extends('admin.layouts.admin-layout')
-@section('title', 'Impel Jewellers | Edit - Middle Banners')
+@section('title', 'EDIT - MIDDLE BANNERS - IMPEL JEWELLERS')
 @section('content')
 
     {{-- Page Title --}}
@@ -15,7 +15,6 @@
                     </ol>
                 </nav>
             </div>
-
         </div>
     </div>
 
@@ -25,9 +24,9 @@
             <div class="col-md-12">
                 <div class="card">
                     <form action="{{ route('middle-banners.update') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" name="id" id="id" value="{{ encrypt($middle_banner['id']) }}">
                         <div class="card-body">
-                            @csrf
-                            <input type="hidden" name="id" id="id" value="{{ encrypt($middle_banner['id']) }}">
                             <div class="form_box">
                                 <div class="form_box_inr">
                                     <div class="box_title">
@@ -83,6 +82,9 @@
                     </form>
                 </div>
             </div>
+        </div>
+    </section>
+
 @endsection
 
 @section('page-js')

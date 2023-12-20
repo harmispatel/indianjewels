@@ -1,7 +1,5 @@
 @extends('admin.layouts.admin-layout')
-
-@section('title', 'Impel Jewellers - Pages')
-
+@section('title', 'PAGES - IMPEL JEWELLERS')
 @section('content')
 
     {{-- Page Title --}}
@@ -18,7 +16,6 @@
             </div>
         </div>
     </div>
-
 
     {{-- Pages Section --}}
     <section class="section dashboard">
@@ -60,7 +57,6 @@
 
         // Function for get all Pages
         function getPages(){
-
             var customerTable = $('#pagesTable').DataTable();
             customerTable.destroy();
             customerTable = $('#pagesTable').DataTable({
@@ -124,11 +120,9 @@
                 buttons: true,
                 dangerMode: true,
             })
-            .then((willDeletePage) =>
-            {
+            .then((willDeletePage) => {
                 if (willDeletePage){
-                    $.ajax(
-                    {
+                    $.ajax({
                         type: "POST",
                         url: "{{ route('pages.destroy') }}",
                         data:{
@@ -136,8 +130,7 @@
                             'id': id,
                         },
                         dataType: 'JSON',
-                        success: function(response)
-                        {
+                        success: function(response){
                             if (response.success == 1){
                                 swal(response.message, "", "success");
                                 $('#pagesTable').DataTable().ajax.reload();

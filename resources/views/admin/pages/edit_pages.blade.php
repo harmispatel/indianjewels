@@ -1,7 +1,5 @@
 @extends('admin.layouts.admin-layout')
-
-@section('title', 'Impel Jewellers - Pages - Edit')
-
+@section('title', 'EDIT - PAGES - IMPEL JEWELLERS')
 @section('content')
 
     {{-- Page Title --}}
@@ -19,7 +17,6 @@
             </div>
         </div>
     </div>
-
 
     {{-- Edit Page Section --}}
     <section class="section dashboard">

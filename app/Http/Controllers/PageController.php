@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Page;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
+use App\Models\{
+    Page
+};
 
 class PageController extends Controller
 {
@@ -17,28 +19,20 @@ class PageController extends Controller
     // Function for Get all Pages
     public function loadPages(Request $request)
     {
-        if ($request->ajax())
-        {
+        if ($request->ajax()){
             // Get all Pages
             $pages = Page::all();
 
             return DataTables::of($pages)
             ->addIndexColumn()
-            ->addColumn('status', function ($row)
-            {
-                $status = $row->status;
-                $checked = ($status == 1) ? 'checked' : '';
-                $page_id = isset($row->id) ? $row->id : '';
-                return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus('.$page_id.')" id="statusBtn" '.$checked.'></div>';
+            ->addColumn('status', function ($row){
+                $checked = ($row->status == 1) ? 'checked' : '';
+                return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus('.$row->id.')" id="statusBtn" '.$checked.'></div>';
             })
-            ->addColumn('actions',function($row)
-            {
-                $page_id = isset($row->id) ? $row->id : '';
+            ->addColumn('actions',function($row){
                 $action_html = '';
-
                 // Edit Button
-                $action_html .= '<a href="'.route('pages.edit',encrypt($page_id)).'" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>';
-
+                $action_html .= '<a href="'.route('pages.edit',encrypt($row->id)).'" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>';
                 // Delete Button
                 $action_html .= '<a onclick="deletePage(\''.encrypt($row->id).'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
                 return $action_html;
@@ -69,11 +63,10 @@ class PageController extends Controller
             $input['status'] = 1;
             $slug = str_replace(' ','_',strtolower($request->name));
             $input['slug'] = str_replace('&','and',$slug);
-
             Page::create($input);
-            return redirect()->route('pages')->with('success', 'Page has been Created SuccessFully.');
+            return redirect()->route('pages')->with('success', 'Page has been Created.');
         } catch (\Throwable $th) {
-            return back()->with('error', 'Something went wrong!');
+            return back()->with('error', 'Oops, Something went wrong!');
         }
     }
 
@@ -82,19 +75,17 @@ class PageController extends Controller
     public function status(Request $request)
     {
         try {
-            $id = $request->id;
-            $page = Page::find($id);
+            $page = Page::find($request->id);
             $page->status =  ($page->status == 1) ? 0 : 1;
             $page->update();
-
             return response()->json([
                 'success' => 1,
-                'message' => "Page Status has been Changed Successfully..",
+                'message' => "Status has been Changed.",
             ]);
         } catch (\Throwable $th) {
             return response()->json([
                 'success' => 0,
-                'message' => "Something went wrong!",
+                'message' => "Oops, Something went wrong!",
             ]);
         }
     }
@@ -107,7 +98,7 @@ class PageController extends Controller
             $page = Page::find(decrypt($id));
             return view('admin.pages.edit_pages', compact(['page']));
         } catch (\Throwable $th) {
-            return back()->with('error', 'Something went wrong!');
+            return back()->with('error', 'Oops, Something went wrong!');
         }
     }
 
@@ -125,11 +116,10 @@ class PageController extends Controller
             $input['status'] = 1;
             $slug = str_replace(' ','_',strtolower($request->name));
             $input['slug'] = str_replace('&','and',$slug);
-
             Page::find($request->id)->update($input);
-            return redirect()->route('pages')->with('success', 'Page has been Updated SuccessFully.');
+            return redirect()->route('pages')->with('success', 'Page has been Updated.');
         } catch (\Throwable $th) {
-            return back()->with('error', 'Something went wrong!');
+            return back()->with('error', 'Oops, Something went wrong!');
         }
     }
 
@@ -137,22 +127,17 @@ class PageController extends Controller
     // Remove the specified resource from storage.
     public function destroy(Request $request)
     {
-        try
-        {
-            $page_id = decrypt($request->id);
-            $page = Page::find($page_id);
+        try{
+            $page = Page::find(decrypt($request->id));
             $page->delete();
-
             return response()->json([
                 'success' => 1,
                 'message' => "Page has been Deleted.",
             ]);
-        }
-        catch (\Throwable $th)
-        {
+        }catch (\Throwable $th){
             return response()->json([
                 'success' => 0,
-                'message' => "Something went wrong!",
+                'message' => "Oops, Something went wrong!",
             ]);
         }
     }

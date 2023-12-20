@@ -1,5 +1,5 @@
 @extends('admin.layouts.admin-layout')
-@section('title', 'Impel Jewellers | Edit - Top Banners')
+@section('title', 'EDIT - TOP BANNERS - IMPEL JEWELLERS')
 @section('content')
 
     {{-- Page Title --}}
@@ -25,9 +25,9 @@
             <div class="col-md-12">
                 <div class="card">
                     <form action="{{ route('top-banners.update') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" name="id" id="id" value="{{ encrypt($top_banner['id']) }}">
                         <div class="card-body">
-                            @csrf
-                            <input type="hidden" name="id" id="id" value="{{ encrypt($top_banner['id']) }}">
                             <div class="form_box">
                                 <div class="form_box_inr">
                                     <div class="box_title">
@@ -100,6 +100,9 @@
                     </form>
                 </div>
             </div>
+        </div>
+    </section>
+
 @endsection
 
 @section('page-js')

@@ -1,5 +1,5 @@
 @extends('admin.layouts.admin-layout')
-@section('title', 'Impel Jewellers | Middle Banners')
+@section('title', 'MIDDLE BANNERS - IMPEL JEWELLERS')
 @section('content')
 
     {{-- Page Title --}}
@@ -58,8 +58,7 @@
         loadMiddleBanners();
 
         // Function for Load Middle Banners
-        function loadMiddleBanners()
-        {
+        function loadMiddleBanners(){
             var middleBannersTable = $('#middleBannersTable').DataTable();
             // Destroy Old Table
             middleBannersTable.destroy();
@@ -103,28 +102,24 @@
         }
 
         // Function for Delete Middle Banner
-        function deleteMiddleBanner(bannerID)
-        {
+        function deleteMiddleBanner(id){
             swal({
                 title: "Are you sure You want to Delete It ?",
                 icon: "warning",
                 buttons: true,
                 dangerMode: true,
             })
-            .then((willDeleteBanner) =>
-            {
+            .then((willDeleteBanner) => {
                 if (willDeleteBanner){
-                    $.ajax(
-                    {
+                    $.ajax({
                         type: "POST",
                         url: "{{ route('middle-banners.destroy') }}",
                         data:{
                             "_token": "{{ csrf_token() }}",
-                            'id': bannerID,
+                            'id': id,
                         },
                         dataType: 'JSON',
-                        success: function(response)
-                        {
+                        success: function(response){
                             if (response.success == 1){
                                 swal(response.message, "", "success");
                                 setTimeout(() => {
@@ -142,8 +137,7 @@
         }
 
         // Function for Change Status of Middle Banner
-        function changeStatus(id)
-        {
+        function changeStatus(id){
             $.ajax({
                 type: "POST",
                 url: "{{ route('middle-banners.status') }}",
@@ -152,8 +146,7 @@
                     "id": id
                 },
                 dataType: 'JSON',
-                success: function(response)
-                {
+                success: function(response){
                     if (response.success == 1){
                         toastr.success(response.message);
                     }else{

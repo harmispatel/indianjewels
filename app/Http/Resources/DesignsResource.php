@@ -96,7 +96,7 @@ class DesignsResource extends JsonResource
             $designs_array[] = $data;
         }
 
-        if(count($this->subcategories) > 0){
+        if(isset($this->subcategories) && count($this->subcategories) > 0){
             $tags_ids = Design::whereIn('category_id', $this->subcategories)->pluck('tags')->toArray();
             $filteredTags = (new Collection($tags_ids))->filter(function ($tag) {
                 $array = json_decode($tag, true);
