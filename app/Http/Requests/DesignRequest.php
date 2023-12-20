@@ -23,27 +23,20 @@ class DesignRequest extends FormRequest
      */
     public function rules()
     {
-        if($this->id)
-        {
-            $rules = [
-                'image' => 'mimes:jpeg,png,jpg',
-                'name' => 'required',
-                'code'=> 'required|unique:designs,code,'.decrypt($this->id),
-                'category_id' => 'required',
-                'gender_id' => 'required',
-                'metal_id' => 'required',
-                'price' => 'required|numeric|gt:0',
-            ];
+        $rules = [
+            'name' => 'required',
+            'category_id' => 'required',
+            'gender_id' => 'required',
+            'metal_id' => 'required',
+        ];
 
+        if($this->id){
+            $rules += [
+                'code'=> 'required|unique:designs,code,'.decrypt($this->id),
+            ];
         }else{
-            $rules = [
-                'name' => 'required',
+            $rules += [
                 'code'=> 'required|unique:designs,code',
-                'category_id' => 'required',
-                'gender_id' => 'required',
-                'metal_id' => 'required',
-                'image' => 'mimes:jpeg,png,jpg',
-                'price' => 'required|numeric|gt:0',
             ];
         }
         return $rules;

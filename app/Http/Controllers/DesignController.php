@@ -2,26 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{Design,Category,Gender,Metal,Tag, Design_image, RoleHasPermissions,Dealer, User};
-use Illuminate\Http\Request;
-use Yajra\DataTables\Facades\DataTables;
 use App\Traits\ImageTrait;
-use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use App\Http\Requests\DesignRequest;
-use Auth;
-use Spatie\Permission\Models\Permission;
+use App\Models\{
+    Tag,
+    Metal,
+    Gender,
+    Design,
+    Category,
+    Design_image,
+};
 
 class DesignController extends Controller
 {
     use ImageTrait;
-
-    function __construct()
-    {
-        $this->middleware('permission:designs|designs.create|designs.edit|designs.destroy', ['only' => ['index','store']]);
-        $this->middleware('permission:designs.create', ['only' => ['create','store']]);
-        $this->middleware('permission:designs.edit', ['only' => ['edit','update']]);
-        $this->middleware('permission:designs.destroy', ['only' => ['destroy']]);
-    }
 
     // Display a listing of the resource.
     public function index()
@@ -29,11 +24,12 @@ class DesignController extends Controller
         return view('admin.designs.designs');
     }
 
+
     // Get AJAX listing of the resource.
     public function loaddesigns(Request $request)
     {
-        if ($request->ajax())
-        {
+        if ($request->ajax()){
+
             $columns = array(
                 0 => 'id',
                 2 => 'code',
@@ -44,7 +40,6 @@ class DesignController extends Controller
             $dir = $request->input('order.0.dir');
 
             $totalData = Design::query();
-
             $designs = Design::query();
 
             if(!empty($request->input('search.value'))){
@@ -62,36 +57,29 @@ class DesignController extends Controller
 
             if(count($designs) > 0){
                 foreach ($designs as $design) {
-                    $design_id = $design->id;
-                    $item['id'] = $design_id;
+                    $item['id'] = $design->id;
                     $item['name'] = (isset($design['name'])) ? $design['name'] : '';
                     $item['code'] = (isset($design['code'])) ? $design['code'] : '';
 
                     // Status Button
-                    $status = $design->status;
-                    $checked = ($status == 1) ? 'checked' : '';
-                    $item['changestatus'] = '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus('.$design_id.')" id="statusBtn" '.$checked.'></div>';
+                    $checked = ($design->status == 1) ? 'checked' : '';
+                    $item['status'] = '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus('.$design->id.')" id="statusBtn" '.$checked.'></div>';
+
+                    // Image
+                    if(isset($design->image) && !empty($design->image) && file_exists('public/images/uploads/item_images/'.$design->code.'/'.$design->image)){
+                        $item['image'] = '<img src="'.asset('public/images/uploads/item_images/'.$design->code.'/'.$design->image).'" width="70">';
+                    }else{
+                        $item['image'] = '<img src="'.asset('public/images/default_images/not-found/no_img1.jpg').'" width="70">';
+                    }
 
                     // Top Selling Button
-                    $top_selling = $design->highest_selling;
-                    $isCheckedTopSelling = ($top_selling == 1) ? 'checked' : '';
-                    $item['top_selling'] = '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeTopSelling('.$design_id.')" id="statusBtn" '.$isCheckedTopSelling.'></div>';
+                    $isCheckedTopSelling = ($design->highest_selling == 1) ? 'checked' : '';
+                    $item['top_selling'] = '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeTopSelling('.$design->id.')" id="statusBtn" '.$isCheckedTopSelling.'></div>';
 
                     // Actions Buttons
-                    $action_html = '';
-                    $design_edit = Permission::where('name','designs.edit')->first();
-                    $design_delete = Permission::where('name','designs.destroy')->first();
-                    $user_type =  Auth::guard('admin')->user()->user_type;
-                    $roles = RoleHasPermissions::where('role_id',$user_type)->pluck('permission_id');
-                    foreach ($roles as $key => $value) {
-                        $val[] = $value;
-                    }
-                    if(in_array($design_edit->id,$val)){
-                        $action_html .= '<a href="'.route('designs.edit',encrypt($design_id)).'" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>';
-                    }
-                    // if(in_array($design_delete->id,$val)){
-                    //     $action_html .= '<a onclick="deleteDesign(\''.$design_id.'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
-                    // }
+                    // $action_html = '';
+                    // $action_html .= '<a href="'.route('designs.edit',encrypt($design->id)).'" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>';
+                    // $action_html .= '<a onclick="deleteDesign(\''.$design->id.'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
                     // $item['actions'] = $action_html;
 
                     $all_items[] = $item;
@@ -104,90 +92,62 @@ class DesignController extends Controller
                 "recordsFiltered" => intval(isset($totalFiltered) ? $totalFiltered : ''),
                 "data"            => $all_items
             ]);
-
         }
     }
+
 
     // Show the form for creating a new resource.
     public function create()
     {
-        $categories = Category::where('parent_category','!=',0)->get();
-        $genders = Gender::get();
-        $metals = Metal::get();
         $tags = Tag::get();
+        $metals = Metal::get();
+        $genders = Gender::get();
+        $categories = Category::where('parent_category','!=',0)->get();
         return view('admin.designs.create_designs',compact('categories','genders','metals','tags'));
     }
+
 
     // Store a newly created resource in storage.
     public function store(DesignRequest $request)
     {
-        try
-        {
-            $input = $request->except('_token','tags','image','multiImage');
+        try{
+            $input = $request->except('_token','tags');
             $input['tags'] = json_encode($request->tags);
 
-            // Upload Main Image
-            if($request->hasfile('image'))
-            {
-                $file = $request->image;
-                $singleFile = $this->addSingleImage('item','item_image',$file, $oldImage = '',"300*300");
-                $input['image'] = $singleFile;
-            }
-
             // Create Design
-            $design = Design::create($input);
-            $design_id = $design->id;
-
-            // Insert Design's Multiple Images
-            if ($request->hasfile('multiImage'))
-            {
-                $mulitple = $request->file('multiImage');
-                foreach($mulitple as $key => $value)
-                {
-                    $designImage = new Design_image;
-                    $designImage->design_id	= $design_id;
-                    $multiFile = $this->addSingleImage('item','item_image',$value, $oldImage = '',"300*300");
-                    $designImage->image = $multiFile;
-                    $designImage->save();
-                }
-            }
-
-            return redirect()->route('designs')->with('message','Design added Successfully');
-
+            Design::create($input);
+            return redirect()->route('designs')->with('success','Design has been Created.');
         } catch (\Throwable $th) {
-            return redirect()->route('designs')->with('error','Something with wrong');
+            return redirect()->route('designs')->with('error','Oops, Something went wrong!');
         }
     }
+
 
     // Change Status of Specific Design
     public function status(Request $request)
     {
-        try
-        {
-            $id = $request->id;
-            $design = Design::find($id);
+        try{
+            $design = Design::find($request->id);
             $design->status =  ($design->status == 1) ? 0 : 1;
             $design->update();
-
             return response()->json([
                 'success' => 1,
-                'message' => "Design Status has been Changed Successfully..",
+                'message' => "Design Status has been Changed.",
             ]);
         } catch (\Throwable $th) {
             return response()->json([
                 'success' => 0,
-                'message' => "Internal Server Error!",
+                'message' => "Oops, Something went wrong!",
             ]);
         }
     }
 
+
     // Change Status of Top Selling
     public function topSelling(Request $request)
     {
-        try
-        {
-            $id = $request->id;
-            $design = Design::find($id);
+        try{
+            $design = Design::find($request->id);
             $design->highest_selling =  ($design->highest_selling == 1) ? 0 : 1;
             $design->update();
             $message = ($design->highest_selling == 1) ? 'Design has been Added to Top Selling.' : 'Design has been Removed from Top Selling.';
@@ -195,136 +155,77 @@ class DesignController extends Controller
                 'success' => 1,
                 'message' => $message,
             ]);
-        }
-        catch (\Throwable $th)
-        {
+        }catch (\Throwable $th){
             return response()->json([
                 'success' => 0,
-                'message' => "Internal Server Error!",
+                'message' => "Oops, Something went wrong!",
             ]);
         }
     }
+
 
     // Show the form for editing the specified resource.
     public function edit($id)
     {
         try {
-            $id = decrypt($id);
-            $data = Design::where('id',$id)->with('designImages')->first();
-            $categories = Category::where('parent_category','!=',0)->get();
-            $genders = Gender::get();
-            $metals = Metal::get();
             $tags = Tag::get();
-            return view('admin.designs.edit_designs',compact('categories','genders','metals','tags','data'));
+            $metals = Metal::get();
+            $genders = Gender::get();
+            $categories = Category::where('parent_category','!=',0)->get();
+            $design = Design::find(decrypt($id));
+            return view('admin.designs.edit_designs',compact('categories','genders','metals','tags','design'));
         } catch (\Throwable $th) {
-            return redirect()->back()->with('error', 'Something went Wrong!');
+            return redirect()->back()->with('error', 'Oops, Something went wrong!');
         }
     }
+
 
     // Update the specified resource in storage.
-    public function update(DesignRequest $request, Design $design)
+    public function update(DesignRequest $request)
     {
         try {
-            $id = decrypt($request->id);
-            $input = $request->except('_token','tags','company','image','multiImage','id');
+            $input = $request->except('_token','tags','id');
             $input['tags'] = json_encode($request->tags);
-            $input['highest_selling'] = (isset($request->highest_selling)) ? $request->highest_selling : 0;
-
-            if ($request->hasfile('image'))
-            {
-                $img  = Design::where('id',$id)->first();
-                $old_image = isset($img->image) ? $img->image : '';
-                $file = $request->image;
-                $singleFile = $this->addSingleImage('item','item_image',$file, $oldImage = '',"300*300");
-                $input['image'] = $singleFile;
-            }
-
-            $data = Design::find($id);
-            $data->update($input);
-
-            if ($request->hasfile('multiImage'))
-            {
-                $mulitple = $request->file('multiImage');
-
-                foreach($mulitple as $key => $value)
-                {
-                    $designImage = new Design_image;
-                    $designImage->design_id = $id;
-                    $multiFile = $this->addSingleImage('item','item_image',$value, $oldImage = '',"300*300");
-                    $designImage->image = $multiFile;
-                    $designImage->save();
-                }
-        }
-
-            return redirect()->route('designs')->with('message','Design updated Successfully');
-
+            $design = Design::find(decrypt($request->id));
+            $design->update($input);
+            return redirect()->route('designs')->with('message','Design has been Updated.');
         } catch (\Throwable $th) {
-            return redirect()->route('designs')->with('error','Something with wrong');
+            return redirect()->route('designs')->with('error','Oops, Something went wrong!');
         }
     }
+
 
     // Remove the specified resource from storage.
     public function destroy(Request $request)
     {
         try {
-            $id = decrypt($request->id);
-            $design = Design::where('id',$id)->first();
-            $designImages = Design_image::where('design_id',$id)->get();
+            $design = Design::find($request->id);
+            $design_images = Design_image::where('design_id',$request->id)->get();
             $main_image = isset($design->image) ? $design->image : '';
 
             // Delete Multiple Image
-            foreach($designImages as $design_image)
-            {
-                if (!empty($design_image->image) && file_exists('public/images/uploads/item_image/'.$design_image->image))
-                {
-                    unlink('public/images/uploads/item_image/'.$design_image->image);
+            foreach($design_images as $design_image){
+                if (!empty($design_image->image) && file_exists('public/images/uploads/item_images/'.$design->code.'/'.$design_image->image)){
+                    unlink('public/images/uploads/item_images/'.$design->code.'/'.$design_image->image);
                 }
             }
 
             // Delete Main Image
-            if (!empty($main_image) && file_exists('public/images/uploads/item_image/'.$main_image))
-            {
-                unlink('public/images/uploads/item_image/'.$main_image);
+            if (!empty($main_image) && file_exists('public/images/uploads/item_images/'.$design->code.'/'.$main_image)){
+                unlink('public/images/uploads/item_images/'.$design->code.'/'.$main_image);
             }
 
-            Design_image::where('design_id',$id)->delete();
-            Design::where('id',$id)->delete();
+            Design_image::where('design_id',$design->id)->delete();
+            $design->delete();
 
             return response()->json([
                 'success' => 1,
-                'message' => "Design delete Successfully..",
+                'message' => "Design has been Deleted.",
             ]);
         } catch (\Throwable $th) {
             return response()->json([
                 'success' => 0,
-                'message' => "Something with wrong",
-            ]);
-        }
-
-    }
-
-    // Delete Specific Image of Design
-    public function imagedestroy(Request $request)
-    {
-        try {
-            $id = decrypt($request->id);
-            $design_image = Design_image::where('id',$id)->first();
-            $image = isset($design_image->image) ? $design_image->image : '';
-
-            if (!empty($image) && file_exists('public/images/uploads/item_image/'.$image))
-            {
-                unlink('public/images/uploads/item_image/'.$image);
-            }
-            Design_image::find($id)->delete();
-
-            return response()->json([
-                'success' => 1,
-                'message' => "Image delete Successfully..",
-            ]);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'success' => 0,
-                'message' => "Something with wrong",
+                'message' => "Oops, Something went wrong!",
             ]);
         }
     }

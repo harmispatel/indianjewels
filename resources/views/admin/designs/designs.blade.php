@@ -1,16 +1,6 @@
 @extends('admin.layouts.admin-layout')
-@section('title', 'Impel Jewellers | Designs')
+@section('title', 'DESIGNS - IMPEL JEWELLERS')
 @section('content')
-
-@php
-$role = Auth::guard('admin')->user()->user_type;
-$design_add = Spatie\Permission\Models\Permission::where('name','designs.create')->first();
-
-$permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('permission_id');
-    foreach ($permissions as $permission) {
-        $permission_ids[] = $permission;
-    }
-@endphp
 
     {{-- Page Title --}}
     <div class="pagetitle">
@@ -24,36 +14,29 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                     </ol>
                 </nav>
             </div>
-            <div class="col-md-4" style="text-align: right;">
-                @if((in_array($design_add->id, $permission_ids)))
-                {{-- <a href="{{ route('designs.create') }}" class="btn btn-sm new-category custom-btn">
-                    <i class="bi bi-plus-lg"></i> --}}
-                    {{-- @else
-                    <a href="{{ route('designs.create') }}" class="btn btn-sm new-category custom-btn disabled">
-                        <i class="bi bi-plus-lg"></i> --}}
-                    @endif
-                {{-- </a> --}}
-            </div>
+            {{-- <div class="col-md-4" style="text-align: right;">
+                <a href="{{ route('designs.create') }}" class="btn btn-sm new-category custom-btn"><i class="bi bi-plus-lg"></i></a>
+            </div> --}}
         </div>
     </div>
 
 
-    {{-- Category Section --}}
+    {{-- Designs Section --}}
     <section class="section dashboard">
         <div class="row">
-            {{-- Categories Card --}}
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive custom_dt_table">
-                            <table class="table w-100" id="DesignTable">
+                            <table class="table w-100" id="designsTable">
                                 <thead>
                                     <tr>
                                         <th>Id</th>
-                                        <th>Item Name</th>
-                                        <th>Item Code</th>
+                                        <th>Name</th>
+                                        <th>Code</th>
+                                        <th>Image</th>
                                         <th>Status</th>
-                                        <th>Top Selling</th>
+                                        <th>Top Selling ?</th>
                                         {{-- <th>Actions</th> --}}
                                     </tr>
                                 </thead>
@@ -69,15 +52,13 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
 @endsection
 
 
-
 {{-- Custom Script --}}
 @section('page-js')
-
-
     <script type="text/javascript">
-        $(function() {
 
-            var table = $('#DesignTable').DataTable({
+        // Load All Designes
+        $(function() {
+            var table = $('#designsTable').DataTable({
                 processing: true,
                 serverSide: true,
                 pageLength: 100,
@@ -97,8 +78,14 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                         searchable: true
                     },
                     {
-                        data: 'changestatus',
-                        name: 'changestatus',
+                        data: 'image',
+                        name: 'image',
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: 'status',
+                        name: 'status',
                         orderable: false,
                         searchable: false
                     },
@@ -119,17 +106,18 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
 
         });
 
+        // Change Status of Design
         function changeStatus(id) {
+            toastr.clear();
             $.ajax({
                 type: "POST",
-                url: '{{ route('designs.status') }}',
+                url: "{{ route('designs.status') }}",
                 data: {
                     "_token": "{{ csrf_token() }}",
                     "id": id
                 },
                 dataType: 'JSON',
                 success: function(response) {
-                    toastr.clear();
                     if (response.success == 1) {
                         toastr.success(response.message);
                     } else {
@@ -139,8 +127,9 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
             })
         }
 
-
+        // Add / Remove Design to Top Selling.
         function changeTopSelling(id) {
+            toastr.clear();
             $.ajax({
                 type: "POST",
                 url: "{{ route('designs.top-selling') }}",
@@ -150,7 +139,6 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                 },
                 dataType: 'JSON',
                 success: function(response) {
-                    toastr.clear();
                     if (response.success == 1) {
                         toastr.success(response.message);
                     } else {
@@ -160,38 +148,37 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
             })
         }
 
-
-        // Function for Delete Table
-        function deleteDesign(designId) {
+        // Delete Design
+        function deleteDesign(id) {
             swal({
-                    title: "Are you sure You want to Delete It ?",
-                    icon: "warning",
-                    buttons: true,
-                    dangerMode: true,
-                })
-                .then((willDeleteDesigns) => {
-                    if (willDeleteDesigns) {
-                        $.ajax({
-                            type: "POST",
-                            url: '{{ route('designs.destroy') }}',
-                            data: {
-                                "_token": "{{ csrf_token() }}",
-                                'id': designId,
-                            },
-                            dataType: 'JSON',
-                            success: function(response) {
-                                if (response.success == 1) {
-                                    toastr.success(response.message);
-                                    $('#DesignTable').DataTable().ajax.reload();
-                                } else {
-                                    swal(response.message, "", "error");
-                                }
+                title: "Are you sure You want to Delete It ?",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((willDeleteDesign) => {
+                if (willDeleteDesign) {
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('designs.destroy') }}",
+                        data: {
+                            "_token": "{{ csrf_token() }}",
+                            'id': id,
+                        },
+                        dataType: 'JSON',
+                        success: function(response) {
+                            if (response.success == 1) {
+                                swal(response.message, "", "success");
+                                $('#designsTable').DataTable().ajax.reload();
+                            } else {
+                                swal(response.message, "", "error");
                             }
-                        });
-                    } else {
-                        swal("Cancelled", "", "error");
-                    }
-                });
+                        }
+                    });
+                } else {
+                    swal("Cancelled", "", "error");
+                }
+            });
         }
     </script>
 
