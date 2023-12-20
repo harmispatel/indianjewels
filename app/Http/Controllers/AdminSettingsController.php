@@ -15,13 +15,10 @@ class AdminSettingsController extends Controller
 
     function update(Request $request)
     {
-        try
-        {
+        try{
             $settings = $request->settings;
-
             if(count($settings) > 0){
-                foreach ($settings as $key => $setting)
-                {
+                foreach ($settings as $key => $setting){
                     $is_exists = AdminSetting::where('setting_key',$key)->first();
                     $setting_id = (isset($is_exists['id']) && !empty($is_exists['id'])) ? $is_exists['id'] : '';
 
@@ -38,10 +35,8 @@ class AdminSettingsController extends Controller
                 }
             }
             return redirect()->route('settings')->with('success', 'Settings has been Updated.');
-        }
-        catch (\Throwable $th)
-        {
-            return redirect()->back()->with('error', 'Something went wrong!');
+        }catch (\Throwable $th){
+            return redirect()->back()->with('error', 'Oops, Something went wrong!');
         }
     }
 }

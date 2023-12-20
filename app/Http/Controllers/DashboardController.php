@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\{Slider, Category, User, Design};
+use App\Models\{
+    User,
+    Design,
+    Category,
+};
 
 class DashboardController extends Controller
 {

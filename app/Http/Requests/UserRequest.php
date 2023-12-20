@@ -23,27 +23,31 @@ class UserRequest extends FormRequest
      */
     public function rules()
     {
+        $rules = [
+            'firstname' => 'required',
+            'lastname' => 'required',
+            'image' => 'mimes:jpeg,png,jpg, svg, gif',
+        ];
+
         if($this->id)
         {
-            $rules = [
-                'firstname' => 'required',
-                'lastname' => 'required',
+            $rules += [
                 'email' => 'required|email|unique:users,email,'.decrypt($this->id),
                 'confirm_password' =>'same:password',
-                'user_type' => 'required',
-                'image' => 'mimes:jpeg,png,jpg',
             ];
 
-        }else{
+            if(decrypt($this->id) != 1){
+                $rules += [
+                    'role' => 'required',
+                ];
+            }
 
-            $rules = [
-                'firstname' =>  'required',
-                'lastname' => 'required',
+        }else{
+            $rules += [
                 'email' =>   'required|email|unique:users,email',
                 'password' => 'required|min:6',
                 'confirm_password' => 'required|same:password|min:6',
-                'user_type' => 'required',
-                'image' => 'mimes:jpeg,png,jpg',
+                'role' => 'required',
             ];
         }
 

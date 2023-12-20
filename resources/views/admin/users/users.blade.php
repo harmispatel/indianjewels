@@ -1,76 +1,62 @@
-@php
-    $role = Auth::guard('admin')->user()->user_type;
-    $user_add = Spatie\Permission\Models\Permission::where('name','users.create')->first();
-
-    $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('permission_id');
-    foreach ($permissions as $permission) {
-        $permission_ids[] = $permission;
-    }
-@endphp
-
 @extends('admin.layouts.admin-layout')
-@section('title', 'Impel Jewellers | Users')
+@section('title', 'USERS - IMPEL JEWELLERS')
 @section('content')
 
-<div class="pagetitle">
-    <h1>Users</h1>
-    <div class="row">
-        <div class="col-md-8">
-            <nav>
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item active">Users</li>
-                </ol>
-            </nav>
-        </div>
-        <div class="col-md-4" style="text-align: right;">
-            @if((in_array($user_add->id, $permission_ids)))
+    {{-- Page Title --}}
+    <div class="pagetitle">
+        <h1>Users</h1>
+        <div class="row">
+            <div class="col-md-8">
+                <nav>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item active">Users</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="col-md-4" style="text-align: right;">
                 <a href="{{ route('users.create') }}" class="btn btn-sm new-category custom-btn">
                     <i class="bi bi-plus-lg"></i>
                 </a>
-            @endif
+            </div>
         </div>
     </div>
-</div>
 
- {{-- Users Section --}}
- <section class="section dashboard">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-body">
-                    <div class="card-title">
-                    </div>
-                    <div class="table-responsive custom_dt_table">
-                        <table class="table w-100" id="UsersTable">
-                            <thead>
-                                <tr>
-                                    <th>Id</th>
-                                    <th>Name</th>
-                                    <th>Role</th>
-                                    <th>Image</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
+    {{-- Users Section --}}
+    <section class="section dashboard">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive custom_dt_table">
+                            <table class="table w-100" id="UsersTable">
+                                <thead>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Name</th>
+                                        <th>Role</th>
+                                        <th>Image</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
-
+    </section>
 
 @endsection
 
 
 {{-- Custom Script --}}
 @section('page-js')
-
-
     <script type="text/javascript">
+
+        // Load All Users
         $(function() {
             var table = $('#UsersTable').DataTable({
                 processing: true,
@@ -133,37 +119,36 @@
         }
 
         // Delete Specific User
-        function deleteUsers(userId) {
+        function deleteUsers(id) {
             swal({
-                    title: "Are you sure You want to Delete It ?",
-                    icon: "warning",
-                    buttons: true,
-                    dangerMode: true,
-                })
-                .then((willDeleteUsers) => {
-                    if (willDeleteUsers) {
-                        $.ajax({
-                            type: "POST",
-                            url: '{{ route('users.destroy') }}',
-                            data: {
-                                "_token": "{{ csrf_token() }}",
-                                'id': userId,
-                            },
-                            dataType: 'JSON',
-                            success: function(response) {
-                                if (response.success == 1) {
-                                    toastr.success(response.message);
-                                    $('#UsersTable').DataTable().ajax.reload();
-                                } else {
-                                    swal(response.message, "", "error");
-                                }
+                title: "Are you sure You want to Delete It ?",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((willDeleteUsers) => {
+                if (willDeleteUsers) {
+                    $.ajax({
+                        type: "POST",
+                        url: '{{ route('users.destroy') }}',
+                        data: {
+                            "_token": "{{ csrf_token() }}",
+                            'id': id,
+                        },
+                        dataType: 'JSON',
+                        success: function(response) {
+                            if (response.success == 1) {
+                                swal(response.message, "", "success");
+                                $('#UsersTable').DataTable().ajax.reload();
+                            } else {
+                                swal(response.message, "", "error");
                             }
-                        });
-                    } else {
-                        swal("Cancelled", "", "error");
-                    }
-                });
+                        }
+                    });
+                } else {
+                    swal("Cancelled", "", "error");
+                }
+            });
         }
     </script>
-
 @endsection

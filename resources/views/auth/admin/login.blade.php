@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>Impel Jewellers | Login</title>
+    <title>LOGIN - IMPEL JEWELLERS</title>
     <link href="{{ asset('public/images/default_images/favicons/impel_apple_touch.png') }}" rel="icon">
 
     <!-- Favicons -->
