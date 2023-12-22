@@ -1,16 +1,16 @@
 @extends('admin.layouts.admin-layout')
-@section('title', 'EDIT - MIDDLE BANNERS - IMPEL JEWELLERS')
+@section('title', 'EDIT - BOTTOM BANNERS - IMPEL JEWELLERS')
 @section('content')
 
     {{-- Page Title --}}
     <div class="pagetitle">
-        <h1>Middle Banners</h1>
+        <h1>Bottom Banners</h1>
         <div class="row">
             <div class="col-md-8">
                 <nav>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
-                        <li class="breadcrumb-item "><a href="{{ route('middle-banners') }}">Middle Banners</a></li>
+                        <li class="breadcrumb-item "><a href="{{ route('bottom-banners.index') }}">Bottom Banners</a></li>
                         <li class="breadcrumb-item active">Edit</li>
                     </ol>
                 </nav>
@@ -18,19 +18,19 @@
         </div>
     </div>
 
-    {{-- Edit Middle Banner Section --}}
+    {{-- Edit Bottom Banner Section --}}
     <section class="section dashboard">
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    <form action="{{ route('middle-banners.update') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('bottom-banners.update') }}" method="POST" enctype="multipart/form-data">
                         @csrf
-                        <input type="hidden" name="id" id="id" value="{{ encrypt($middle_banner['id']) }}">
+                        <input type="hidden" name="id" id="id" value="{{ encrypt($bottom_banner['id']) }}">
                         <div class="card-body">
                             <div class="form_box">
                                 <div class="form_box_inr">
                                     <div class="box_title">
-                                        <h2>Middle Banner Details</h2>
+                                        <h2>Bottom Banner Details</h2>
                                     </div>
                                     <div class="form_box_info">
                                         <div class="row">
@@ -42,10 +42,10 @@
                                                         {{ $errors->first('image') }}
                                                     </div>
                                                 @endif
-                                                <code>Note -: Image Upload in this Dimensions (550 x 450)</code>
+                                                <code>Note -: Image Upload in this Dimensions (450 x 550)</code>
                                                 <div class="div mt-2">
-                                                    @if(isset($middle_banner['image']) && !empty($middle_banner['image']) && file_exists('public/images/uploads/middle_banners/'.$middle_banner['image']))
-                                                        <img src="{{ asset('public/images/uploads/middle_banners/'.$middle_banner['image']) }}" width="120">
+                                                    @if(isset($bottom_banner['image']) && !empty($bottom_banner['image']) && file_exists('public/images/uploads/bottom_banners/'.$bottom_banner['image']))
+                                                        <img src="{{ asset('public/images/uploads/bottom_banners/'.$bottom_banner['image']) }}" width="120">
                                                     @else
                                                         <img src="{{ asset('public/images/default_images/not-found/no_img1.jpg') }}" width="70">
                                                     @endif
@@ -57,7 +57,7 @@
                                                     <option value="">Select Tag</option>
                                                     @if(count($tags) > 0)
                                                         @foreach ($tags as $tag)
-                                                            <option value="{{ $tag->id }}" {{ ($middle_banner['tag_id'] == $tag->id) ? 'selected' : '' }}>{{ $tag->name }}</option>
+                                                            <option value="{{ $tag->id }}" {{ ($bottom_banner['tag_id'] == $tag->id) ? 'selected' : '' }}>{{ $tag->name }}</option>
                                                         @endforeach
                                                     @endif
                                                 </select>
@@ -69,7 +69,7 @@
                                             </div>
                                             <div class="col-md-12 mb-3">
                                                 <label for="description" class="form-label">Description</label>
-                                                <textarea name="description" id="description" class="form-control">{{ $middle_banner['description'] }}</textarea>
+                                                <textarea name="description" id="description" class="form-control">{{ $bottom_banner['description'] }}</textarea>
                                             </div>
                                         </div>
                                     </div>

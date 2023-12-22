@@ -1,58 +1,38 @@
 @extends('admin.layouts.admin-layout')
-@section('title', 'EDIT - TOP BANNERS - IMPEL JEWELLERS')
+@section('title', 'CREATE - BOTTOM BANNERS - IMPEL JEWELLERS')
 @section('content')
 
     {{-- Page Title --}}
     <div class="pagetitle">
-        <h1>Top Banners</h1>
+        <h1>Bottom Banners</h1>
         <div class="row">
             <div class="col-md-8">
                 <nav>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
-                        <li class="breadcrumb-item "><a href="{{ route('top-banners') }}">Top Banners</a></li>
-                        <li class="breadcrumb-item active">Edit</li>
+                        <li class="breadcrumb-item "><a href="{{ route('bottom-banners.index') }}">Bottom Banners</a></li>
+                        <li class="breadcrumb-item active">Create</li>
                     </ol>
                 </nav>
             </div>
-
         </div>
     </div>
 
-    {{-- Edit Top Banner Section --}}
+    {{-- Create Bottom Banner Section --}}
     <section class="section dashboard">
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    <form action="{{ route('top-banners.update') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('bottom-banners.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
-                        <input type="hidden" name="id" id="id" value="{{ encrypt($top_banner['id']) }}">
                         <div class="card-body">
                             <div class="form_box">
                                 <div class="form_box_inr">
                                     <div class="box_title">
-                                        <h2>Top Banner Details</h2>
+                                        <h2>Bottom Banner Details</h2>
                                     </div>
                                     <div class="form_box_info">
                                         <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <label for="image" class="form-label">Day <span class="text-danger">*</span></label>
-                                                <select name="day" id="day" class="form-select {{ ($errors->has('day')) ? 'is-invalid' : '' }}">
-                                                    <option value="">Select Day</option>
-                                                    <option value="0" {{ ($top_banner['day'] == 0) ? 'selected' : '' }}>Sunday</option>
-                                                    <option value="1" {{ ($top_banner['day'] == 1) ? 'selected' : '' }}>Monday</option>
-                                                    <option value="2" {{ ($top_banner['day'] == 2) ? 'selected' : '' }}>Tuesday</option>
-                                                    <option value="3" {{ ($top_banner['day'] == 3) ? 'selected' : '' }}>Wednesday</option>
-                                                    <option value="4" {{ ($top_banner['day'] == 4) ? 'selected' : '' }}>Thursday</option>
-                                                    <option value="5" {{ ($top_banner['day'] == 5) ? 'selected' : '' }}>Friday</option>
-                                                    <option value="6" {{ ($top_banner['day'] == 6) ? 'selected' : '' }}>Saturday</option>
-                                                </select>
-                                                @if($errors->has('day'))
-                                                    <div class="invalid-feedback">
-                                                        {{ $errors->first('day') }}
-                                                    </div>
-                                                @endif
-                                            </div>
                                             <div class="col-md-6 mb-3">
                                                 <label for="image" class="form-label">Image <span class="text-danger">*</span></label>
                                                 <input type="file" name="image" id="image" class="form-control {{ ($errors->has('image')) ? 'is-invalid' : '' }}">
@@ -61,13 +41,7 @@
                                                         {{ $errors->first('image') }}
                                                     </div>
                                                 @endif
-                                                <div class="div mt-2">
-                                                    @if(isset($top_banner['image']) && !empty($top_banner['image']) && file_exists('public/images/uploads/top_banners/'.$top_banner['image']))
-                                                        <img src="{{ asset('public/images/uploads/top_banners/'.$top_banner['image']) }}" width="120">
-                                                    @else
-                                                        <img src="{{ asset('public/images/default_images/not-found/no_img1.jpg') }}" width="70">
-                                                    @endif
-                                                </div>
+                                                <code>Note -: Image Upload in this Dimensions (450 x 550)</code>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label for="tag" class="form-label">Tag <span class="text-danger">*</span></label>
@@ -75,7 +49,7 @@
                                                     <option value="">Select Tag</option>
                                                     @if(count($tags) > 0)
                                                         @foreach ($tags as $tag)
-                                                            <option value="{{ $tag->id }}" {{ ($top_banner['tag_id'] == $tag->id) ? 'selected' : '' }}>{{ $tag->name }}</option>
+                                                            <option value="{{ $tag->id }}" {{ (old('tag') == $tag->id) ? 'selected' : '' }}>{{ $tag->name }}</option>
                                                         @endforeach
                                                     @endif
                                                 </select>
@@ -87,14 +61,14 @@
                                             </div>
                                             <div class="col-md-12 mb-3">
                                                 <label for="description" class="form-label">Description</label>
-                                                <textarea name="description" id="description" class="form-control">{{ $top_banner['description'] }}</textarea>
+                                                <textarea name="description" id="description" class="form-control">{{ old('description') }}</textarea>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="card-footer text-center">
-                                <button class="btn form_button">Update</button>
+                                <button class="btn form_button">Save</button>
                             </div>
                         </div>
                     </form>

@@ -1,38 +1,57 @@
 @extends('admin.layouts.admin-layout')
-@section('title', 'CREATE - BOTTOM BANNERS - IMPEL JEWELLERS')
+@section('title', 'CREATE - TOP BANNERS - IMPEL JEWELLERS')
 @section('content')
 
     {{-- Page Title --}}
     <div class="pagetitle">
-        <h1>Bottom Banners</h1>
+        <h1>Top Banners</h1>
         <div class="row">
             <div class="col-md-8">
                 <nav>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
-                        <li class="breadcrumb-item "><a href="{{ route('bottom-banners') }}">Bottom Banners</a></li>
+                        <li class="breadcrumb-item "><a href="{{ route('top-banners.index') }}">Top Banners</a></li>
                         <li class="breadcrumb-item active">Create</li>
                     </ol>
                 </nav>
             </div>
+
         </div>
     </div>
 
-    {{-- Create Bottom Banner Section --}}
+    {{-- Create Top Banner Section --}}
     <section class="section dashboard">
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    <form action="{{ route('bottom-banners.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('top-banners.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="card-body">
                             <div class="form_box">
                                 <div class="form_box_inr">
                                     <div class="box_title">
-                                        <h2>Bottom Banner Details</h2>
+                                        <h2>Top Banner Details</h2>
                                     </div>
                                     <div class="form_box_info">
                                         <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="image" class="form-label">Day <span class="text-danger">*</span></label>
+                                                <select name="day" id="day" class="form-select {{ ($errors->has('day')) ? 'is-invalid' : '' }}">
+                                                    <option value="">Select Day</option>
+                                                    <option value="0" {{ (old('tag') == 0) ? 'selected' : '' }}>Sunday</option>
+                                                    <option value="1" {{ (old('tag') == 1) ? 'selected' : '' }}>Monday</option>
+                                                    <option value="2" {{ (old('tag') == 2) ? 'selected' : '' }}>Tuesday</option>
+                                                    <option value="3" {{ (old('tag') == 3) ? 'selected' : '' }}>Wednesday</option>
+                                                    <option value="4" {{ (old('tag') == 4) ? 'selected' : '' }}>Thursday</option>
+                                                    <option value="5" {{ (old('tag') == 5) ? 'selected' : '' }}>Friday</option>
+                                                    <option value="6" {{ (old('tag') == 6) ? 'selected' : '' }}>Saturday</option>
+                                                </select>
+                                                @if($errors->has('day'))
+                                                    <div class="invalid-feedback">
+                                                        {{ $errors->first('day') }}
+                                                    </div>
+                                                @endif
+                                            </div>
                                             <div class="col-md-6 mb-3">
                                                 <label for="image" class="form-label">Image <span class="text-danger">*</span></label>
                                                 <input type="file" name="image" id="image" class="form-control {{ ($errors->has('image')) ? 'is-invalid' : '' }}">
@@ -41,7 +60,6 @@
                                                         {{ $errors->first('image') }}
                                                     </div>
                                                 @endif
-                                                <code>Note -: Image Upload in this Dimensions (450 x 550)</code>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label for="tag" class="form-label">Tag <span class="text-danger">*</span></label>

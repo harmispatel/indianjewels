@@ -6,10 +6,7 @@ use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 use App\Http\Requests\TopBannerRequest;
 use Yajra\DataTables\Facades\DataTables;
-use App\Models\{
-    Tag,
-    TopBanner,
-};
+use App\Models\{Tag, TopBanner};
 
 class TopBannerController extends Controller
 {
@@ -19,12 +16,11 @@ class TopBannerController extends Controller
     public function index()
     {
         $total_top_banner = TopBanner::count();
-        return view('admin.top_banners.top_banners', compact(['total_top_banner']));
+        return view('admin.top_banners.index', compact(['total_top_banner']));
     }
 
-
-    // Load a listing of the resource.
-    public function loadTopBanners(Request $request)
+    // Load all top banners helping with AJAX Datatable
+    public function load(Request $request)
     {
         if ($request->ajax()){
 
@@ -67,14 +63,12 @@ class TopBannerController extends Controller
         }
     }
 
-
     // Show the form for creating a new resource.
     public function create()
     {
         $tags = Tag::get();
-        return view('admin.top_banners.create_top_banner', compact(['tags']));
+        return view('admin.top_banners.create', compact(['tags']));
     }
-
 
     // Store a newly created resource in storage.
     public function store(TopBannerRequest $request)
@@ -90,12 +84,11 @@ class TopBannerController extends Controller
             }
 
             TopBanner::insert($input);
-            return redirect()->route('top-banners')->with('success', 'Top Banner has been Created.');
+            return redirect()->route('top-banners.index')->with('success', 'Top Banner has been Created.');
         }catch (\Throwable $th){
             return redirect()->back()->with('error', 'Oops, Something went wrong!');
         }
     }
-
 
     // Change Status of the specified resource.
     public function status(Request $request)
@@ -116,19 +109,17 @@ class TopBannerController extends Controller
         }
     }
 
-
     // Show the form for editing the specified resource.
     public function edit($id)
     {
         try{
             $top_banner = TopBanner::find(decrypt($id));
             $tags = Tag::all();
-            return view('admin.top_banners.edit_top_banner', compact(['top_banner','tags']));
+            return view('admin.top_banners.edit', compact(['top_banner','tags']));
         }catch (\Throwable $th){
             return redirect()->back()->with('error', 'Oops, Something went wrong!');
         }
     }
-
 
     // Update the specified resource in storage.
     public function update(TopBannerRequest $request)
@@ -144,12 +135,11 @@ class TopBannerController extends Controller
                 $input['image'] = $image;
             }
             $top_banner->update($input);
-            return redirect()->route('top-banners')->with('success', 'Top Banner has been Updated.');
+            return redirect()->route('top-banners.index')->with('success', 'Top Banner has been Updated.');
         }catch (\Throwable $th){
             return redirect()->back()->with('error', 'Oops, Something went wrong!');
         }
     }
-
 
     // Remove the specified resource from storage.
     public function destroy(Request $request)

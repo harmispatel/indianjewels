@@ -4,12 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
-use App\Http\Requests\BottomBannerRequest;
+use App\Models\{Tag, BottomBanner};
 use Yajra\DataTables\Facades\DataTables;
-use App\Models\{
-    Tag,
-    BottomBanner,
-};
+use App\Http\Requests\BottomBannerRequest;
 
 class BottomBannerController extends Controller
 {
@@ -19,12 +16,11 @@ class BottomBannerController extends Controller
     public function index()
     {
         $total_bottom_banner = BottomBanner::count();
-        return view('admin.bottom_banners.bottom_banners', compact(['total_bottom_banner']));
+        return view('admin.bottom_banners.index', compact(['total_bottom_banner']));
     }
 
-
-    // Load a listing of the resource.
-    public function loadBottomBanners(Request $request)
+    // Load all bottom banners helping with AJAX Datatable
+    public function load(Request $request)
     {
         if ($request->ajax()){
 
@@ -55,14 +51,12 @@ class BottomBannerController extends Controller
         }
     }
 
-
     // Show the form for creating a new resource.
     public function create()
     {
         $tags = Tag::get();
-        return view('admin.bottom_banners.create_bottom_banner', compact(['tags']));
+        return view('admin.bottom_banners.create', compact(['tags']));
     }
-
 
     // Store a newly created resource in storage.
     public function store(BottomBannerRequest $request)
@@ -77,12 +71,44 @@ class BottomBannerController extends Controller
             }
 
             BottomBanner::insert($input);
-            return redirect()->route('bottom-banners')->with('success', 'Bottom Banner has been Created.');
+            return redirect()->route('bottom-banners.index')->with('success', 'Bottom Banner has been Created.');
         }catch (\Throwable $th){
             return redirect()->back()->with('error', 'Oops, Something went wrong!');
         }
     }
 
+    // Show the form for editing the specified resource.
+    public function edit($id)
+    {
+        try{
+            $bottom_banner = BottomBanner::find(decrypt($id));
+            $tags = Tag::all();
+            return view('admin.bottom_banners.edit', compact(['bottom_banner','tags']));
+        }catch (\Throwable $th){
+            return redirect()->back()->with('error', 'Oops, Something went wrong!');
+        }
+    }
+
+    // Update the specified resource in storage.
+    public function update(BottomBannerRequest $request)
+    {
+        try{
+            $bottom_banner = BottomBanner::find(decrypt($request->id));
+            $input = $request->except(['_token', 'image','tag','id']);
+            $input['tag_id'] = $request->tag;
+
+            if($request->hasFile('image')){
+                $old_image = (isset($bottom_banner['image'])) ? $bottom_banner['image'] : '';
+                $image = $this->addSingleImage('bottom_banner', 'bottom_banners', $request->file('image'), $old_image, "450*550");
+                $input['image'] = $image;
+            }
+
+        $bottom_banner->update($input);
+            return redirect()->route('bottom-banners.index')->with('success', 'Bottom Banner has been Updated.');
+        }catch (\Throwable $th){
+            return redirect()->back()->with('error', 'Oops, Something went wrong!');
+        }
+    }
 
     // Change Status of the specified resource.
     public function status(Request $request)
@@ -102,42 +128,6 @@ class BottomBannerController extends Controller
             ]);
         }
     }
-
-
-    // Show the form for editing the specified resource.
-    public function edit($id)
-    {
-        try{
-            $bottom_banner = BottomBanner::find(decrypt($id));
-            $tags = Tag::all();
-            return view('admin.bottom_banners.edit_bottom_banner', compact(['bottom_banner','tags']));
-        }catch (\Throwable $th){
-            return redirect()->back()->with('error', 'Oops, Something went wrong!');
-        }
-    }
-
-
-    // Update the specified resource in storage.
-    public function update(BottomBannerRequest $request)
-    {
-        try{
-            $bottom_banner = BottomBanner::find(decrypt($request->id));
-            $input = $request->except(['_token', 'image','tag','id']);
-            $input['tag_id'] = $request->tag;
-
-            if($request->hasFile('image')){
-                $old_image = (isset($bottom_banner['image'])) ? $bottom_banner['image'] : '';
-                $image = $this->addSingleImage('bottom_banner', 'bottom_banners', $request->file('image'), $old_image, "450*550");
-                $input['image'] = $image;
-            }
-
-           $bottom_banner->update($input);
-            return redirect()->route('bottom-banners')->with('success', 'Bottom Banner has been Updated.');
-        }catch (\Throwable $th){
-            return redirect()->back()->with('error', 'Oops, Something went wrong!');
-        }
-    }
-
 
     // Remove the specified resource from storage.
     public function destroy(Request $request)

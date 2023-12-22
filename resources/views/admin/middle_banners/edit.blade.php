@@ -1,5 +1,5 @@
 @extends('admin.layouts.admin-layout')
-@section('title', 'CREATE - MIDDLE BANNERS - IMPEL JEWELLERS')
+@section('title', 'EDIT - MIDDLE BANNERS - IMPEL JEWELLERS')
 @section('content')
 
     {{-- Page Title --}}
@@ -10,21 +10,22 @@
                 <nav>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
-                        <li class="breadcrumb-item "><a href="{{ route('middle-banners') }}">Middle Banners</a></li>
-                        <li class="breadcrumb-item active">Create</li>
+                        <li class="breadcrumb-item "><a href="{{ route('middle-banners.index') }}">Middle Banners</a></li>
+                        <li class="breadcrumb-item active">Edit</li>
                     </ol>
                 </nav>
             </div>
         </div>
     </div>
 
-    {{-- Create Middle Banner Section --}}
+    {{-- Edit Middle Banner Section --}}
     <section class="section dashboard">
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    <form action="{{ route('middle-banners.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('middle-banners.update') }}" method="POST" enctype="multipart/form-data">
                         @csrf
+                        <input type="hidden" name="id" id="id" value="{{ encrypt($middle_banner['id']) }}">
                         <div class="card-body">
                             <div class="form_box">
                                 <div class="form_box_inr">
@@ -42,6 +43,13 @@
                                                     </div>
                                                 @endif
                                                 <code>Note -: Image Upload in this Dimensions (550 x 450)</code>
+                                                <div class="div mt-2">
+                                                    @if(isset($middle_banner['image']) && !empty($middle_banner['image']) && file_exists('public/images/uploads/middle_banners/'.$middle_banner['image']))
+                                                        <img src="{{ asset('public/images/uploads/middle_banners/'.$middle_banner['image']) }}" width="120">
+                                                    @else
+                                                        <img src="{{ asset('public/images/default_images/not-found/no_img1.jpg') }}" width="70">
+                                                    @endif
+                                                </div>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label for="tag" class="form-label">Tag <span class="text-danger">*</span></label>
@@ -49,7 +57,7 @@
                                                     <option value="">Select Tag</option>
                                                     @if(count($tags) > 0)
                                                         @foreach ($tags as $tag)
-                                                            <option value="{{ $tag->id }}" {{ (old('tag') == $tag->id) ? 'selected' : '' }}>{{ $tag->name }}</option>
+                                                            <option value="{{ $tag->id }}" {{ ($middle_banner['tag_id'] == $tag->id) ? 'selected' : '' }}>{{ $tag->name }}</option>
                                                         @endforeach
                                                     @endif
                                                 </select>
@@ -61,14 +69,14 @@
                                             </div>
                                             <div class="col-md-12 mb-3">
                                                 <label for="description" class="form-label">Description</label>
-                                                <textarea name="description" id="description" class="form-control">{{ old('description') }}</textarea>
+                                                <textarea name="description" id="description" class="form-control">{{ $middle_banner['description'] }}</textarea>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="card-footer text-center">
-                                <button class="btn form_button">Save</button>
+                                <button class="btn form_button">Update</button>
                             </div>
                         </div>
                     </form>

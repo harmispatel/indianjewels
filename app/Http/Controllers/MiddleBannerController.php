@@ -4,12 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
+use App\Models\{Tag, MiddleBanner};
 use Yajra\DataTables\Facades\DataTables;
 use App\Http\Requests\MiddleBannerRequest;
-use App\Models\{
-    Tag,
-    MiddleBanner,
-};
 
 class MiddleBannerController extends Controller
 {
@@ -19,12 +16,11 @@ class MiddleBannerController extends Controller
     public function index()
     {
         $total_middle_banner = MiddleBanner::count();
-        return view('admin.middle_banners.middle_banners', compact(['total_middle_banner']));
+        return view('admin.middle_banners.index', compact(['total_middle_banner']));
     }
 
-
-    // Load a listing of the resource.
-    public function loadMiddleBanners(Request $request)
+    // Load all middle banners helping with AJAX Datatable
+    public function load(Request $request)
     {
         if ($request->ajax()){
 
@@ -55,14 +51,12 @@ class MiddleBannerController extends Controller
         }
     }
 
-
     // Show the form for creating a new resource.
     public function create()
     {
         $tags = Tag::get();
-        return view('admin.middle_banners.create_middle_banner', compact(['tags']));
+        return view('admin.middle_banners.create', compact(['tags']));
     }
-
 
     // Store a newly created resource in storage.
     public function store(MiddleBannerRequest $request)
@@ -76,12 +70,43 @@ class MiddleBannerController extends Controller
                 $input['image'] = $image;
             }
             MiddleBanner::insert($input);
-            return redirect()->route('middle-banners')->with('success', 'Middle Banner has been Created.');
+            return redirect()->route('middle-banners.index')->with('success', 'Middle Banner has been Created.');
         }catch (\Throwable $th){
             return redirect()->back()->with('error', 'Oops, Something went wrong!');
         }
     }
 
+    // Show the form for editing the specified resource.
+    public function edit($id)
+    {
+        try{
+            $middle_banner = MiddleBanner::find(decrypt($id));
+            $tags = Tag::all();
+            return view('admin.middle_banners.edit', compact(['middle_banner','tags']));
+        }catch (\Throwable $th){
+            return redirect()->back()->with('error', 'Oops, Something went wrong!');
+        }
+    }
+
+    // Update the specified resource in storage.
+    public function update(MiddleBannerRequest $request)
+    {
+        try{
+            $middle_banner = MiddleBanner::find(decrypt($request->id));
+            $input = $request->except(['_token', 'image','tag','id']);
+            $input['tag_id'] = $request->tag;
+
+            if($request->hasFile('image')){
+                $old_image = (isset($middle_banner['image'])) ? $middle_banner['image'] : '';
+                $image = $this->addSingleImage('middle_banner', 'middle_banners', $request->file('image'), $old_image, "550*450");
+                $input['image'] = $image;
+            }
+            $middle_banner->update($input);
+            return redirect()->route('middle-banners.index')->with('success', 'Middle Banner has been Updated.');
+        }catch (\Throwable $th){
+            return redirect()->back()->with('error', 'Oops, Something went wrong!');
+        }
+    }
 
     // Change Status of the specified resource.
     public function status(Request $request)
@@ -101,41 +126,6 @@ class MiddleBannerController extends Controller
             ]);
         }
     }
-
-
-    // Show the form for editing the specified resource.
-    public function edit($id)
-    {
-        try{
-            $middle_banner = MiddleBanner::find(decrypt($id));
-            $tags = Tag::all();
-            return view('admin.middle_banners.edit_middle_banner', compact(['middle_banner','tags']));
-        }catch (\Throwable $th){
-            return redirect()->back()->with('error', 'Oops, Something went wrong!');
-        }
-    }
-
-
-    // Update the specified resource in storage.
-    public function update(MiddleBannerRequest $request)
-    {
-        try{
-            $middle_banner = MiddleBanner::find(decrypt($request->id));
-            $input = $request->except(['_token', 'image','tag','id']);
-            $input['tag_id'] = $request->tag;
-
-            if($request->hasFile('image')){
-                $old_image = (isset($middle_banner['image'])) ? $middle_banner['image'] : '';
-                $image = $this->addSingleImage('middle_banner', 'middle_banners', $request->file('image'), $old_image, "550*450");
-                $input['image'] = $image;
-            }
-            $middle_banner->update($input);
-            return redirect()->route('middle-banners')->with('success', 'Middle Banner has been Updated.');
-        }catch (\Throwable $th){
-            return redirect()->back()->with('error', 'Oops, Something went wrong!');
-        }
-    }
-
 
     // Remove the specified resource from storage.
     public function destroy(Request $request)
@@ -161,4 +151,5 @@ class MiddleBannerController extends Controller
             ]);
         }
     }
+
 }

@@ -163,34 +163,40 @@ Route::group(['prefix' => 'admin'], function ()
         });
 
         // Top Banners
-        Route::get('top-banners',[TopBannerController::class,'index'])->name('top-banners');
-        Route::get('top-banners/load',[TopBannerController::class,'loadTopBanners'])->name('top-banners.load');
-        Route::get('top-banners/create',[TopBannerController::class,'create'])->name('top-banners.create');
-        Route::post('top-banners/store',[TopBannerController::class,'store'])->name('top-banners.store');
-        Route::get('top-banners/edit/{id}',[TopBannerController::class,'edit'])->name('top-banners.edit');
-        Route::post('top-banners/update',[TopBannerController::class,'update'])->name('top-banners.update');
-        Route::post('top-banners/status',[TopBannerController::class,'status'])->name('top-banners.status');
-        Route::post('top-banners/destroy',[TopBannerController::class,'destroy'])->name('top-banners.destroy');
+        Route::controller(TopBannerController::class)->group(function () {
+            Route::get('top-banners', 'index')->name('top-banners.index');
+            Route::get('top-banners/load', 'load')->name('top-banners.load');
+            Route::get('top-banners/create', 'create')->name('top-banners.create');
+            Route::post('top-banners/store', 'store')->name('top-banners.store');
+            Route::get('top-banners/edit/{id}', 'edit')->name('top-banners.edit');
+            Route::post('top-banners/update', 'update')->name('top-banners.update');
+            Route::post('top-banners/status', 'status')->name('top-banners.status');
+            Route::post('top-banners/destroy', 'destroy')->name('top-banners.destroy');
+        });
 
         // Middle Banners
-        Route::get('middle-banners',[MiddleBannerController::class,'index'])->name('middle-banners');
-        Route::get('middle-banners/load',[MiddleBannerController::class,'loadMiddleBanners'])->name('middle-banners.load');
-        Route::get('middle-banners/create',[MiddleBannerController::class,'create'])->name('middle-banners.create');
-        Route::post('middle-banners/store',[MiddleBannerController::class,'store'])->name('middle-banners.store');
-        Route::get('middle-banners/edit/{id}',[MiddleBannerController::class,'edit'])->name('middle-banners.edit');
-        Route::post('middle-banners/update',[MiddleBannerController::class,'update'])->name('middle-banners.update');
-        Route::post('middle-banners/status',[MiddleBannerController::class,'status'])->name('middle-banners.status');
-        Route::post('middle-banners/destroy',[MiddleBannerController::class,'destroy'])->name('middle-banners.destroy');
+        Route::controller(MiddleBannerController::class)->group(function () {
+            Route::get('middle-banners', 'index')->name('middle-banners.index');
+            Route::get('middle-banners/load', 'load')->name('middle-banners.load');
+            Route::get('middle-banners/create', 'create')->name('middle-banners.create');
+            Route::post('middle-banners/store', 'store')->name('middle-banners.store');
+            Route::get('middle-banners/edit/{id}', 'edit')->name('middle-banners.edit');
+            Route::post('middle-banners/update', 'update')->name('middle-banners.update');
+            Route::post('middle-banners/status', 'status')->name('middle-banners.status');
+            Route::post('middle-banners/destroy', 'destroy')->name('middle-banners.destroy');
+        });
 
         // Bottom Banners
-        Route::get('bottom-banners',[BottomBannerController::class,'index'])->name('bottom-banners');
-        Route::get('bottom-banners/load',[BottomBannerController::class,'loadBottomBanners'])->name('bottom-banners.load');
-        Route::get('bottom-banners/create',[BottomBannerController::class,'create'])->name('bottom-banners.create');
-        Route::post('bottom-banners/store',[BottomBannerController::class,'store'])->name('bottom-banners.store');
-        Route::get('bottom-banners/edit/{id}',[BottomBannerController::class,'edit'])->name('bottom-banners.edit');
-        Route::post('bottom-banners/update',[BottomBannerController::class,'update'])->name('bottom-banners.update');
-        Route::post('bottom-banners/status',[BottomBannerController::class,'status'])->name('bottom-banners.status');
-        Route::post('bottom-banners/destroy',[BottomBannerController::class,'destroy'])->name('bottom-banners.destroy');
+        Route::controller(BottomBannerController::class)->group(function () {
+            Route::get('bottom-banners', 'index')->name('bottom-banners.index');
+            Route::get('bottom-banners/load', 'load')->name('bottom-banners.load');
+            Route::get('bottom-banners/create', 'create')->name('bottom-banners.create');
+            Route::post('bottom-banners/store', 'store')->name('bottom-banners.store');
+            Route::get('bottom-banners/edit/{id}', 'edit')->name('bottom-banners.edit');
+            Route::post('bottom-banners/update', 'update')->name('bottom-banners.update');
+            Route::post('bottom-banners/status', 'status')->name('bottom-banners.status');
+            Route::post('bottom-banners/destroy', 'destroy')->name('bottom-banners.destroy');
+        });
 
         // westage Discount
         Route::get('westage-discount',[WestageDiscountController::class,'index'])->name('westage.discount');
