@@ -9,11 +9,13 @@ use Illuminate\Support\Collection;
 class DesignsResource extends JsonResource
 {
     protected $subcategories;
+    protected $total_records;
 
-    public function __construct($resource, $subcategories = null)
+    public function __construct($resource, $subcategories = null, $total_records)
     {
         parent::__construct($resource);
         $this->subcategories = $subcategories;
+        $this->total_records = $total_records;
     }
 
     public function toArray($request)
@@ -120,8 +122,21 @@ class DesignsResource extends JsonResource
             $categories_tags = Tag::where('status',1)->get(['id','name']);
         }
 
+        if(isset($this->subcategories) && count($this->subcategories) > 0){
+            $min_design_price = Design::whereIn('category_id', $this->subcategories)->min('total_price_18k');
+            $max_design_price = Design::whereIn('category_id', $this->subcategories)->max('total_price_18k');
+        }else{
+            $min_design_price = Design::min('total_price_18k');
+            $max_design_price = Design::max('total_price_18k');
+        }
+
+        $all_details['total_records'] = $this->total_records;
+        $all_details['filterd_records'] = count($this->resource);
         $all_details['designs'] = $designs_array;
         $all_details['tags'] = $categories_tags;
+        $all_details['tags'] = $categories_tags;
+        $all_details['minprice'] = round($min_design_price);
+        $all_details['maxprice'] = round($max_design_price);
         return $all_details;
     }
 }
