@@ -86,9 +86,6 @@
     {{-- Jquery --}}
     <script src="{{ asset('public/assets/js/jquery.min.js') }}"></script>
 
-    {{-- Sweet Alert --}}
-    <script src="{{ asset('public/assets/js/sweet-alert.js') }}"></script>
-
     {{-- Toastr --}}
     <script src="{{ asset('public/assets/vendor/toastr/js/toastr.min.js') }}"></script>
 
@@ -101,6 +98,11 @@
         // Error Message
         @if (Session::has('error'))
             toastr.error('{{ Session::get('error') }}')
+        @endif
+
+        // Error Message
+        @if (Session::has('success'))
+            toastr.success('{{ Session::get('success') }}')
         @endif
 
     </script>

@@ -2,21 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\{Admin};
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
+use Spatie\Permission\Models\{Role};
 use Yajra\DataTables\Facades\DataTables;
-use Illuminate\Support\Facades\{
-    DB,
-    Hash,
-    Auth
-};
-use Spatie\Permission\Models\{
-    Role,
-};
-use App\Models\{
-    Admin,
-};
+use Illuminate\Support\Facades\{DB, Hash, Auth};
 
 class AdminController extends Controller
 {
@@ -25,11 +17,11 @@ class AdminController extends Controller
     // Display a listing of the resource.
     public function index()
     {
-        return view('admin.users.users');
+        return view('admin.users.index');
     }
 
-    // Load All User by Ajax Datatable
-    public function loadUsers(Request $request)
+    // Load all users helping AJAX Datatable
+    public function load(Request $request)
     {
         if ($request->ajax()){
             // Get all Admins
@@ -70,9 +62,8 @@ class AdminController extends Controller
     public function create()
     {
         $roles = Role::all();
-        return view('admin.users.create_users', compact('roles'));
+        return view('admin.users.create', compact('roles'));
     }
-
 
     // Store a newly created resource in storage.
     public function store(UserRequest $request)
@@ -90,32 +81,11 @@ class AdminController extends Controller
             $user = Admin::create($input);
             $role = Role::where('id',$user->user_type)->first();
             $user->assignRole($role->name);
-            return redirect()->route('users')->with('success','User has been Created.');
+            return redirect()->route('users.index')->with('success','User has been Created.');
         } catch (\Throwable $th) {
-            return redirect()->route('users')->with('error','Oops, Something with wrong');
+            return redirect()->route('users.index')->with('error','Oops, Something with wrong');
         }
     }
-
-
-    // Change Status of the specified resource.
-    public function status(Request $request)
-    {
-        try {
-            $admin = Admin::find($request->id);
-            $admin->status =  ($admin->status == 1) ? 0 : 1;
-            $admin->update();
-            return response()->json([
-                'success' => 1,
-                'message' => "Status has been Changed.",
-            ]);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'success' => 0,
-                'message' => "Oops, Something went wrong!",
-            ]);
-        }
-    }
-
 
     // Show the form for editing the specified resource.
     public function edit($id)
@@ -123,12 +93,11 @@ class AdminController extends Controller
         try {
             $roles = Role::all();
             $user = Admin::find(decrypt($id));
-            return view('admin.users.edit_users',compact('user','roles'));
+            return view('admin.users.edit',compact('user','roles'));
         } catch (\Throwable $th) {
             return back()->with('error', 'Oops, Something went wrong!');
         }
     }
-
 
     // Update the specified resource in storage.
     public function update(UserRequest $request)
@@ -155,13 +124,41 @@ class AdminController extends Controller
                 $role = Role::where('id', $user->user_type)->first();
                 $user->assignRole($role->name);
             }
-            return redirect()->route('users')->with('success','User has been Updated.');
+            return redirect()->route('users.index')->with('success','User has been Updated.');
         } catch (\Throwable $th) {
-            dd($th);
-            return redirect()->route('users')->with('error','Oops, Something went wrong!');
+            return redirect()->route('users.index')->with('error','Oops, Something went wrong!');
         }
     }
 
+   // Show the Details of the specified resource.
+    public function show()
+    {
+        try {
+            $user = Auth::guard('admin')->user();
+            return view('admin.users.show', compact(['user']));
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'Oops, Something went wrong!');
+        }
+    }
+
+    // Change Status of the specified resource.
+    public function status(Request $request)
+    {
+        try {
+            $admin = Admin::find($request->id);
+            $admin->status =  ($admin->status == 1) ? 0 : 1;
+            $admin->update();
+            return response()->json([
+                'success' => 1,
+                'message' => "Status has been Changed.",
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => 0,
+                'message' => "Oops, Something went wrong!",
+            ]);
+        }
+    }
 
     // Remove the specified resource from storage.
     public function destroy(Request $request)
@@ -187,13 +184,6 @@ class AdminController extends Controller
                 'message' => "Oops, Something went wrong!",
             ]);
         }
-    }
-
-    // Logout the specified resource
-    public function AdminLogout()
-    {
-        Auth::guard('admin')->logout();
-        return redirect()->route('admin.login');
     }
 
 }

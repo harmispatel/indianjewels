@@ -1,8 +1,30 @@
 <?php
 
-use App\Http\Controllers\{AuthController,DashboardController,CategoryController,TagController, DesignController, SliderController, RoleController, AdminController, AdminSettingsController, BottomBannerController, CommonController, CustomerController, DealerController,WestageDiscountController , OrderController, ReportController, ImportExportController, MiddleBannerController, PageController, TopBannerController};
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
+use App\Http\Controllers\{
+    AuthController,
+    DashboardController,
+    CategoryController,
+    TagController,
+    DesignController,
+    SliderController,
+    RoleController,
+    AdminController,
+    AdminSettingsController,
+    BottomBannerController,
+    CommonController,
+    CustomerController,
+    DealerController,
+    WestageDiscountController ,
+    OrderController,
+    ReportController,
+    ImportExportController,
+    MiddleBannerController,
+    PageController,
+    TopBannerController
+};
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,40 +37,45 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// Index Route
 Route::get('/', function () {
-    // return view('welcome');
     return redirect()->route('admin.login');
 });
 
 // Cache Clear Route
-Route::get('config-clear', function ()
-{
+Route::get('config-clear', function (){
     Artisan::call('cache:clear');
     Artisan::call('route:clear');
     Artisan::call('config:clear');
-    return redirect()->route('admin.dashboard');
+    return redirect()->route('admin.dashboard')->with('success', 'Cache has been Cleared.');
 });
 
 // Admin Auth Routes
-Route::get('admin/login', [AuthController::class,'showAdminLogin'])->name('admin.login');
-Route::post('admin/do/login', [AuthController::class,'Adminlogin'])->name('admin.do.login');
-Route::get('admin/forget/password',[AuthController::class,'showForgetPasswordForm'])->name('admin.forget.password');
-Route::post('admin/forget/password',[AuthController::class,'submitForgetPasswordForm'])->name('admin.forget.password.post');
-Route::get('admin/reset/password/{token}',[AuthController::class,'showResetPasswordForm'])->name('admin.reset.password');
-Route::post('admin/reset/password',[AuthController::class,'submitResetPasswordForm'])->name('admin.reset.password.post');
+Route::controller(AuthController::class)->group(function () {
+    Route::get('admin/login', 'showAdminLogin')->name('admin.login');
+    Route::post('admin/do/login', 'Adminlogin')->name('admin.do.login');
+    Route::get('admin/forget/password', 'showForgetPasswordForm')->name('admin.forget.password');
+    Route::post('admin/forget/password', 'submitForgetPasswordForm')->name('admin.forget.password.post');
+    Route::get('admin/reset/password/{token}', 'showResetPasswordForm')->name('admin.reset.password');
+    Route::post('admin/reset/password', 'submitResetPasswordForm')->name('admin.reset.password.post');
+});
 
 // Admin Routes
 Route::group(['prefix' => 'admin'], function ()
 {
-    // If Auth Login
+    // If User is Logged In
     Route::group(['middleware' => ['is_admin']], function ()
     {
+        // Admin Index Route
         Route::get('/', function () {
             return redirect()->route('admin.dashboard');
         });
 
         // Logout Route
-        Route::get('logout', [AdminController::class,'AdminLogout'])->name('admin.logout');
+        Route::get('logout', [AdminController::class, function () {
+            Auth::guard('admin')->logout();
+            return redirect()->route('admin.login');
+        }])->name('admin.logout');
 
         // Dashboard
         Route::get('dashboard', [DashboardController::class,'index'])->name('admin.dashboard');
@@ -57,14 +84,18 @@ Route::group(['prefix' => 'admin'], function ()
         Route::post('states/cities', [CommonController::class, 'getStatesCities'])->name('states.cities');
 
         // Users
-        Route::get('users',[AdminController::class,'index'])->name('users');
-        Route::get('users/load',[AdminController::class,'loadUsers'])->name('users.load');
-        Route::get('users/create',[AdminController::class,'create'])->name('users.create');
-        Route::post('users/store',[AdminController::class,'store'])->name('users.store');
-        Route::post('users/status',[AdminController::class,'status'])->name('users.status');
-        Route::post('users/update',[AdminController::class,'update'])->name('users.update');
-        Route::get('users/edit/{id}',[AdminController::class,'edit'])->name('users.edit');
-        Route::post('users/destroy',[AdminController::class,'destroy'])->name('users.destroy');
+        Route::controller(AdminController::class)->group(function () {
+            Route::get('users', 'index')->name('users.index');
+            Route::get('users/load', 'load')->name('users.load');
+            Route::get('users/create', 'create')->name('users.create');
+            Route::post('users/store', 'store')->name('users.store');
+            Route::get('users/edit/{id}', 'edit')->name('users.edit');
+            Route::post('users/update', 'update')->name('users.update');
+            Route::get('users/show', 'show')->name('users.show');
+            Route::post('users/status', 'status')->name('users.status');
+            Route::post('users/destroy', 'destroy')->name('users.destroy');
+        });
+
 
         // Dealers
         Route::get('dealers',[DealerController::class,'index'])->name('dealers');

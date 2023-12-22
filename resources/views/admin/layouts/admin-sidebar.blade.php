@@ -85,26 +85,6 @@
                         <i class="{{ Route::currentRouteName() == 'customers' ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Customers</span>
                     </a>
                 </li>
-
-                {{-- @if (in_array($discount->id, $permission_ids))
-                    <li>
-                        <a href="{{ route('westage.discount') }}"
-                            class="{{ Route::currentRouteName() == 'westage.discount' || Route::currentRouteName() == 'westage.discount.create' || Route::currentRouteName() == 'westage.discount.edit' ? 'active' : '' }}">
-                            <i
-                                class="{{ Route::currentRouteName() == 'westage.discount' || Route::currentRouteName() == 'westage.discount.create' || Route::currentRouteName() == 'westage.discount.edit' ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Westage
-                                Discount</span>
-                        </a>
-                    </li>
-                @endif --}}
-                {{-- @if (in_array($import_export->id, $permission_ids))
-                <li>
-                    <a href="{{ route('import.export') }}"
-                        class="{{ Route::currentRouteName() == 'import.export'  ? 'active' : '' }}">
-                        <i
-                            class="{{ Route::currentRouteName() == 'import.export'  ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Import / Export</span>
-                    </a>
-                </li>
-                @endif --}}
             </ul>
         </li>
 
@@ -234,16 +214,16 @@
 
         {{-- Users --}}
         <li class="nav-item">
-            <a class="nav-link {{ Route::currentRouteName() != 'roles' && Route::currentRouteName() != 'roles.create' && Route::currentRouteName() != 'roles.edit' && Route::currentRouteName() != 'users' && Route::currentRouteName() != 'users.create' && Route::currentRouteName() != 'users.edit' ? 'collapsed' : '' }} {{ Route::currentRouteName() == 'roles' || Route::currentRouteName() == 'roles.create' || Route::currentRouteName() == 'roles.edit' || Route::currentRouteName() == 'users' || Route::currentRouteName() == 'users.create' || Route::currentRouteName() == 'users.edit' ? 'active-tab' : '' }}"
+            <a class="nav-link {{ Route::currentRouteName() != 'roles' && Route::currentRouteName() != 'roles.create' && Route::currentRouteName() != 'roles.edit' && Route::currentRouteName() != 'users.index' && Route::currentRouteName() != 'users.create' && Route::currentRouteName() != 'users.edit' && Route::currentRouteName() != 'users.show' ? 'collapsed' : '' }} {{ Route::currentRouteName() == 'roles' || Route::currentRouteName() == 'roles.create' || Route::currentRouteName() == 'roles.edit' || Route::currentRouteName() == 'users.index' || Route::currentRouteName() == 'users.create' || Route::currentRouteName() == 'users.edit' || Route::currentRouteName() == 'users.show' ? 'active-tab' : '' }}"
                 data-bs-target="#users-nav" data-bs-toggle="collapse" href="#"
-                aria-expanded="{{ Route::currentRouteName() == 'roles' || Route::currentRouteName() == 'roles.create' || Route::currentRouteName() == 'roles.edit' || Route::currentRouteName() == 'users' || Route::currentRouteName() == 'users.create' || Route::currentRouteName() == 'users.edit' ? 'true' : 'false' }}">
+                aria-expanded="{{ Route::currentRouteName() == 'roles' || Route::currentRouteName() == 'roles.create' || Route::currentRouteName() == 'roles.edit' || Route::currentRouteName() == 'users.index' || Route::currentRouteName() == 'users.create' || Route::currentRouteName() == 'users.edit' || Route::currentRouteName() == 'users.show' ? 'true' : 'false' }}">
                 <i
-                    class="fa-solid fa-users {{ Route::currentRouteName() == 'roles' || Route::currentRouteName() == 'roles.create' || Route::currentRouteName() == 'roles.edit' || Route::currentRouteName() == 'users' || Route::currentRouteName() == 'users.create' || Route::currentRouteName() == 'users.edit' ? 'icon-tab' : '' }}"></i><span>Users</span><i
-                    class="bi bi-chevron-down ms-auto {{ Route::currentRouteName() == 'roles' || Route::currentRouteName() == 'roles.create' || Route::currentRouteName() == 'roles.edit' || Route::currentRouteName() == 'users' || Route::currentRouteName() == 'users.create' || Route::currentRouteName() == 'users.edit' ? 'icon-tab' : '' }}"></i>
+                    class="fa-solid fa-users {{ Route::currentRouteName() == 'roles' || Route::currentRouteName() == 'roles.create' || Route::currentRouteName() == 'roles.edit' || Route::currentRouteName() == 'users.index' || Route::currentRouteName() == 'users.create' || Route::currentRouteName() == 'users.edit' || Route::currentRouteName() == 'users.show' ? 'icon-tab' : '' }}"></i><span>Users</span><i
+                    class="bi bi-chevron-down ms-auto {{ Route::currentRouteName() == 'roles' || Route::currentRouteName() == 'roles.create' || Route::currentRouteName() == 'roles.edit' || Route::currentRouteName() == 'users.index' || Route::currentRouteName() == 'users.create' || Route::currentRouteName() == 'users.edit' || Route::currentRouteName() == 'users.show' ? 'icon-tab' : '' }}"></i>
                 <!-- <i class="fa-solid fa-users"></i> -->
             </a>
             <ul id="users-nav"
-                class="nav-content sidebar-ul collapse {{ Route::currentRouteName() == 'roles' || Route::currentRouteName() == 'roles.create' || Route::currentRouteName() == 'roles.edit' || Route::currentRouteName() == 'users' || Route::currentRouteName() == 'users.create' || Route::currentRouteName() == 'users.edit' ? 'show' : '' }}"
+                class="nav-content sidebar-ul collapse {{ Route::currentRouteName() == 'roles' || Route::currentRouteName() == 'roles.create' || Route::currentRouteName() == 'roles.edit' || Route::currentRouteName() == 'users.index' || Route::currentRouteName() == 'users.create' || Route::currentRouteName() == 'users.edit' || Route::currentRouteName() == 'users.show' ? 'show' : '' }}"
                 data-bs-parent="#sidebar-nav">
                 @if (in_array($role->id, $permission_ids))
                     <li>
@@ -256,10 +236,10 @@
                 @endif
                 @if (in_array($user->id, $permission_ids))
                     <li>
-                        <a href="{{ route('users') }}"
-                            class="{{ Route::currentRouteName() == 'users' || Route::currentRouteName() == 'users.create' || Route::currentRouteName() == 'users.edit' ? 'active-link' : '' }}">
+                        <a href="{{ route('users.index') }}"
+                            class="{{ Route::currentRouteName() == 'users.index' || Route::currentRouteName() == 'users.create' || Route::currentRouteName() == 'users.edit' || Route::currentRouteName() == 'users.show' ? 'active-link' : '' }}">
                             <i
-                                class="{{ Route::currentRouteName() == 'users' || Route::currentRouteName() == 'users.create' || Route::currentRouteName() == 'users.edit' ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Users</span>
+                                class="{{ Route::currentRouteName() == 'users.index' || Route::currentRouteName() == 'users.create' || Route::currentRouteName() == 'users.edit' || Route::currentRouteName() == 'users.show' ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Users</span>
                         </a>
                     </li>
                 @endif
