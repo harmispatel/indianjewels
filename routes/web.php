@@ -198,16 +198,6 @@ Route::group(['prefix' => 'admin'], function ()
             Route::post('bottom-banners/destroy', 'destroy')->name('bottom-banners.destroy');
         });
 
-        // westage Discount
-        Route::get('westage-discount',[WestageDiscountController::class,'index'])->name('westage.discount');
-        Route::get('westage-discount/load',[WestageDiscountController::class,'loaddiscount'])->name('westage.discount.load');
-        Route::get('westage-discount/create',[WestageDiscountController::class,'create'])->name('westage.discount.create');
-        Route::post('westage-discount/store',[WestageDiscountController::class,'store'])->name('westage.discount.store');
-        Route::get('westage-discount/edit/{id}',[WestageDiscountController::class,'edit'])->name('westage.discount.edit');
-        Route::post('westage-discount/update',[WestageDiscountController::class,'update'])->name('westage.discount.update');
-        Route::post('westage-discount/status',[WestageDiscountController::class,'status'])->name('westage.discount.status');
-        Route::post('westage-discount/destroy',[WestageDiscountController::class,'destroy'])->name('westage.discount.destroy');
-
         // Reports
         Route::get('summary-items', [ReportController::class,'summaryitemsindex'])->name('reports.summary.items');
         Route::get('star-reports', [ReportController::class,'starreportindex'])->name('reports.star');
@@ -218,23 +208,29 @@ Route::group(['prefix' => 'admin'], function ()
         Route::get('orders', [OrderController::class,'index'])->name('order');
 
         // Import/Export
-        Route::get('import-export',[ImportExportController::class,'index'])->name('import.export');
-        Route::post('import-designs',[ImportExportController::class,'importDesigns'])->name('import.designs');
-        Route::get('export-designs',[ImportExportController::class,'exportDesigns'])->name('export.designs');
+        Route::controller(ImportExportController::class)->group(function () {
+            Route::get('import-export',[ImportExportController::class,'index'])->name('import.export');
+            Route::post('import-designs',[ImportExportController::class,'importDesigns'])->name('import.designs');
+            Route::get('export-designs',[ImportExportController::class,'exportDesigns'])->name('export.designs');
+        });
 
         // Pages
-        Route::get('pages',[PageController::class, 'index'])->name('pages');
-        Route::get('pages/load',[PageController::class, 'loadPages'])->name('pages.load');
-        Route::get('pages/create',[PageController::class, 'create'])->name('pages.create');
-        Route::post('pages/store',[PageController::class, 'store'])->name('pages.store');
-        Route::get('pages/edit/{id}',[PageController::class, 'edit'])->name('pages.edit');
-        Route::post('pages/update',[PageController::class, 'update'])->name('pages.update');
-        Route::post('pages/status',[PageController::class, 'status'])->name('pages.status');
-        Route::post('pages/destroy',[PageController::class, 'destroy'])->name('pages.destroy');
+        Route::controller(PageController::class)->group(function () {
+            Route::get('pages', 'index')->name('pages.index');
+            Route::get('pages/load', 'load')->name('pages.load');
+            Route::get('pages/create', 'create')->name('pages.create');
+            Route::post('pages/store', 'store')->name('pages.store');
+            Route::get('pages/edit/{id}', 'edit')->name('pages.edit');
+            Route::post('pages/update', 'update')->name('pages.update');
+            Route::post('pages/status', 'status')->name('pages.status');
+            Route::post('pages/destroy', 'destroy')->name('pages.destroy');
+        });
 
         // Settings
-        Route::get('settings', [AdminSettingsController::class, 'index'])->name('settings');
-        Route::post('settings/update', [AdminSettingsController::class, 'update'])->name('settings.update');
+        Route::controller(AdminSettingsController::class)->group(function () {
+            Route::get('settings',  'index')->name('settings');
+            Route::post('settings/update',  'update')->name('settings.update');
+        });
 
     });
 });

@@ -10,7 +10,7 @@ class AdminSettingsController extends Controller
     function index()
     {
         $settings = getAdminSettings();
-        return view('admin.settings.settings',compact(['settings']));
+        return view('admin.settings.index',compact(['settings']));
     }
 
     function update(Request $request)

@@ -4,20 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
-use App\Models\{
-    Page
-};
+use App\Models\{Page};
 
 class PageController extends Controller
 {
     // Display a listing of the resource.
     public function index()
     {
-        return view('admin.pages.pages');
+        return view('admin.pages.index');
     }
 
-    // Function for Get all Pages
-    public function loadPages(Request $request)
+    // Load all pages helping with AJAX Datatable
+    public function load(Request $request)
     {
         if ($request->ajax()){
             // Get all Pages
@@ -42,13 +40,11 @@ class PageController extends Controller
         }
     }
 
-
     // Show the form for creating a new resource.
     public function create()
     {
-        return view('admin.pages.create_pages');
+        return view('admin.pages.create');
     }
-
 
     // Store a newly created resource in storage.
     public function store(Request $request)
@@ -70,38 +66,16 @@ class PageController extends Controller
         }
     }
 
-
-    // Function for Change Page Status
-    public function status(Request $request)
-    {
-        try {
-            $page = Page::find($request->id);
-            $page->status =  ($page->status == 1) ? 0 : 1;
-            $page->update();
-            return response()->json([
-                'success' => 1,
-                'message' => "Status has been Changed.",
-            ]);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'success' => 0,
-                'message' => "Oops, Something went wrong!",
-            ]);
-        }
-    }
-
-
     // Show the form for editing the specified resource.
     public function edit($id)
     {
         try {
             $page = Page::find(decrypt($id));
-            return view('admin.pages.edit_pages', compact(['page']));
+            return view('admin.pages.edit', compact(['page']));
         } catch (\Throwable $th) {
             return back()->with('error', 'Oops, Something went wrong!');
         }
     }
-
 
     // Update the specified resource in storage.
     public function update(Request $request)
@@ -123,6 +97,24 @@ class PageController extends Controller
         }
     }
 
+    // Function for Change Page Status
+    public function status(Request $request)
+    {
+        try {
+            $page = Page::find($request->id);
+            $page->status =  ($page->status == 1) ? 0 : 1;
+            $page->update();
+            return response()->json([
+                'success' => 1,
+                'message' => "Status has been Changed.",
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => 0,
+                'message' => "Oops, Something went wrong!",
+            ]);
+        }
+    }
 
     // Remove the specified resource from storage.
     public function destroy(Request $request)
