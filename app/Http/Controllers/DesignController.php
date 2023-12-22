@@ -5,14 +5,7 @@ namespace App\Http\Controllers;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 use App\Http\Requests\DesignRequest;
-use App\Models\{
-    Tag,
-    Metal,
-    Gender,
-    Design,
-    Category,
-    Design_image,
-};
+use App\Models\{Tag, Metal, Gender, Design, Category, Design_image};
 
 class DesignController extends Controller
 {
@@ -21,12 +14,11 @@ class DesignController extends Controller
     // Display a listing of the resource.
     public function index()
     {
-        return view('admin.designs.designs');
+        return view('admin.designs.index');
     }
 
-
-    // Get AJAX listing of the resource.
-    public function loaddesigns(Request $request)
+    // Load all designs helping with AJAX Datatable
+    public function load(Request $request)
     {
         if ($request->ajax()){
 
@@ -95,7 +87,6 @@ class DesignController extends Controller
         }
     }
 
-
     // Show the form for creating a new resource.
     public function create()
     {
@@ -103,9 +94,8 @@ class DesignController extends Controller
         $metals = Metal::get();
         $genders = Gender::get();
         $categories = Category::where('parent_category','!=',0)->get();
-        return view('admin.designs.create_designs',compact('categories','genders','metals','tags'));
+        return view('admin.designs.create',compact('categories','genders','metals','tags'));
     }
-
 
     // Store a newly created resource in storage.
     public function store(DesignRequest $request)
@@ -116,12 +106,40 @@ class DesignController extends Controller
 
             // Create Design
             Design::create($input);
-            return redirect()->route('designs')->with('success','Design has been Created.');
+            return redirect()->route('designs.index')->with('success','Design has been Created.');
         } catch (\Throwable $th) {
-            return redirect()->route('designs')->with('error','Oops, Something went wrong!');
+            return redirect()->route('designs.index')->with('error','Oops, Something went wrong!');
         }
     }
 
+    // Show the form for editing the specified resource.
+    public function edit($id)
+    {
+        try {
+            $tags = Tag::get();
+            $metals = Metal::get();
+            $genders = Gender::get();
+            $categories = Category::where('parent_category','!=',0)->get();
+            $design = Design::find(decrypt($id));
+            return view('admin.designs.edit',compact('categories','genders','metals','tags','design'));
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'Oops, Something went wrong!');
+        }
+    }
+
+    // Update the specified resource in storage.
+    public function update(DesignRequest $request)
+    {
+        try {
+            $input = $request->except('_token','tags','id');
+            $input['tags'] = json_encode($request->tags);
+            $design = Design::find(decrypt($request->id));
+            $design->update($input);
+            return redirect()->route('designs.index')->with('message','Design has been Updated.');
+        } catch (\Throwable $th) {
+            return redirect()->route('designs.index')->with('error','Oops, Something went wrong!');
+        }
+    }
 
     // Change Status of Specific Design
     public function status(Request $request)
@@ -142,7 +160,6 @@ class DesignController extends Controller
         }
     }
 
-
     // Change Status of Top Selling
     public function topSelling(Request $request)
     {
@@ -162,38 +179,6 @@ class DesignController extends Controller
             ]);
         }
     }
-
-
-    // Show the form for editing the specified resource.
-    public function edit($id)
-    {
-        try {
-            $tags = Tag::get();
-            $metals = Metal::get();
-            $genders = Gender::get();
-            $categories = Category::where('parent_category','!=',0)->get();
-            $design = Design::find(decrypt($id));
-            return view('admin.designs.edit_designs',compact('categories','genders','metals','tags','design'));
-        } catch (\Throwable $th) {
-            return redirect()->back()->with('error', 'Oops, Something went wrong!');
-        }
-    }
-
-
-    // Update the specified resource in storage.
-    public function update(DesignRequest $request)
-    {
-        try {
-            $input = $request->except('_token','tags','id');
-            $input['tags'] = json_encode($request->tags);
-            $design = Design::find(decrypt($request->id));
-            $design->update($input);
-            return redirect()->route('designs')->with('message','Design has been Updated.');
-        } catch (\Throwable $th) {
-            return redirect()->route('designs')->with('error','Oops, Something went wrong!');
-        }
-    }
-
 
     // Remove the specified resource from storage.
     public function destroy(Request $request)

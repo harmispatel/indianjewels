@@ -128,24 +128,39 @@ Route::group(['prefix' => 'admin'], function ()
         });
 
         // Categories
-        Route::get('/categories',[CategoryController::class,'index'])->name('categories');
-        Route::get('categories/load',[CategoryController::class,'loadCategories'])->name('categories.load');
-        Route::post('categories/store',[CategoryController::class,'store'])->name('categories.store');
-        Route::post('categories/edit',[CategoryController::class,'edit'])->name('categories.edit');
-        Route::post('categories/update',[CategoryController::class,'update'])->name('categories.update');
-        Route::post('categories/status',[CategoryController::class,'status'])->name('categories.status');
-        Route::post('categories/destroy',[CategoryController::class,'destroy'])->name('categories.destroy');
+        Route::controller(CategoryController::class)->group(function () {
+            Route::get('/categories', 'index')->name('categories.index');
+            Route::post('categories/store', 'store')->name('categories.store');
+            Route::post('categories/edit', 'edit')->name('categories.edit');
+            Route::post('categories/update', 'update')->name('categories.update');
+            Route::post('categories/status', 'status')->name('categories.status');
+            Route::post('categories/destroy', 'destroy')->name('categories.destroy');
+        });
 
         // Tags
-        Route::get('tags',[TagController::class,'index'])->name('tags');
-        Route::get('tags/load',[TagController::class,'loadtags'])->name('tags.load');
-        Route::get('tags/create',[TagController::class,'create'])->name('tags.create');
-        Route::post('tags/store',[TagController::class,'store'])->name('tags.store');
-        Route::post('tags/edit',[TagController::class,'edit'])->name('tags.edit');
-        Route::post('tags/update',[TagController::class,'update'])->name('tags.update');
-        Route::post('tags/status',[TagController::class,'status'])->name('tags.status');
-        Route::post('tags/destroy',[TagController::class,'destroy'])->name('tags.destroy');
-        Route::post('tags/display-header/status',[TagController::class,'displayHeaderStatus'])->name('tags.display_header_status');
+        Route::controller(TagController::class)->group(function () {
+            Route::get('tags', 'index')->name('tags.index');
+            Route::get('tags/load', 'load')->name('tags.load');
+            Route::post('tags/store', 'store')->name('tags.store');
+            Route::post('tags/edit', 'edit')->name('tags.edit');
+            Route::post('tags/update', 'update')->name('tags.update');
+            Route::post('tags/status', 'status')->name('tags.status');
+            Route::post('tags/header-status', 'headerStatus')->name('tags.header.status');
+            Route::post('tags/destroy', 'destroy')->name('tags.destroy');
+        });
+
+        // Designs
+        Route::controller(DesignController::class)->group(function () {
+            Route::get('designs', 'index')->name('designs.index');
+            Route::get('designs/load', 'load')->name('designs.load');
+            Route::get('designs/create', 'create')->name('designs.create');
+            Route::post('designs/store', 'store')->name('designs.store');
+            Route::get('designs/edit/{id}', 'edit')->name('designs.edit');
+            Route::post('designs/update', 'update')->name('designs.update');
+            Route::post('designs/status', 'status')->name('designs.status');
+            Route::post('designs/top-selling', 'topSelling')->name('designs.top-selling');
+            Route::post('designs/destroy', 'destroy')->name('designs.destroy');
+        });
 
         // Top Banners
         Route::get('top-banners',[TopBannerController::class,'index'])->name('top-banners');
@@ -176,18 +191,6 @@ Route::group(['prefix' => 'admin'], function ()
         Route::post('bottom-banners/update',[BottomBannerController::class,'update'])->name('bottom-banners.update');
         Route::post('bottom-banners/status',[BottomBannerController::class,'status'])->name('bottom-banners.status');
         Route::post('bottom-banners/destroy',[BottomBannerController::class,'destroy'])->name('bottom-banners.destroy');
-
-        // Design
-        Route::get('designs',[DesignController::class,'index'])->name('designs');
-        Route::get('designs/load',[DesignController::class,'loaddesigns'])->name('designs.load');
-        Route::get('designs/create',[DesignController::class,'create'])->name('designs.create');
-        Route::post('designs/store',[DesignController::class,'store'])->name('designs.store');
-        Route::get('designs/edit/{id}',[DesignController::class,'edit'])->name('designs.edit');
-        Route::post('designs/update',[DesignController::class,'update'])->name('designs.update');
-        Route::post('designs/status',[DesignController::class,'status'])->name('designs.status');
-        Route::post('designs/image/destroy',[DesignController::class,'imagedestroy'])->name('designs-image.destroy');
-        Route::post('designs/destroy',[DesignController::class,'destroy'])->name('designs.destroy');
-        Route::post('designs/top-selling',[DesignController::class,'topSelling'])->name('designs.top-selling');
 
         // westage Discount
         Route::get('westage-discount',[WestageDiscountController::class,'index'])->name('westage.discount');

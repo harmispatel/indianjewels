@@ -1,14 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Models\{Category, Design};
+use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 use App\Http\Requests\CategoriesRequest;
-use App\Traits\ImageTrait;
-use App\Models\{
-    Category,
-    Design
-};
-
 
 class CategoryController extends Controller
 {
@@ -18,7 +15,7 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = Category::with(['subcategories','parentcategory'])->where('parent_category',0)->get();
-        return view('admin.categories.categories', compact('categories'));
+        return view('admin.categories.index', compact('categories'));
     }
 
 
@@ -176,4 +173,5 @@ class CategoryController extends Controller
             ]);
         }
     }
+
 }

@@ -3,12 +3,10 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
-use Yajra\DataTables\Facades\DataTables;
+use App\Models\{Tag};
 use Illuminate\Http\Request;
 use App\Http\Requests\TagRequest;
-use App\Models\{
-    Tag,
-};
+use Yajra\DataTables\Facades\DataTables;
 
 
 class TagController extends Controller
@@ -16,12 +14,11 @@ class TagController extends Controller
     // Display a listing of the resource.
     public function index()
     {
-        return view('admin.tags.tags');
+        return view('admin.tags.index');
     }
 
-
-    // load all tags using AJAX.
-    public function loadtags(Request $request)
+    // Load all tags helping with AJAX Datatable
+    public function load(Request $request)
     {
         if ($request->ajax()){
             $tags= Tag::orderBy('name','ASC')->get();
@@ -46,7 +43,6 @@ class TagController extends Controller
         }
     }
 
-
     // Store a Tags created resource in storage.
     public function store(TagRequest $request)
     {
@@ -64,49 +60,6 @@ class TagController extends Controller
             ]);
         }
     }
-
-
-    // Change Status of Specified resource
-    public function status(Request $request)
-    {
-        try{
-            $id = $request->id;
-            $tag = Tag::find($id);
-            $tag->status =  ($tag->status == 1) ? 0 : 1;
-            $tag->update();
-            return response()->json([
-                'success' => 1,
-                'message' => "Status has been Changed.",
-            ]);
-        }catch (\Throwable $th){
-            return response()->json([
-                'success' => 0,
-                'message' => "Oops, Something went wrong!",
-            ]);
-        }
-    }
-
-
-    // Change Display Header Status of Specified resource
-    public function displayHeaderStatus(Request $request)
-    {
-        try{
-            $tag_id = $request->id;
-            $tag = Tag::find($tag_id);
-            $tag->display_on_header = ($tag->display_on_header == 1) ? 0 : 1;
-            $tag->update();
-            return response()->json([
-                'success' => 1,
-                'message' => "Status has been Changed.",
-            ]);
-        }catch (\Throwable $th){
-            return response()->json([
-                'success' => 0,
-                'message' => "Oops, Something went wrong!",
-            ]);
-        }
-    }
-
 
     // Show the form for editing the specified Tags.
     public function edit(Request $request)
@@ -127,7 +80,6 @@ class TagController extends Controller
         }
     }
 
-
     // Update the specified Tags in storage.
     public function update(TagRequest $request)
     {
@@ -139,6 +91,46 @@ class TagController extends Controller
             return response()->json([
                 'success' => 1,
                 'message' => "Tag has been Updated.",
+            ]);
+        }catch (\Throwable $th){
+            return response()->json([
+                'success' => 0,
+                'message' => "Oops, Something went wrong!",
+            ]);
+        }
+    }
+
+    // Change Display Header Status of Specified resource
+    public function headerStatus(Request $request)
+    {
+        try{
+            $tag_id = $request->id;
+            $tag = Tag::find($tag_id);
+            $tag->display_on_header = ($tag->display_on_header == 1) ? 0 : 1;
+            $tag->update();
+            return response()->json([
+                'success' => 1,
+                'message' => "Status has been Changed.",
+            ]);
+        }catch (\Throwable $th){
+            return response()->json([
+                'success' => 0,
+                'message' => "Oops, Something went wrong!",
+            ]);
+        }
+    }
+
+    // Change Status of Specified resource
+    public function status(Request $request)
+    {
+        try{
+            $id = $request->id;
+            $tag = Tag::find($id);
+            $tag->status =  ($tag->status == 1) ? 0 : 1;
+            $tag->update();
+            return response()->json([
+                'success' => 1,
+                'message' => "Status has been Changed.",
             ]);
         }catch (\Throwable $th){
             return response()->json([

@@ -18,7 +18,7 @@ class CustomerController extends Controller
         return view('admin.customers.index');
     }
 
-    // Load all dealers helping AJAX Datatable
+    // Load all customers with helping AJAX Datatable
     public function load(Request $request)
     {
         if ($request->ajax()){

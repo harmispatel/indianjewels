@@ -325,7 +325,7 @@
             toastr.clear();
             $.ajax({
                 type: "POST",
-                url: "{{ route('tags.display_header_status') }}",
+                url: "{{ route('tags.header.status') }}",
                 data: {
                     "_token": "{{ csrf_token() }}",
                     "id": id

@@ -1,5 +1,5 @@
 @extends('admin.layouts.admin-layout')
-@section('title', 'EDIT - DESIGNS - IMPEL JEWELLERS')
+@section('title', 'CREATE - DESIGNS - IMPEL JEWELLERS')
 @section('content')
 
     {{-- Page Title --}}
@@ -10,8 +10,8 @@
                 <nav>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
-                        <li class="breadcrumb-item "><a href="{{ route('designs') }}">Designs</a></li>
-                        <li class="breadcrumb-item active">Edit</li>
+                        <li class="breadcrumb-item "><a href="{{ route('designs.index') }}">Designs</a></li>
+                        <li class="breadcrumb-item active">Create</li>
                     </ol>
                 </nav>
             </div>
@@ -19,12 +19,12 @@
         </div>
     </div>
 
-    {{-- Edit Design Section --}}
+    {{-- Create Design Section --}}
     <section class="section dashboard">
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    <form class="form" action="{{ route('designs.update') }}" method="POST" enctype="multipart/form-data">
+                    <form class="form" action="{{ route('designs.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="card-body">
                             <div class="form_box">
@@ -33,11 +33,10 @@
                                         <h2>General Information</h2>
                                     </div>
                                     <div class="form_box_info">
-                                        <input type="hidden" name="id" value="{{ encrypt($design->id) }}">
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
                                                 <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
-                                                <input type="text" name="name" id="name" class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" placeholder="Enter Design Name" value="{{ isset($design->name) ? $design->name : old('name') }}">
+                                                <input type="text" name="name" id="name" class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" placeholder="Enter Design Name" value="{{old('name')}}">
                                                 @if ($errors->has('name'))
                                                     <div class="invalid-feedback">
                                                         {{ $errors->first('name') }}
@@ -46,7 +45,7 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <label for="code" class="form-label">Code <span class="text-danger">*</span></label>
-                                                <input type="text" name="code" id="code" class="form-control {{ $errors->has('code') ? 'is-invalid' : '' }}" placeholder="Enter Design Code" value="{{ isset($design->code) ? $design->code : old('code') }}">
+                                                <input type="text" name="code" id="code" class="form-control {{ $errors->has('code') ? 'is-invalid' : '' }}" placeholder="Enter Design Code" value="{{old('code')}}">
                                                 @if ($errors->has('code'))
                                                     <div class="invalid-feedback">
                                                         {{ $errors->first('code') }}
@@ -58,12 +57,12 @@
                                                 <select name="category_id" id="category_id" class="form-control {{ $errors->has('category_id') ? 'is-invalid' : '' }}">
                                                     <option value="">Select Category</option>
                                                     @foreach ($categories as $category)
-                                                        <option value="{{ $category->id }}" {{ ($design->category_id == $category->id) ? 'selected' : '' }}>{{ $category->name }}</option>
+                                                        <option value="{{ $category->id }}"  {{ (old('category_id') == $category->id) ? 'selected' : '' }}>{{ $category->name }}</option>
                                                     @endforeach
                                                 </select>
-                                                @if ($errors->has('code'))
+                                                @if ($errors->has('category_id'))
                                                     <div class="invalid-feedback">
-                                                        {{ $errors->first('code') }}
+                                                        {{ $errors->first('category_id') }}
                                                     </div>
                                                 @endif
                                             </div>
@@ -72,7 +71,7 @@
                                                 <select name="gender_id" id="gender_id" class="form-control {{ $errors->has('gender_id') ? 'is-invalid' : '' }}">
                                                     <option value="">Select Gender</option>
                                                     @foreach ($genders as $gender)
-                                                        <option value="{{ $gender->id }}" {{ ($design->gender_id == $gender->id) ? 'selected' : '' }}>{{ $gender->name }}</option>
+                                                        <option value="{{ $gender->id }}" {{ (old('gender_id') == $gender->id) ? 'selected' : '' }}>{{ $gender->name }}</option>
                                                     @endforeach
                                                 </select>
                                                 @if ($errors->has('gender_id'))
@@ -86,7 +85,7 @@
                                                 <select name="metal_id" id="metal_id" class="form-control {{ $errors->has('metal_id') ? 'is-invalid' : '' }}">
                                                     <option value="">Select Metal</option>
                                                     @foreach ($metals as $metal)
-                                                        <option value="{{ $metal->id }}" {{ ($design->metal_id == $metal->id) ? 'selected' : '' }}>{{ $metal->name }}</option>
+                                                        <option value="{{ $metal->id }}"  {{ (old('metal_id') == $metal->id) ? 'selected' : '' }}>{{ $metal->name }}</option>
                                                     @endforeach
                                                 </select>
                                                 @if ($errors->has('metal_id'))
@@ -95,26 +94,23 @@
                                                     </div>
                                                 @endif
                                             </div>
-                                            @php
-                                                $tags_arr = (isset($design->tags) && !empty($design->tags)) ? json_decode($design->tags) : [];
-                                            @endphp
                                             <div class="col-md-6">
                                                 <label for="tags" class="form-label">Tags</label>
                                                 <select name="tags[]" id="tags" class="select2 form-select" multiple>
                                                     @if (count($tags) > 0)
                                                         @foreach ($tags as $tag)
-                                                            <option value="{{ $tag->id }}" {{ (in_array($tag->id, $tags_arr) ? 'selected' : '' ) }}>{{ $tag->name }}</option>
+                                                            <option value="{{ $tag->id }}" {{ in_array($tag->id, (array) old('tags', [])) ? "selected" : '' }}>{{ $tag->name }}</option>
                                                         @endforeach
                                                     @endif
                                                 </select>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label for="gemstone_price" class="form-label">Gem Stone Price</label>
-                                                <input type="number" name="gemstone_price" id="gemstone_price" class="form-control" placeholder="Enter GemStone Price" value="{{isset($design->gemstone_price) ? $design->gemstone_price : old('gemstone_price')}}">
+                                                <input type="number" name="gemstone_price" id="gemstone_price" class="form-control" placeholder="Enter GemStone Price" value="{{old('gemstone_price')}}">
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label for="description" class="form-label">Description</label>
-                                                <textarea style="resize: none;" name="description" placeholder="Enter Design Description" id="description" class="form-control" rows="7">{{ isset($design->description) ? $design->description : old('description') }}</textarea>
+                                                <textarea style="resize: none;" name="description" placeholder="Enter Design Description" id="description" class="form-control" rows="7">{{old('description')}}</textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -130,19 +126,19 @@
                                         <div class="row">
                                             <div class="col-md-3 mb-3">
                                                 <label for="" class="form-label">14 K / 68 Touch</label>
-                                                <input type="number" id="14_gross" weight-name="14_gross" name="gweight1" step="any" class="form-control gross-weight" value="{{ $design->gweight1 }}">
+                                                <input type="number" id="14_gross" weight-name="14_gross" name="gweight1" step="any" class="form-control gross-weight" value="{{old('gweight1')}}">
                                             </div>
                                             <div class="col-md-3">
                                                 <label for="" class="form-label">18 K / 75 Touch</label>
-                                                <input type="number" step="any" id="18_gross" weight-name="18_gross" name="gweight2" class="form-control gross-weight" value="{{ $design->gweight2 }}">
+                                                <input type="number" step="any" id="18_gross" weight-name="18_gross" name="gweight2" class="form-control gross-weight" value="{{old('gweight2')}}">
                                             </div>
                                             <div class="col-md-3">
                                                 <label for="" class="form-label">20 K / 83 Touch</label>
-                                                <input type="number" step="any" id="20_gross" weight-name="20_gross" name="gweight3" class="form-control gross-weight" value="{{ $design->gweight3 }}">
+                                                <input type="number" step="any" id="20_gross" weight-name="20_gross" name="gweight3" class="form-control gross-weight" value="{{old('gweight3')}}">
                                             </div>
                                             <div class="col-md-3">
                                                 <label for="" class="form-label">22 K / 92 Touch</label>
-                                                <input type="number" step="any" id="22_gross" weight-name="22_gross" name="gweight4" class="form-control gross-weight" value="{{ $design->gweight4 }}">
+                                                <input type="number" step="any" id="22_gross" weight-name="22_gross" name="gweight4" class="form-control gross-weight" value="{{old('gweight4')}}">
                                             </div>
                                         </div>
                                         <div>
@@ -151,11 +147,11 @@
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
                                                 <label for="">Less Gems Stone</label>
-                                                <input type="number" id="less_gems_stone" name="less_gems_stone" step="any" class="form-control less-weight" value="{{ $design->less_gems_stone }}">
+                                                <input type="number" id="less_gems_stone" name="less_gems_stone" step="any" class="form-control less-weight" value="{{old('less_gems_stone')}}">
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label for="">Less C.Z. Stone</label>
-                                                <input type="number" id="less_cz_stone" name="less_cz_stone" step="any" class="form-control less-weight" value="{{ $design->less_cz_stone }}">
+                                                <input type="number" id="less_cz_stone" name="less_cz_stone" step="any" class="form-control less-weight" value="{{old('less_cz_stone')}}">
                                             </div>
                                         </div>
                                         <div>
@@ -164,19 +160,19 @@
                                         <div class="row">
                                             <div class="col-md-3 mb-3">
                                                 <label for="" class="form-label">14 K / 68 Touch</label>
-                                                <input type="number" step="any" style="background: #e9e9e9" id="14_net" name="nweight1" class="form-control" value="{{ $design->nweight1 }}" readonly>
+                                                <input type="number" step="any" style="background: #e9e9e9" id="14_net" name="nweight1" class="form-control" value="{{old('nweight1')}}" readonly>
                                             </div>
                                             <div class="col-md-3">
                                                 <label for="" class="form-label">18 K / 75 Touch</label>
-                                                <input type="number" step="any" style="background: #e9e9e9" id="18_net" name="nweight2" class="form-control" value="{{ $design->nweight2 }}" readonly>
+                                                <input type="number" step="any" style="background: #e9e9e9" id="18_net" name="nweight2" class="form-control" value="{{old('nweight2')}}" readonly>
                                             </div>
                                             <div class="col-md-3">
                                                 <label for="" class="form-label">20 K / 83 Touch</label>
-                                                <input type="number" step="any" style="background: #e9e9e9" id="20_net" name="nweight3" class="form-control" value="{{ $design->nweight3 }}" readonly>
+                                                <input type="number" step="any" style="background: #e9e9e9" id="20_net" name="nweight3" class="form-control" value="{{old('nweight3')}}" readonly>
                                             </div>
                                             <div class="col-md-3">
                                                 <label for="" class="form-label">22 K / 92 Touch</label>
-                                                <input type="number" step="any" style="background: #e9e9e9" name="nweight4" id="22_net" class="form-control" value="{{ $design->nweight4 }}" readonly>
+                                                <input type="number" step="any" style="background: #e9e9e9" name="nweight4" id="22_net" class="form-control" value="{{old('nweight4')}}" readonly>
                                             </div>
                                         </div>
                                         <div>
@@ -184,7 +180,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-md-3">
-                                                <input type="number" step="any" name="percentage" class="form-control" value="{{ $design->percentage }}">
+                                                <input type="number" step="any" name="percentage" class="form-control" value="{{old('percentage')}}">
                                             </div>
                                         </div>
                                     </div>
@@ -192,7 +188,7 @@
                             </div>
                         </div>
                         <div class="card-footer text-center">
-                            <button class="btn form_button">Update</button>
+                            <button class="btn form_button">Save</button>
                         </div>
                     </form>
                 </div>
@@ -206,7 +202,8 @@
     <script type="text/javascript">
 
         $('#tags').select2({
-            placeholder: "Select Tags"
+            placeholder: "Select Tags",
+            allowClear: true
         });
 
         $('.gross-weight').on('keyup change',function(){
@@ -292,5 +289,6 @@
                 $('#22_net').val(amount.toFixed(2));
             }
         });
+
     </script>
 @endsection

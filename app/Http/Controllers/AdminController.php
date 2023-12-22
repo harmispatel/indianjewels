@@ -20,7 +20,7 @@ class AdminController extends Controller
         return view('admin.users.index');
     }
 
-    // Load all users helping AJAX Datatable
+    // Load all users with helping AJAX Datatable
     public function load(Request $request)
     {
         if ($request->ajax()){
