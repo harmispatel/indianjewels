@@ -109,11 +109,23 @@ Route::group(['prefix' => 'admin'], function ()
         });
 
         // Customers
-        Route::get('customers',[CustomerController::class,'index'])->name('customers');
-        Route::post('customers/load',[CustomerController::class,'loadCustomers'])->name('customers.load');
-        Route::get('customers/edit/{id}',[CustomerController::class,'edit'])->name('customers.edit');
-        Route::post('customers/status',[CustomerController::class,'status'])->name('customers.status');
-        Route::post('customers/update',[CustomerController::class,'update'])->name('customers.update');
+        Route::controller(CustomerController::class)->group(function () {
+            Route::get('customers', 'index')->name('customers.index');
+            Route::post('customers/load', 'load')->name('customers.load');
+            Route::get('customers/edit/{id}', 'edit')->name('customers.edit');
+            Route::post('customers/update', 'update')->name('customers.update');
+            Route::post('customers/status', 'status')->name('customers.status');
+        });
+
+        // Roles
+        Route::controller(RoleController::class)->group(function () {
+            Route::get('roles','index')->name('roles.index');
+            Route::get('roles/create','create')->name('roles.create');
+            Route::post('roles/store','store')->name('roles.store');
+            Route::get('roles/edit/{id}','edit')->name('roles.edit');
+            Route::post('roles/update','update')->name('roles.update');
+            Route::post('roles/destroy','destroy')->name('roles.destroy');
+        });
 
         // Categories
         Route::get('/categories',[CategoryController::class,'index'])->name('categories');
@@ -123,14 +135,6 @@ Route::group(['prefix' => 'admin'], function ()
         Route::post('categories/update',[CategoryController::class,'update'])->name('categories.update');
         Route::post('categories/status',[CategoryController::class,'status'])->name('categories.status');
         Route::post('categories/destroy',[CategoryController::class,'destroy'])->name('categories.destroy');
-
-        // Roles
-        Route::get('roles',[RoleController::class,'index'])->name('roles');
-        Route::get('roles/create',[RoleController::class,'create'])->name('roles.create');
-        Route::post('roles/store',[RoleController::class,'store'])->name('roles.store');
-        Route::get('roles/edit/{id}',[RoleController::class,'edit'])->name('roles.edit');
-        Route::post('roles/update',[RoleController::class,'update'])->name('roles.update');
-        Route::post('roles/destroy',[RoleController::class,'destroy'])->name('roles.destroy');
 
         // Tags
         Route::get('tags',[TagController::class,'index'])->name('tags');

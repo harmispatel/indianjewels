@@ -79,7 +79,7 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                 processing: true,
                 serverSide: true,
                 pageLength: 100,
-                ajax: "{{ route('roles') }}",
+                ajax: "{{ route('roles.index') }}",
                 columns: [{
                         data: 'id',
                         name: 'id'

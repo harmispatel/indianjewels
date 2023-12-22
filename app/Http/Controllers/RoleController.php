@@ -70,8 +70,7 @@ class RoleController extends Controller
     public function create()
     {
         $permission = Permission::get();
-
-        return view('admin.roles.create_roles',compact('permission'));
+        return view('admin.roles.create',compact('permission'));
     }
 
     public function store(Request $request)
@@ -84,7 +83,7 @@ class RoleController extends Controller
         $role = Role::create(['name' => $request->input('name')]);
         $role->syncPermissions($request->input('permission'));
 
-        return redirect()->route('roles')
+        return redirect()->route('roles.index')
                         ->with('success','Role created successfully');
     }
 
@@ -97,7 +96,7 @@ class RoleController extends Controller
             ->pluck('role_has_permissions.permission_id','role_has_permissions.permission_id')
             ->all();
 
-        return view('admin.roles.edit_roles',compact('role','permission','rolePermissions'));
+        return view('admin.roles.edit',compact('role','permission','rolePermissions'));
     }
 
         public function update(Request $request)
@@ -114,7 +113,7 @@ class RoleController extends Controller
 
             $role->syncPermissions($request->input('permission'));
 
-            return redirect()->route('roles')
+            return redirect()->route('roles.index')
                             ->with('success','Role updated successfully');
         }
 

@@ -10,7 +10,7 @@
                 <nav>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
-                        <li class="breadcrumb-item "><a href="{{ route('customers') }}">Customers</a></li>
+                        <li class="breadcrumb-item "><a href="{{ route('customers.index') }}">Customers</a></li>
                         <li class="breadcrumb-item active">Edit</li>
                     </ol>
                 </nav>

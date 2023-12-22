@@ -4,13 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
+use App\Models\{User, City, State};
 use App\Http\Requests\CustomerRequest;
 use Yajra\DataTables\Facades\DataTables;
-use App\Models\{
-    User,
-    City,
-    State,
-};
 
 class CustomerController extends Controller
 {
@@ -19,12 +15,11 @@ class CustomerController extends Controller
     // Display a listing of the resource.
     public function index()
     {
-        return view('admin.customers.customers');
+        return view('admin.customers.index');
     }
 
-
-    // Function for Get all Customers
-    public function loadCustomers(Request $request)
+    // Load all dealers helping AJAX Datatable
+    public function load(Request $request)
     {
         if ($request->ajax()){
             $verification_filter = (isset($request->verification_filter)) ? $request->verification_filter : '';
@@ -66,7 +61,6 @@ class CustomerController extends Controller
         }
     }
 
-
     // Show the form for editing the specified resource.
     public function edit($id)
     {
@@ -74,32 +68,11 @@ class CustomerController extends Controller
             $customer = User::find(decrypt($id));
             $states = State::get();
             $cities = City::where('state_id',$customer->state)->get();
-            return view('admin.customers.edit_customer',compact('customer','states','cities'));
+            return view('admin.customers.edit',compact('customer','states','cities'));
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', 'Oops, Something went wrong!');
         }
     }
-
-
-    // Function for Change Customer Status
-    public function status(Request $request)
-    {
-        try {
-            $customer = User::find($request->id);
-            $customer->status =  ($customer->status == 1) ? 0 : 1;
-            $customer->update();
-            return response()->json([
-                'success' => 1,
-                'message' => "Status has been Changed.",
-            ]);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'success' => 0,
-                'message' => "Oops, Something went wrong!",
-            ]);
-        }
-    }
-
 
     // Function for Update Existing Record
     public function update(CustomerRequest $request)
@@ -124,10 +97,28 @@ class CustomerController extends Controller
                     $customer->update(['verification' => 1]);
                 }
             }
-            return redirect()->route('customers')->with('success','Customer has been Updated.');
+            return redirect()->route('customers.index')->with('success','Customer has been Updated.');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error','oops, Something went wrong!');
         }
     }
 
+    // Function for Change Customer Status
+    public function status(Request $request)
+    {
+        try {
+            $customer = User::find($request->id);
+            $customer->status =  ($customer->status == 1) ? 0 : 1;
+            $customer->update();
+            return response()->json([
+                'success' => 1,
+                'message' => "Status has been Changed.",
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => 0,
+                'message' => "Oops, Something went wrong!",
+            ]);
+        }
+    }
 }

@@ -1,6 +1,6 @@
 @extends('admin.layouts.admin-layout')
 
-@section('title', 'Impel Jewellers | Edit Role')
+@section('title', 'Impel Jewellers | Create Role')
 
 @section('content')
 
@@ -12,8 +12,8 @@
                 <nav>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
-                        <li class="breadcrumb-item "><a href="{{ route('roles') }}">Roles</a></li>
-                        <li class="breadcrumb-item active">Edit</li>
+                        <li class="breadcrumb-item "><a href="{{ route('roles.index') }}">Roles</a></li>
+                        <li class="breadcrumb-item active">Create</li>
                     </ol>
                 </nav>
             </div>
@@ -23,12 +23,31 @@
     {{-- New Clients add Section --}}
     <section class="section dashboard">
         <div class="row">
+            {{-- Error Message Section --}}
+            @if (session()->has('error'))
+                <div class="col-md-12">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ session('error') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+            @endif
+
+            {{-- Success Message Section --}}
+            @if (session()->has('success'))
+                <div class="col-md-12">
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+            @endif
 
             {{-- Clients Card --}}
             <div class="col-md-12">
                 <div class="card">
 
-                    <form class="form" action="{{ route('roles.update') }}" method="POST" enctype="multipart/form-data">
+                    <form class="form" action="{{ route('roles.store') }}" method="POST" enctype="multipart/form-data">
 
                         <div class="card-body">
                             @csrf
@@ -38,7 +57,6 @@
                                         <h2>Role Details</h2>
                                     </div>
                                     <div class="form_box_info">
-                                        <input type="hidden" name="id" value="{{ encrypt($role->id) }}">
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
                                                 <div class="form-group">
@@ -46,8 +64,7 @@
                                                             class="text-danger">*</span></label>
                                                     <input type="text" name="name" id="name"
                                                         class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}"
-                                                        placeholder="Enter Name"
-                                                        value="{{ isset($role->name) ? $role->name : '' }}">
+                                                        placeholder="Enter Name">
                                                     @if ($errors->has('name'))
                                                         <div class="invalid-feedback">
                                                             {{ $errors->first('name') }}
@@ -75,8 +92,7 @@
                                                                     <div class="accordion-body">
                                                                         <label>
                                                                             <input type="checkbox" name="permission[]"
-                                                                                value="{{ $value->id }}" class="mr-3"
-                                                                                {{ in_array($value->id, $rolePermissions) ? 'checked' : '' }}>
+                                                                                value="{{ $value->id }}" class="mr-3">
                                                                             @if ($value->name == 'roles')
                                                                                 View
                                                                             @elseif($value->name == 'roles.create')
@@ -109,8 +125,7 @@
                                                                     <div class="accordion-body">
                                                                         <label>
                                                                             <input type="checkbox" name="permission[]"
-                                                                                value="{{ $value->id }}" class="mr-3"
-                                                                                {{ in_array($value->id, $rolePermissions) ? 'checked' : '' }}>
+                                                                                value="{{ $value->id }}" class="mr-3">
                                                                             @if ($value->name == 'tags')
                                                                                 View
                                                                             @elseif($value->name == 'tags.create')
@@ -146,8 +161,7 @@
                                                                         <label>
                                                                             <input type="checkbox" name="permission[]"
                                                                                 value="{{ $value->id }}"
-                                                                                class="mr-3"
-                                                                                {{ in_array($value->id, $rolePermissions) ? 'checked' : '' }}>
+                                                                                class="mr-3">
                                                                             @if ($value->name == 'designs')
                                                                                 View
                                                                             @elseif($value->name == 'designs.create')
@@ -172,20 +186,18 @@
                                                                     data-bs-toggle="collapse"
                                                                     data-bs-target="#collapseFour" aria-expanded="false"
                                                                     aria-controls="collapseFour">
-
                                                                     Categories
                                                                 </button>
                                                             </h2>
                                                             <div id="collapseFour" class="accordion-collapse collapse"
                                                                 aria-labelledby="headingFour"
-                                                                data-bs-parent="#accordionFour">
+                                                                data-bs-parent="#accordionFour  ">
                                                                 @foreach ($permission->slice(12, 4) as $value)
                                                                     <div class="accordion-body">
                                                                         <label>
                                                                             <input type="checkbox" name="permission[]"
                                                                                 value="{{ $value->id }}"
-                                                                                class="mr-3"
-                                                                                {{ in_array($value->id, $rolePermissions) ? 'checked' : '' }}>
+                                                                                class="mr-3">
                                                                             @if ($value->name == 'categories')
                                                                                 View
                                                                             @elseif($value->name == 'categories.add')
@@ -203,43 +215,42 @@
                                                     </div>
                                                 </div>
 
-
-                                                    <div class="col-md-3">
-                                                        <div class="accordion" id="accordionFive">
-                                                            <div class="accordion-item">
-                                                                <h2 class="accordion-header" id="headingFive">
-                                                                    <button class="accordion-button collapsed" type="button"
-                                                                        data-bs-toggle="collapse"
-                                                                        data-bs-target="#collapseFive" aria-expanded="false"
-                                                                        aria-controls="collapseFive">
-                                                                        Users
-                                                                    </button>
-                                                                </h2>
-                                                                <div id="collapseFive" class="accordion-collapse collapse"
-                                                                    aria-labelledby="headingFive"
-                                                                    data-bs-parent="#accordionFive">
-                                                                    @foreach ($permission->slice(16, 4) as $value)
-                                                                        <div class="accordion-body">
-                                                                            <label>
-                                                                                <input type="checkbox" name="permission[]"
-                                                                                    value="{{ $value->id }}"
-                                                                                    class="mr-3" {{ in_array($value->id, $rolePermissions) ? 'checked' : '' }}>
-                                                                                        @if ($value->name == 'users')
-                                                                                            View
-                                                                                        @elseif($value->name == 'users.create')
-                                                                                            Add
-                                                                                        @elseif($value->name == 'users.edit')
-                                                                                            Update
-                                                                                        @else
-                                                                                            Delete
-                                                                                        @endif
-                                                                            </label>
-                                                                        </div>
-                                                                    @endforeach
-                                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="accordion" id="accordionFive">
+                                                        <div class="accordion-item">
+                                                            <h2 class="accordion-header" id="headingFive">
+                                                                <button class="accordion-button collapsed" type="button"
+                                                                    data-bs-toggle="collapse"
+                                                                    data-bs-target="#collapseFive" aria-expanded="false"
+                                                                    aria-controls="collapseFive">
+                                                                    Users
+                                                                </button>
+                                                            </h2>
+                                                            <div id="collapseFive" class="accordion-collapse collapse"
+                                                                aria-labelledby="headingFive"
+                                                                data-bs-parent="#accordionFive">
+                                                                @foreach ($permission->slice(16, 4) as $value)
+                                                                    <div class="accordion-body">
+                                                                        <label>
+                                                                            <input type="checkbox" name="permission[]"
+                                                                                value="{{ $value->id }}"
+                                                                                class="mr-3">
+                                                                                    @if ($value->name == 'users')
+                                                                                        View
+                                                                                    @elseif($value->name == 'users.create')
+                                                                                        Add
+                                                                                    @elseif($value->name == 'users.edit')
+                                                                                        Update
+                                                                                    @else
+                                                                                        Delete
+                                                                                    @endif
+                                                                        </label>
+                                                                    </div>
+                                                                @endforeach
                                                             </div>
                                                         </div>
                                                     </div>
+                                                </div>
 
                                                 <div class="col-md-3">
                                                     <div class="accordion" id="accordionSix">
@@ -260,7 +271,7 @@
                                                                         <label>
                                                                             <input type="checkbox" name="permission[]"
                                                                                 value="{{ $value->id }}"
-                                                                                class="mr-3" {{ in_array($value->id, $rolePermissions) ? 'checked' : '' }}>
+                                                                                class="mr-3">
 
                                                                                     @if ($value->name == 'sliders')
                                                                                         View
@@ -298,7 +309,7 @@
                                                                         <label>
                                                                             <input type="checkbox" name="permission[]"
                                                                                 value="{{ $value->id }}"
-                                                                                class="mr-3" {{ in_array($value->id, $rolePermissions) ? 'checked' : '' }}>
+                                                                                class="mr-3">
                                                                                     @if ($value->name == 'dealers')
                                                                                         View
                                                                                     @elseif($value->name == 'dealers.create')
@@ -316,10 +327,11 @@
                                                     </div>
                                                 </div>
 
+
                                                 <div class="col-md-3">
                                                     <div class="accordion" id="accordionEight">
                                                         <div class="accordion-item">
-                                                            <h2 class="accordion-header" id="headingSeven">
+                                                            <h2 class="accordion-header" id="heading">
                                                                 <button class="accordion-button collapsed" type="button"
                                                                     data-bs-toggle="collapse"
                                                                     data-bs-target="#collapseEight" aria-expanded="false"
@@ -328,14 +340,14 @@
                                                                 </button>
                                                             </h2>
                                                             <div id="collapseEight" class="accordion-collapse collapse"
-                                                                aria-labelledby="headingSeven"
+                                                                aria-labelledby="heading"
                                                                 data-bs-parent="#accordionEight">
                                                                 @foreach ($permission->slice(28, 4) as $value)
                                                                     <div class="accordion-body">
                                                                         <label>
                                                                             <input type="checkbox" name="permission[]"
                                                                                 value="{{ $value->id }}"
-                                                                                class="mr-3" {{ in_array($value->id, $rolePermissions) ? 'checked' : '' }}>
+                                                                                class="mr-3">
                                                                                     @if ($value->name == 'westage.discount')
                                                                                         View
                                                                                     @elseif($value->name == 'westage.discount.create')
@@ -372,7 +384,7 @@
                                                                         <label>
                                                                             <input type="checkbox" name="permission[]"
                                                                                 value="{{ $value->id }}"
-                                                                                class="mr-3" {{ in_array($value->id, $rolePermissions) ? 'checked' : '' }}>
+                                                                                class="mr-3">
                                                                                 @if($value->name == 'reports.summary.items')
                                                                                 View
                                                                                 @endif
@@ -403,7 +415,7 @@
                                                                         <label>
                                                                             <input type="checkbox" name="permission[]"
                                                                                 value="{{ $value->id }}"
-                                                                                class="mr-3" {{ in_array($value->id, $rolePermissions) ? 'checked' : '' }}>
+                                                                                class="mr-3">
                                                                                 @if($value->name == 'reports.star')
                                                                                 View
                                                                                 @endif
@@ -434,7 +446,7 @@
                                                                         <label>
                                                                             <input type="checkbox" name="permission[]"
                                                                                 value="{{ $value->id }}"
-                                                                                class="mr-3" {{ in_array($value->id, $rolePermissions) ? 'checked' : '' }}>
+                                                                                class="mr-3">
                                                                                 @if($value->name == 'reports.scheme')
                                                                                 View
                                                                                 @endif
@@ -465,7 +477,7 @@
                                                                         <label>
                                                                             <input type="checkbox" name="permission[]"
                                                                                 value="{{ $value->id }}"
-                                                                                class="mr-3" {{ in_array($value->id, $rolePermissions) ? 'checked' : '' }}>
+                                                                                class="mr-3">
                                                                                 @if($value->name == 'reports.dealer.performace')
                                                                                 View
                                                                                 @endif
@@ -496,7 +508,7 @@
                                                                         <label>
                                                                             <input type="checkbox" name="permission[]"
                                                                                 value="{{ $value->id }}"
-                                                                                class="mr-3" {{ in_array($value->id, $rolePermissions) ? 'checked' : '' }}>
+                                                                                class="mr-3">
                                                                                 @if($value->name == 'order')
                                                                                 View
                                                                                 @endif
@@ -527,7 +539,7 @@
                                                                         <label>
                                                                             <input type="checkbox" name="permission[]"
                                                                                 value="{{ $value->id }}"
-                                                                                class="mr-3" {{ in_array($value->id, $rolePermissions) ? 'checked' : '' }}>
+                                                                                class="mr-3">
                                                                                 @if($value->name == 'marketing')
                                                                                 View
                                                                                 @endif
@@ -558,7 +570,7 @@
                                                                         <label>
                                                                             <input type="checkbox" name="permission[]"
                                                                                 value="{{ $value->id }}"
-                                                                                class="mr-3" {{ in_array($value->id, $rolePermissions) ? 'checked' : '' }}>
+                                                                                class="mr-3">
                                                                                 @if($value->name == 'import.export')
                                                                                 View
                                                                                 @endif
@@ -573,9 +585,11 @@
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
+
                             <div class="card-footer text-center">
-                                <button class="btn form_button">Update</button>
+                                <button class="btn form_button">{{ __('Save') }}</button>
                             </div>
                     </form>
                 </div>
