@@ -96,16 +96,17 @@ Route::group(['prefix' => 'admin'], function ()
             Route::post('users/destroy', 'destroy')->name('users.destroy');
         });
 
-
         // Dealers
-        Route::get('dealers',[DealerController::class,'index'])->name('dealers');
-        Route::get('dealers/load',[DealerController::class,'loaddealers'])->name('dealers.load');
-        Route::get('dealers/create',[DealerController::class,'create'])->name('dealers.create');
-        Route::post('dealers/Store',[DealerController::class,'store'])->name('dealers.store');
-        Route::get('dealers/edit/{id}',[DealerController::class,'edit'])->name('dealers.edit');
-        Route::post('dealers/status',[DealerController::class,'status'])->name('dealers.status');
-        Route::post('dealers/update',[DealerController::class,'update'])->name('dealers.update');
-        Route::post('dealers/destroy',[DealerController::class,'destroy'])->name('dealers.destroy');
+        Route::controller(DealerController::class)->group(function () {
+            Route::get('dealers', 'index')->name('dealers.index');
+            Route::get('dealers/load', 'load')->name('dealers.load');
+            Route::get('dealers/create', 'create')->name('dealers.create');
+            Route::post('dealers/Store', 'store')->name('dealers.store');
+            Route::get('dealers/edit/{id}', 'edit')->name('dealers.edit');
+            Route::post('dealers/update', 'update')->name('dealers.update');
+            Route::post('dealers/status', 'status')->name('dealers.status');
+            Route::post('dealers/destroy', 'destroy')->name('dealers.destroy');
+        });
 
         // Customers
         Route::get('customers',[CustomerController::class,'index'])->name('customers');

@@ -61,7 +61,7 @@
                 <nav>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
-                        <li class="breadcrumb-item "><a href="{{ route('dealers') }}">Dealers</a></li>
+                        <li class="breadcrumb-item "><a href="{{ route('dealers.index') }}">Dealers</a></li>
                         <li class="breadcrumb-item active">Create</li>
                     </ol>
                 </nav>

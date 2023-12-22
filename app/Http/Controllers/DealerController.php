@@ -4,15 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\DealerRequest;
 use Yajra\DataTables\Facades\DataTables;
-use App\Models\{
-    City,
-    User,
-    State,
-    UserDocument,
-};
-use Illuminate\Support\Facades\Hash;
+use App\Models\{City,User,State,UserDocument};
 
 class DealerController extends Controller
 {
@@ -21,12 +16,11 @@ class DealerController extends Controller
     // Display a listing of the resource.
     public function index()
     {
-        return view('admin.dealers.dealers');
+        return view('admin.dealers.index');
     }
 
-
-    // Get AJAX listing of the resource.
-    public function loaddealers(Request $request)
+    // Load all dealers helping AJAX Datatable
+    public function load(Request $request)
     {
         if ($request->ajax()){
 
@@ -60,14 +54,12 @@ class DealerController extends Controller
         }
     }
 
-
     // Show the form for creating a new resource.
     public function create()
     {
         $states = State::get();
-        return view('admin.dealers.create_dealer',compact(['states']));
+        return view('admin.dealers.create',compact(['states']));
     }
-
 
     // Store a newly created resource in storage.
     public function store(DealerRequest $request)
@@ -103,32 +95,11 @@ class DealerController extends Controller
                     $new_document->save();
                 }
             }
-            return redirect()->route('dealers')->with('success','Dealers has been Created.');
+            return redirect()->route('dealers.index')->with('success','Dealers has been Created.');
         } catch (\Throwable $th) {
-            return redirect()->route('dealers')->with('error','Oops, Something went wrong!');
+            return redirect()->route('dealers.index')->with('error','Oops, Something went wrong!');
         }
     }
-
-
-    // Store a Users status Changes resource in storage..
-    public function status(Request $request)
-    {
-        try {
-            $dealer = User::find($request->id);
-            $dealer->status =  ($dealer->status == 1) ? 0 : 1;
-            $dealer->update();
-            return response()->json([
-                'success' => 1,
-                'message' => "Status has been Changed.",
-            ]);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'success' => 0,
-                'message' => "Oops, Something went wrong!",
-            ]);
-        }
-    }
-
 
     // Show the form for editing the specified resource.
     public function edit($id)
@@ -137,12 +108,11 @@ class DealerController extends Controller
             $dealer = User::with(['document'])->find(decrypt($id));
             $states = State::get();
             $cities = City::where('state_id',$dealer->state)->get();
-            return view('admin.dealers.edit_dealer',compact('dealer','states','cities'));
+            return view('admin.dealers.edit',compact('dealer','states','cities'));
         } catch (\Throwable $th) {
             return back()->with('error', 'Oops, Something went wrong!');
         }
     }
-
 
     // Update the specified resource in storage.
     public function update(DealerRequest $request)
@@ -186,12 +156,30 @@ class DealerController extends Controller
                 }
                 $dealer->update($input);
             }
-            return redirect()->route('dealers')->with('success','Dealers has been Updated.');
+            return redirect()->route('dealers.index')->with('success','Dealers has been Updated.');
         } catch (\Throwable $th) {
-            return redirect()->route('dealers')->with('error','Oops, Something went wrong!');
+            return redirect()->route('dealers.index')->with('error','Oops, Something went wrong!');
         }
     }
 
+    // Store a Users status Changes resource in storage..
+    public function status(Request $request)
+    {
+        try {
+            $dealer = User::find($request->id);
+            $dealer->status =  ($dealer->status == 1) ? 0 : 1;
+            $dealer->update();
+            return response()->json([
+                'success' => 1,
+                'message' => "Status has been Changed.",
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => 0,
+                'message' => "Oops, Something went wrong!",
+            ]);
+        }
+    }
 
     // Remove the specified resource from storage.
     public function destroy(Request $request)
