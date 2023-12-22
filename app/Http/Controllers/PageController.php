@@ -60,7 +60,7 @@ class PageController extends Controller
             $slug = str_replace(' ','_',strtolower($request->name));
             $input['slug'] = str_replace('&','and',$slug);
             Page::create($input);
-            return redirect()->route('pages')->with('success', 'Page has been Created.');
+            return redirect()->route('pages.index')->with('success', 'Page has been Created.');
         } catch (\Throwable $th) {
             return back()->with('error', 'Oops, Something went wrong!');
         }
@@ -91,7 +91,7 @@ class PageController extends Controller
             $slug = str_replace(' ','_',strtolower($request->name));
             $input['slug'] = str_replace('&','and',$slug);
             Page::find($request->id)->update($input);
-            return redirect()->route('pages')->with('success', 'Page has been Updated.');
+            return redirect()->route('pages.index')->with('success', 'Page has been Updated.');
         } catch (\Throwable $th) {
             return back()->with('error', 'Oops, Something went wrong!');
         }

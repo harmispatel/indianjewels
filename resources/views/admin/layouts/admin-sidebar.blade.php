@@ -123,8 +123,8 @@
 
         {{-- Pages Nav --}}
         <li class="nav-item">
-            <a class="nav-link {{ ($currentRouteName == 'pages' || $currentRouteName == 'pages.create' || $currentRouteName == 'pages.edit') ? '' : 'collapsed' }}"
-                href="{{ route('pages') }}">
+            <a class="nav-link {{ ($currentRouteName == 'pages.index' || $currentRouteName == 'pages.create' || $currentRouteName == 'pages.edit') ? '' : 'collapsed' }}"
+                href="{{ route('pages.index') }}">
                 <i class="bi bi-file-text"></i>
                 <span>Pages</span>
             </a>

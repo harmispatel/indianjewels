@@ -10,7 +10,7 @@
                 <nav>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('pages') }}">Pages</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('pages.index') }}">Pages</a></li>
                         <li class="breadcrumb-item active">Create</li>
                     </ol>
                 </nav>
