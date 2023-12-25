@@ -46,6 +46,7 @@ use App\Http\Resources\{
     CartUserListResource,
     CustomPagesResource,
     HeaderTagsResource,
+    OrderDetailsResource,
     StateCitiesResource
 };
 use App\Http\Requests\APIRequest\{
@@ -999,6 +1000,7 @@ class CustomerApiController extends Controller
 
                         $order_item = new OrderItems();
                         $order_item->user_id = $user->id;
+                        $order_item->order_id = $order->id;
                         $order_item->dealer_id = (isset($dealer->id)) ? $dealer->id : NULL;
                         $order_item->design_id =  $cart_item->designs['id'];
                         $order_item->design_name =  $cart_item->designs['name'];
@@ -1135,6 +1137,23 @@ class CustomerApiController extends Controller
             }
             $data = new CustomPagesResource($pages);
             return $this->sendApiResponse(true, 0,'Pages retrived SuccessFully..', $data);
+        } catch (\Throwable $th) {
+            return $this->sendApiResponse(false, 0,'Something went Wrong!', (object)[]);
+        }
+    }
+
+    // Function for Get Order Details
+    function orderDetails(Request $request)
+    {
+        try {
+            $order_id = $request->order_id;
+            $order_details = Order::with(['order_items'])->find($order_id);
+            if(isset($order_details->id)){
+                $data = new OrderDetailsResource($order_details);
+                return $this->sendApiResponse(true, 0,'Order Details has been Fetched.', $data);
+            }else{
+                return $this->sendApiResponse(false, 0,'Order Not Found!', (object)[]);
+            }
         } catch (\Throwable $th) {
             return $this->sendApiResponse(false, 0,'Something went Wrong!', (object)[]);
         }

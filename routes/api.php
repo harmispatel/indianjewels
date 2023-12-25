@@ -68,3 +68,5 @@ Route::get('header-tags', [CustomerApiController::class, 'getHeaderTags']);
 Route::post('apply-dealer-code',[CustomerApiController::class, 'applyDealerCode']);
 Route::post('custom-pages',[CustomerApiController::class, 'customPages']);
 Route::get('site-settings', [CustomerApiController::class, 'getSiteSettings']);
+
+Route::post('order-details', [CustomerApiController::class, 'orderDetails']);
