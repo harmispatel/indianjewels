@@ -53,7 +53,7 @@ class UserProfileRequest extends FormRequest
         throw new HttpResponseException(response()->json(
         [
             'errors' => $validator->errors(),
-            'status' => true
+            'status' => false
         ], 422));
     }
 }
