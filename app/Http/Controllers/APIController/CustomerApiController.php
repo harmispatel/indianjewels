@@ -258,6 +258,8 @@ class CustomerApiController extends Controller
             $minprice = (isset($request->min_price)) ? $request->min_price : '';
             $maxprice = (isset($request->max_price)) ? $request->max_price : '';
             $offset = (isset($request->offset) && !empty($request->offset)) ? $request->offset : 0;
+            $user_type = $request->userType;
+            $user_id = $request->userId;
 
             if(isset($parent_category) && !empty($parent_category)){
                 $sub_categories = Category::where('parent_category', $parent_category)->pluck('id')->toArray();
@@ -298,7 +300,7 @@ class CustomerApiController extends Controller
                     $designs->whereBetween('total_price_18k', [$minprice, $maxprice]);
                 }
 
-                // Sort by Filter
+                // Sort By Filter
                 if(isset($sort_by) && !empty($sort_by)){
                     if($sort_by == 'new_added'){
                         $designs = $designs->orderBy('created_at', 'DESC');
@@ -313,13 +315,21 @@ class CustomerApiController extends Controller
             }
 
             $total_records = $designs->count();
-            $designs = $designs->offset($offset)->limit(20)->get();
+
+            if($user_type == 1){
+                $designs = $designs->with(['dealer_collections' => function ($query) use ($user_id) {
+                    $query->where('user_id', $user_id);
+                }])->offset($offset)->limit(20)->get()->sortBy(function($design) {
+                    return optional($design->dealer_collections)->first()->design_id ?? PHP_INT_MAX;
+                })->values();
+            }else{
+                $designs = $designs->offset($offset)->limit(20)->get();
+            }
 
             $datas = new DesignsResource($designs, $sub_categories, $total_records);
             return $this->sendApiResponse(true, 1,'Designs has been Loaded.', $datas);
 
         } catch (\Throwable $th) {
-            dd($th);
             return $this->sendApiResponse(false, 0,'Failed to Load Designs!', (object)[]);
         }
     }
