@@ -11,7 +11,7 @@ class DesignsResource extends JsonResource
     protected $subcategories;
     protected $total_records;
 
-    public function __construct($resource, $subcategories = null, $total_records)
+    public function __construct($resource, $subcategories = null, $total_records = 0)
     {
         parent::__construct($resource);
         $this->subcategories = $subcategories;

@@ -339,23 +339,19 @@ class CustomerApiController extends Controller
     {
         try {
             $id = $request->categoryId;
-            $sub_category_ids = Category::where('parent_category',$id)->pluck('id');
-            $designs = Design::whereIn('category_id',$sub_category_ids)->with('categories')->get();
-            // $designs = Design::where('category_id',$id)->with('categories')->get();
-            // $category = Category::where('id',$id)->first();
-            $data = new DesignsResource($designs);
-            return response()->json(
-            [
+            $offset = (isset($request->offset)) ? $request->offset : 0;
+            $sub_categories = Category::where('parent_category',$id)->pluck('id');
+            $total_designs =  Design::whereIn('category_id',$sub_categories)->count();
+            $designs = Design::whereIn('category_id',$sub_categories)->with('categories')->offset($offset)->limit(20)->get();
+            $data = new DesignsResource($designs , null, $total_designs);
+            return response()->json([
                 'success' => true,
                 'message' => 'Related Design Loaded SuccessFully',
-                // 'category_name' => $category->name,
                 'category_name' => '',
                 'data'    => $data,
             ], Response::HTTP_OK);
         } catch (\Throwable $th) {
-
             return $this->sendApiResponse(false, 0,'Failed to Load Designs!', (object)[]);
-
         }
 
     }
