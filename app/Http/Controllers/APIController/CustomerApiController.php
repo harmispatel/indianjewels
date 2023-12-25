@@ -27,6 +27,7 @@ use App\Models\{
     UserWishlist,
     DealerCollection,
     OrderDealerReport,
+    OrderItems,
 };
 use App\Http\Resources\{
     BannerResource,
@@ -918,7 +919,11 @@ class CustomerApiController extends Controller
             $dealer_discount_type = (isset($request->dealer_discount_type)) ? $request->dealer_discount_type : '';
             $dealer_discount_value = (isset($request->dealer_discount_value)) ? $request->dealer_discount_value : '';
             $cart_items = (isset($request->cart_items)) ? $request->cart_items : [];
-            $gold_price = (isset($request->gold_price)) ? $request->gold_price : [];
+            $sub_total = (isset($request->sub_total)) ? $request->sub_total : 0;
+            $charges = (isset($request->charges)) ? $request->charges : 0;
+            $total = (isset($request->total)) ? $request->total : 0;
+            $gold_price = 0;
+
             $gold_color_arr = [
                 'yellow_gold' => 'Yellow Gold',
                 'rose_gold' => 'Rose Gold',
@@ -930,6 +935,24 @@ class CustomerApiController extends Controller
                 '18k' => 'gweight2',
                 '14k' => 'gweight1',
             ];
+            $net_weight_keys = [
+                '22k' => 'nweight4',
+                '20k' => 'nweight3',
+                '18k' => 'nweight2',
+                '14k' => 'nweight1',
+            ];
+            $price_keys = [
+                '22k' => 'gold_price_22k',
+                '20k' => 'gold_price_20k',
+                '18k' => 'gold_price_18k',
+                '14k' => 'gold_price_14k',
+            ];
+            $total_price_keys = [
+                '22k' => 'total_price_22k',
+                '20k' => 'total_price_20k',
+                '18k' => 'total_price_18k',
+                '14k' => 'total_price_14k',
+            ];
 
             $user = User::find($user_id);
             $dealer = User::where('dealer_code', $dealer_code)->first();
@@ -940,6 +963,7 @@ class CustomerApiController extends Controller
                 $order = new Order();
                 $order->user_id = $user->id;
                 $order->dealer_id = (isset($dealer->id)) ? $dealer->id : NULL;
+                $order->order_status = 'pending';
                 $order->name = $user->name;
                 $order->email = $user->email;
                 $order->phone = $user->phone;
@@ -950,46 +974,71 @@ class CustomerApiController extends Controller
                 $order->dealer_code = $dealer_code;
                 $order->dealer_discount_type = $dealer_discount_type;
                 $order->dealer_discount_value = $dealer_discount_value;
-                $order->gold_price = json_encode($gold_price);
-                $order->sub_total = $request->sub_total;
-                $order->total = $request->total;
-                // $order->save();
+                $order->gold_price = $gold_price;
+                $order->sub_total = $sub_total;
+                $order->charges = $charges;
+                $order->total = $total;
+                $order->save();
 
-                // if($order->id)
-                // {
-                        foreach($cart_items as $cart_item)
-                        {
-                            $cart_item = CartUser::with(['designs'])->where('id',$cart_item)->first();
-                            $item_quantity = $cart_item->quantity;
-                            $gold_type = $cart_item->gold_type;
-                            $gold_color = $gold_color_arr[$cart_item->gold_color];
-                            $gross_weight = $cart_item->designs[$gross_weight_keys[$gold_type]];
-                            $less_gems_stone = $cart_item->designs['less_gems_stone'];
-                            $less_cz_stone  = $cart_item->designs['less_cz_stone '];
+                if($order->id) {
+                    $product_ids = [];
+                    foreach($cart_items as $cart_item){
+                        $cart_item = CartUser::with(['designs'])->where('id',$cart_item)->first();
+                        $item_quantity = $cart_item->quantity;
+                        $gold_type = $cart_item->gold_type;
+                        $gold_color = $gold_color_arr[$cart_item->gold_color];
+                        $gross_weight = $cart_item->designs[$gross_weight_keys[$gold_type]];
+                        $net_weight = $cart_item->designs[$net_weight_keys[$gold_type]];
+                        $less_gems_stone = $cart_item->designs['less_gems_stone'];
+                        $less_cz_stone  = $cart_item->designs['less_cz_stone'];
+                        $percentage  = $cart_item->designs['percentage'];
+                        $item_sub_total = (isset($cart_item->designs[$price_keys[$gold_type]])) ? $cart_item->designs[$price_keys[$gold_type]] : 0;
+                        $item_sub_total = $item_sub_total * $item_quantity;
+                        $item_total = (isset($cart_item->designs[$total_price_keys[$gold_type]])) ? $cart_item->designs[$total_price_keys[$gold_type]] : 0;
+                        $item_total = $item_total * $item_quantity;
 
-                            // echo '<pre>';
-                            // print_r($gold_color);
-                            // exit();
-                            echo '<pre>';
-                            print_r($cart_item->toArray());
-                            exit();
-                        }
-                // }
+                        $order_item = new OrderItems();
+                        $order_item->user_id = $user->id;
+                        $order_item->dealer_id = (isset($dealer->id)) ? $dealer->id : NULL;
+                        $order_item->design_id =  $cart_item->designs['id'];
+                        $order_item->design_name =  $cart_item->designs['name'];
+                        $order_item->quantity =  $item_quantity;
+                        $order_item->gold_type =  $gold_type;
+                        $order_item->gold_color =  $gold_color;
+                        $order_item->gross_weight =  $gross_weight;
+                        $order_item->less_gems_stone =  $less_gems_stone;
+                        $order_item->less_cz_stone =  $less_cz_stone;
+                        $order_item->net_weight =  $net_weight;
+                        $order_item->percentage =  $percentage;
+                        $order_item->less_gems_stone_price =  (isset($cart_item->designs['gemstone_price'])) ? $cart_item->designs['gemstone_price'] : 0;
+                        $order_item->less_cz_stone_price =  (isset($cart_item->designs['cz_stone_price'])) ? $cart_item->designs['cz_stone_price'] : 0;
+                        $order_item->item_sub_total = $item_sub_total;
+                        $order_item->item_total = $item_total;
+                        $order_item->save();
 
+                        $product_ids[] = $cart_item->designs['id'];
+                        $gold_price =  (isset($cart_item->designs['gold_price_24k'])) ? $cart_item->designs['gold_price_24k'] : 0;
+                    }
+
+                    // Update Order
+                    $update_order = Order::find($order->id);
+                    $update_order->gold_price = $gold_price;
+                    $update_order->product_ids = $product_ids;
+                    $update_order->update();
+
+                    // Delete Items from Cart
+                    CartUser::whereIn('id', $cart_items)->delete();
+                }
+
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Order has been Placed SuccessFully.',
+                    'data'    => $order->id,
+                ], Response::HTTP_OK);
             }else{
-                echo '<pre>';
-                print_r($request->all());
-                exit();
                 return $this->sendApiResponse(false, 0,'Failed to Purchase Order!', (object)[]);
             }
-
-            echo '<pre>';
-            print_r($request->all());
-            exit();
-        }
-        catch (\Throwable $th)
-        {
-            dd($th);
+        }catch (\Throwable $th){
             return $this->sendApiResponse(false, 0,'Failed to Purchase Order!', (object)[]);
         }
     }

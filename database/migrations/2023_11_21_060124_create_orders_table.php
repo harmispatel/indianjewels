@@ -17,6 +17,7 @@ class CreateOrdersTable extends Migration
             $table->id();
             $table->integer('user_id');
             $table->integer('dealer_id')->nullable();
+            $table->string('order_status')->nullable();
             $table->string('name',50)->nullable();
             $table->string('email')->nullable();
             $table->string('phone',50)->nullable();
@@ -30,6 +31,7 @@ class CreateOrdersTable extends Migration
             $table->json('product_ids')->nullable();
             $table->json('gold_price')->nullable();
             $table->double('sub_total')->default(0.00);
+            $table->double('charges')->default(0.00);
             $table->double('total')->default(0.00);
             $table->timestamps();
         });
