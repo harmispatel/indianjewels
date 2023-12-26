@@ -47,6 +47,7 @@ use App\Http\Resources\{
     CustomPagesResource,
     HeaderTagsResource,
     OrderDetailsResource,
+    OrdersResource,
     StateCitiesResource
 };
 use App\Http\Requests\APIRequest\{
@@ -1146,12 +1147,48 @@ class CustomerApiController extends Controller
         try {
             $order_id = $request->order_id;
             $user_id = $request->user_id;
-            $order_details = Order::with(['order_items'])->where('id', $order_id)->where('user_id', $user_id)->first();
-            if(isset($order_details->id)){
-                $data = new OrderDetailsResource($order_details);
-                return $this->sendApiResponse(true, 0,'Order Details has been Fetched.', $data);
+            $user_type = $request->user_type;
+            $user = User::where('id', $user_id)->where('user_type', $user_type)->first();
+
+            if(isset($user->id)){
+                if($user->user_type == 1){
+                    $order_details = Order::with(['order_items'])->where('id', $order_id)->where('dealer_id', $user_id)->first();
+                }else{
+                    $order_details = Order::with(['order_items'])->where('id', $order_id)->where('user_id', $user_id)->first();
+                }
+
+                if(isset($order_details->id)){
+                    $data = new OrderDetailsResource($order_details);
+                    return $this->sendApiResponse(true, 0,'Order Details has been Fetched.', $data);
+                }else{
+                    return $this->sendApiResponse(false, 0,'Order Not Found!', (object)[]);
+                }
+            }
+            else{
+                return $this->sendApiResponse(false, 0,'User Not Found!', (object)[]);
+            }
+        } catch (\Throwable $th) {
+            return $this->sendApiResponse(false, 0,'Something went Wrong!', (object)[]);
+        }
+    }
+
+    // Function for Get Customer & Dealers Orders
+    function myOrders(Request $request)
+    {
+        try {
+            $user_type = $request->user_type;
+            $user_id = $request->user_id;
+            $user = User::where('id', $user_id)->where('user_type', $user_type)->first();
+            if(isset($user->id)){
+                if($user->user_type == 1){
+                    $orders = Order::where('dealer_id', $user->id)->orderBy('created_at', 'DESC')->get();
+                }else{
+                    $orders = Order::where('user_id', $user->id)->orderBy('created_at', 'DESC')->get();
+                }
+                $data = new OrdersResource($orders);
+                return $this->sendApiResponse(true, 0,'Orders has been Fetched.', $data);
             }else{
-                return $this->sendApiResponse(false, 0,'Order Not Found!', (object)[]);
+                return $this->sendApiResponse(false, 0,'User Not Found!', (object)[]);
             }
         } catch (\Throwable $th) {
             return $this->sendApiResponse(false, 0,'Something went Wrong!', (object)[]);
