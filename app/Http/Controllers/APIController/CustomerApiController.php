@@ -943,10 +943,10 @@ class CustomerApiController extends Controller
                 '14k' => 'nweight1',
             ];
             $price_keys = [
-                '22k' => 'gold_price_22k',
-                '20k' => 'gold_price_20k',
-                '18k' => 'gold_price_18k',
-                '14k' => 'gold_price_14k',
+                '22k' => 'price_22k',
+                '20k' => 'price_20k',
+                '18k' => 'price_18k',
+                '14k' => 'price_14k',
             ];
             $total_price_keys = [
                 '22k' => 'total_price_22k',
@@ -994,9 +994,7 @@ class CustomerApiController extends Controller
                         $less_cz_stone  = $cart_item->designs['less_cz_stone'];
                         $percentage  = $cart_item->designs['percentage'];
                         $item_sub_total = (isset($cart_item->designs[$price_keys[$gold_type]])) ? $cart_item->designs[$price_keys[$gold_type]] : 0;
-                        $item_sub_total = $item_sub_total * $item_quantity;
-                        $item_total = (isset($cart_item->designs[$total_price_keys[$gold_type]])) ? $cart_item->designs[$total_price_keys[$gold_type]] : 0;
-                        $item_total = $item_total * $item_quantity;
+                        $item_total = $item_sub_total * $item_quantity;
 
                         $order_item = new OrderItems();
                         $order_item->user_id = $user->id;
@@ -1147,7 +1145,8 @@ class CustomerApiController extends Controller
     {
         try {
             $order_id = $request->order_id;
-            $order_details = Order::with(['order_items'])->find($order_id);
+            $user_id = $request->user_id;
+            $order_details = Order::with(['order_items'])->where('id', $order_id)->where('user_id', $user_id)->first();
             if(isset($order_details->id)){
                 $data = new OrderDetailsResource($order_details);
                 return $this->sendApiResponse(true, 0,'Order Details has been Fetched.', $data);
