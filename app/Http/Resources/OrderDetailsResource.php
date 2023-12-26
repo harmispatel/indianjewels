@@ -23,8 +23,8 @@ class OrderDetailsResource extends JsonResource
         $order_details['customer_email'] = (isset($order['email'])) ? $order['email'] : '';
         $order_details['customer_phone'] = (isset($order['phone'])) ? $order['phone'] : '';
         $order_details['address'] = (isset($order['address'])) ? $order['address'] : '';
-        $order_details['city'] = (isset($order['city'])) ? $order['city'] : '';
-        $order_details['state'] = (isset($order['state'])) ? $order['state'] : '';
+        $order_details['city'] = (isset($order->City['name'])) ? $order->City['name'] : '';
+        $order_details['state'] = (isset($order->State['name'])) ? $order->State['name'] : '';
         $order_details['pincode'] = (isset($order['pincode'])) ? $order['pincode'] : '';
         $order_details['dealer_code'] = (isset($order['dealer_code'])) ? $order['dealer_code'] : '';
         $order_details['dealer_discount_type'] = (isset($order['dealer_discount_type'])) ? $order['dealer_discount_type'] : '';
@@ -33,7 +33,8 @@ class OrderDetailsResource extends JsonResource
         $order_details['sub_total'] = (isset($order['sub_total'])) ? $order['sub_total'] : '';
         $order_details['charges'] = (isset($order['charges'])) ? $order['charges'] : '';
         $order_details['total'] = (isset($order['total'])) ? $order['total'] : '';
-        $order_details['order_date'] = (isset($order['created_at'])) ? date('d-m-Y h:i:s a', strtotime($order['created_at'])) : '';
+        $order_details['order_date'] = (isset($order['created_at'])) ? date('d-m-Y', strtotime($order['created_at'])) : '';
+        $order_details['order_time'] = (isset($order['created_at'])) ? date('h:i:s a', strtotime($order['created_at'])) : '';
 
         $order_items = [];
         if(isset($order['order_items']) && count($order['order_items']) > 0){

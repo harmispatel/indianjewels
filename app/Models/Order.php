@@ -18,4 +18,14 @@ class Order extends Model
     {
         return $this->hasMany(OrderItems::class, 'order_id', 'id');
     }
+
+    public function City()
+    {
+        return $this->hasOne(City::class, 'id', 'city');
+    }
+
+    public function State()
+    {
+        return $this->hasOne(State::class, 'id', 'state');
+    }
 }
