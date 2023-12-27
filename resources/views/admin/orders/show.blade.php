@@ -26,104 +26,150 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-12 text-end">
-                                <a href="" class="mb-2 btn btn-sm btn-info text-white"><strong>ACCEPT</strong> <i class="fa-solid fa-check-circle"></i></a>
-                                <a href="" class="ms-1 mb-2 btn btn-sm btn-primary"><strong>PROCESS</strong> <i class="fa-solid fa-check-circle"></i></a>
-                                <a href="" class="ms-1 mb-2 btn btn-sm btn-success"><strong>COMPLETE</strong> <i class="fa-solid fa-check-circle"></i></a>
+
+                                @if(isset($order->order_status) && $order->order_status == 'pending')
+                                    <a onclick="processOrder('accepted', {{ $order->id }})" class="mb-2 btn btn-sm btn-info text-white"><strong>ACCEPT</strong> <i class="fa-solid fa-check-circle"></i></a>
+                                @endif
+
+                                @if(isset($order->order_status) && ($order->order_status == 'pending' || $order->order_status == 'accepted'))
+                                    <a onclick="processOrder('processing', {{ $order->id }})" class="ms-1 mb-2 btn btn-sm btn-primary"><strong>PROCESS</strong> <i class="fa-solid fa-check-circle"></i></a>
+                                @endif
+
+                                @if(isset($order->order_status) && ($order->order_status == 'pending' || $order->order_status == 'accepted' || $order->order_status == 'processing'))
+                                    <a onclick="processOrder('completed', {{ $order->id }})" class="ms-1 mb-2 btn btn-sm btn-success"><strong>COMPLETE</strong> <i class="fa-solid fa-check-circle"></i></a>
+                                @endif
                             </div>
                         </div>
-                        <div class="row mt-2">
-                            <div class="col-md-4 mb-3">
-                                <div class="card mb-0">
+                        <div class="row mt-3">
+                            <div class="col-md-4 mt-3">
+                                <div class="card h-100 mb-0">
                                     <div class="card-body">
-                                        <div class="table-responsive">
-                                            <table class="table">
-                                                <tbody>
-                                                    <tr>
-                                                        <th scope="col">Order No. : </th>
-                                                        <td>{{ $order->id }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th scope="col">Order Status : </th>
-                                                        <td>
-                                                            @if($order->order_status == 'pending')
-                                                                <span class="badge bg-warning" style="font-size: 15px;">Pending.</span>
-                                                            @elseif($order->order_status == 'accepted')
-                                                                <span class="badge bg-info" style="font-size: 15px;">Accepted.</span>
-                                                            @elseif($order->order_status == 'processing')
-                                                                <span class="badge bg-primary" style="font-size: 15px;">Processing.</span>
-                                                            @elseif($order->order_status == 'completed')
-                                                                <span class="badge bg-success" style="font-size: 15px;">Completed.</span>
-                                                            @endif
+                                        <table class="table">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <div style="width: 47%"><strong>Order No. : </strong></div>
+                                                            <div style="width: 53%">{{ $order->id }}</div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <div style="width: 47%"><strong>Order Status : </strong></div>
+                                                            <div style="width: 53%">
+                                                                @if($order->order_status == 'pending')
+                                                                    <span class="badge bg-warning" style="font-size: 15px;">Pending.</span>
+                                                                @elseif($order->order_status == 'accepted')
+                                                                    <span class="badge bg-info" style="font-size: 15px;">Accepted.</span>
+                                                                @elseif($order->order_status == 'processing')
+                                                                    <span class="badge bg-primary" style="font-size: 15px;">Processing.</span>
+                                                                @elseif($order->order_status == 'completed')
+                                                                    <span class="badge bg-success" style="font-size: 15px;">Completed.</span>
+                                                                @endif
+                                                            </div>
+                                                        </div>
                                                         </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th scope="col">Order Date : </th>
-                                                        <td>{{ date('d-M-Y', strtotime($order->created_at)) }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th scope="col">Order Time : </th>
-                                                        <td>{{ date('h:i:s A', strtotime($order->created_at)) }}</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                                </tr>
+                                                <tr>
+                                                        <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <div style="width: 47%"><strong>Order Date : </strong></div>
+                                                            <div style="width: 53%">{{ date('d-M-Y', strtotime($order->created_at)) }}</div>
+                                                        </div>
+                                                        </td>
+                                                </tr>
+                                                <tr>
+                                                        <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <div style="width: 47%"><strong>Order Time : </strong></div>
+                                                            <div style="width: 53%">{{ date('h:i:s A', strtotime($order->created_at)) }}</div>
+                                                        </div>
+                                                        </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4 mb-3">
-                                <div class="card mb-0">
+                            <div class="col-md-4 mt-3">
+                                <div class="card h-100 mb-0">
                                     <div class="card-body">
-                                        <div class="table-responsive">
-                                            <table class="table">
-                                                <tbody>
-                                                    <tr>
-                                                        <th scope="col">Customer : </th>
-                                                        <td>{{ $order->name }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th scope="col">Email : </th>
-                                                        <td>{{ $order->email }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th scope="col">Phone : </th>
-                                                        <td>{{ $order->phone }}</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                        <table class="table">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <div style="width: 47%"><strong>Customer : </strong></div>
+                                                            <div style="width: 53%">{{ $order->name }}</div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <div style="width: 47%"><strong>Email : </strong></div>
+                                                            <div style="width: 53%">{{ $order->email }}</div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <div style="width: 47%"><strong>Phone : </strong></div>
+                                                            <div style="width: 53%">{{ $order->phone }}</div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <div class="card mb-0">
+                            <div class="col-md-4 mt-3">
+                                <div class="card h-100">
                                     <div class="card-body">
-                                        <div class="table-responsive">
-                                            <table class="table">
-                                                <tbody>
-                                                    <tr>
-                                                        <th width="80%" scope="col">Address : </th>
-                                                        <td>{{ $order->address }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th width="80%" scope="col">City : </th>
-                                                        <td>{{ (isset($order->City['name'])) ? $order->City['name'] : '' }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th width="80%" scope="col">State : </th>
-                                                        <td>{{ (isset($order->State['name'])) ? $order->State['name'] : '' }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th width="80%" scope="col">Pincode : </th>
-                                                        <td>{{ $order->pincode }}</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                        <table class="table">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <div style="width: 47%"><strong>Address : </strong></div>
+                                                            <div style="width: 53%">{{ $order->address }}</div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <div style="width: 47%"><strong>City : </strong></div>
+                                                            <div style="width: 53%">{{ (isset($order->City['name'])) ? $order->City['name'] : '' }}</div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <div style="width: 47%"><strong>State : </strong></div>
+                                                            <div style="width: 53%">{{ (isset($order->State['name'])) ? $order->State['name'] : '' }}</div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <div style="width: 47%"><strong>Pincode : </strong></div>
+                                                            <div style="width: 53%">{{ $order->pincode }}</div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row mt-2">
+                        <div class="row mt-3">
                             <div class="col-md-12">
                                 <div class="card mb-0">
                                     <div class="card-body">
@@ -151,9 +197,9 @@
                                                             <tr>
                                                                 <td>
                                                                     @if(isset($order_item->design['image']) && !empty($order_item->design['image']) && file_exists('public/images/uploads/item_images/'.$design_code.'/'.$order_item->design['image']))
-                                                                        <img src="{{ asset('public/images/uploads/item_images/'.$design_code.'/'.$order_item->design['image']) }}" style="width: 65px; height: 65px; border-radius: 5px; box-shadow: 2px 2px 3px #ccc" />
+                                                                        <img src="{{ asset('public/images/uploads/item_images/'.$design_code.'/'.$order_item->design['image']) }}" style="width: 65px; height: 65px; border-radius: 5px; box-shadow: 3px 3px 3px #ccc; border: 2px solid #575757;" />
                                                                     @else
-                                                                        <img src="{{ asset('public/images/default_images/not-found/no_img1.jpg') }}" style="width: 65px; height: 65px; border-radius: 5px; box-shadow: 2px 2px 3px #ccc" />
+                                                                        <img src="{{ asset('public/images/default_images/not-found/no_img1.jpg') }}" style="width: 65px; height: 65px; border-radius: 5px; box-shadow: 3px 3px 3px #ccc; border: 2px solid #575757;" />
                                                                     @endif
                                                                 </td>
                                                                 <td>{{ $order_item['design_name'] }}</td>
@@ -174,6 +220,42 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row mt-3 justify-content-end">
+                            <div class="col-md-4">
+                                <div class="card mb-0">
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <tbody>
+                                                    <tr>
+                                                        <th scope="col">Metal Price : </th>
+                                                        <td class="text-end">₹ {{ $order->sub_total  }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="col">Charges : </th>
+                                                        <td class="text-end">₹ {{ $order->charges  }}</td>
+                                                    </tr>
+                                                    @if(isset($order->dealer_code) && !empty($order->dealer_code) && isset($order->dealer_discount_type) && !empty($order->dealer_discount_type) && isset($order->dealer_discount_value) && !empty($order->dealer_discount_value))
+                                                        <tr class="text-success">
+                                                            <th>Dealer Discount <br> <span>({{ $order->dealer_code }}) {{ ($order->dealer_discount_type == 'percentage') ? '('.$order->dealer_discount_value.'%)' : '' }}</span></th>
+                                                            @if($order->dealer_discount_type == 'percentage')
+                                                                <td class="text-end">- ₹ {{ ($order->charges * $order->dealer_discount_value) / 100 }}</td>
+                                                            @else
+                                                                <td class="text-end">- ₹ {{ $order->dealer_discount_value }}</td>
+                                                            @endif
+                                                        </tr>
+                                                    @endif
+                                                    <tr>
+                                                        <th scope="col">Total (Approx.) : </th>
+                                                        <td class="text-end"><strong>₹ {{ $order->total }}</strong></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -185,6 +267,29 @@
 @section('page-js')
 <script type="text/javascript">
 
+    // Process Order
+    function processOrder(status, id){
+        $.ajax({
+            type: "POST",
+            url: "{{ route('orders.process') }}",
+            data: {
+                "_token": "{{ csrf_token() }}",
+                "status": status,
+                'id': id,
+            },
+            dataType: "JSON",
+            success: function (response) {
+                if(response.success == true){
+                    toastr.success(response.message);
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1200);
+                }else{
+                    toastr.error(response.message);
+                }
+            }
+        });
+    }
 
 </script>
 @endsection

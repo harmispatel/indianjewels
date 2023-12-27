@@ -40,8 +40,18 @@
         toastr.error("{{ session('error') }}");
     @endif
 
-    @if($route == 'designs.create' || $route == 'designs.edit' || $route == 'dealers.create' || $route == 'dealers.edit' || $route == 'sliders.add-slider' || $route == 'sliders.edit-slider' || $route == 'categories.add' || $route == 'categories.edit' || $route == 'users.create' || $route == 'users.edit' || $route == 'roles.create' || $route == 'roles.edit' || $route == 'orders.show')
-        $('body').addClass('toggle-sidebar');
-    @endif
+    var isDesktop = window.innerWidth > 768; // You can adjust this value as per your requirements
+    if (isDesktop) {
+        var routes = [
+            'designs.create', 'designs.edit', 'dealers.create', 'dealers.edit',
+            'sliders.add-slider', 'sliders.edit-slider', 'categories.add',
+            'categories.edit', 'users.create', 'users.edit', 'roles.create',
+            'roles.edit', 'orders.show'
+        ];
+        var currentRoute = '{{ $route }}';
+        if ($.inArray(currentRoute, routes) !== -1) {
+            $('body').addClass('toggle-sidebar');
+        }
+    }
 
 </script>

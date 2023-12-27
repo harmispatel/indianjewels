@@ -48,7 +48,7 @@
 
         {{-- Orders --}}
         <li class="nav-item">
-            <a class="nav-link {{ $currentRouteName == 'orders.index' ? '' : 'collapsed' }}" href="{{ route('orders.index') }}">
+            <a class="nav-link {{ ($currentRouteName == 'orders.index' || $currentRouteName == 'orders.show') ? '' : 'collapsed' }}" href="{{ route('orders.index') }}">
                 <i class="fa-solid fa-cart-shopping"></i><span>Orders</span>
             </a>
         </li>

@@ -148,4 +148,44 @@ class OrderController extends Controller
     {
         //
     }
+
+    // Processing order by specific status
+    public function orderProcess(Request $request)
+    {
+        try {
+            $order_id = $request->id;
+            $order_status = $request->status;
+            $order = Order::find($order_id);
+
+            if(isset($order->id)){
+
+                $order->order_status = $order_status;
+                $order->update();
+
+                $message = "";
+                if($order_status == 'accepted'){
+                    $message = "Order has been Accepted.";
+                }elseif($order_status == 'processing'){
+                    $message = "Order has been Send to Processing.";
+                }elseif($order_status == 'completed'){
+                    $message = "Order has been Completed.";
+                }
+
+                return response()->json([
+                    'success' => true,
+                    'message' => $message,
+                ]);
+            }else{
+                return response()->json([
+                    'success' => false,
+                    'message' => '404, Order Not Found!',
+                ]);
+            }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Oops, Something went wrong!',
+            ]);
+        }
+    }
 }

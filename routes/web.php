@@ -1,30 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Artisan;
-use App\Http\Controllers\{
-    AuthController,
-    DashboardController,
-    CategoryController,
-    TagController,
-    DesignController,
-    SliderController,
-    RoleController,
-    AdminController,
-    AdminSettingsController,
-    BottomBannerController,
-    CommonController,
-    CustomerController,
-    DealerController,
-    WestageDiscountController ,
-    OrderController,
-    ReportController,
-    ImportExportController,
-    MiddleBannerController,
-    PageController,
-    TopBannerController
-};
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\{Auth, Route, Artisan};
+use App\Http\Controllers\{AuthController, DashboardController, CategoryController, TagController, DesignController, RoleController, AdminController, AdminSettingsController, BottomBannerController, CommonController, CustomerController, DealerController , OrderController, ReportController, ImportExportController, MiddleBannerController, PageController, TopBannerController};
 
 /*
 |--------------------------------------------------------------------------
@@ -209,6 +186,7 @@ Route::group(['prefix' => 'admin'], function ()
             Route::get('orders', 'index')->name('orders.index');
             Route::get('orders/load', 'load')->name('orders.load');
             Route::get('orders/show/{id}', 'show')->name('orders.show');
+            Route::post('orders/process', 'orderProcess')->name('orders.process');
         });
 
         // Import/Export
