@@ -93,15 +93,15 @@
                     <div class="col-md-3">
                         <div class="card info-card sales-card">
                             <div class="card-body">
-                                <h5 class="card-title" style="padding: 5px; margin: 5px;">Orders</h5>
+                                <h5 class="card-title" style="padding: 5px; margin: 5px;"><a href="{{ route('orders.index') }}">Orders</a></h5>
                                 <div class="d-flex align-items-center">
                                     <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                         <i class="fa-solid fa-cart-shopping"></i>
                                     </div>
                                     <div class="ps-3">
-                                        <h6>{{ $active_orders + $inactive_orders }} </h6>
-                                        <span class="text-success small pt-1 fw-bold"><span class="text-muted small pt-2 ps-1">Active</span> ({{ $active_orders }})</span> <br>
-                                        <span class="text-danger small pt-1 fw-bold"><span class="text-muted small pt-2 ps-1">Inactive</span> ({{ $inactive_orders }})</span>
+                                        <h6>{{ $pending_orders + $completed_orders }} </h6>
+                                        <span class="text-success small pt-1 fw-bold"><span class="text-muted small pt-2 ps-1">Completed</span> ({{ $completed_orders }})</span>
+                                        <span class="text-danger small pt-1 fw-bold"><span class="text-muted small pt-2 ps-1">Pending</span> ({{ $pending_orders }})</span> <br>
                                     </div>
                                 </div>
                             </div>
@@ -160,6 +160,62 @@
                     </div>
                 </div>
             </div>
+            <div class="col-md-12 mt-2">
+                <div class="col-12">
+                    <div class="card recent-sales">
+                        <div class="card-body">
+                            <h5 class="card-title">Pending Orders</h5>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead class="text-uppercase">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Customer</th>
+                                            <th>Phone</th>
+                                            <th>Dealer</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if(isset($pending_orders_datas) && count($pending_orders_datas) > 0)
+                                            @foreach ($pending_orders_datas as $order)
+                                                <tr>
+                                                    <td>{{ $order->id }}</td>
+                                                    <td>{{ $order->name }}</td>
+                                                    <td>{{ $order->phone }}</td>
+                                                    <td>{{ (isset($order->dealer['name'])) ? $order->dealer['name'] : '-' }}</td>
+                                                    <td>
+                                                        @if($order['order_status'] == 'pending')
+                                                            <span style="font-size: 13px;" class="badge bg-warning">Pending.</span>
+                                                        @elseif($order['order_status'] == 'accepted')
+                                                            <span style="font-size: 13px;" class="badge bg-info">Accepted.</span>
+                                                        @elseif($order['order_status'] == 'processing')
+                                                            <span style="font-size: 13px;" class="badge bg-primary">Processing.</span>
+                                                        @elseif($order['order_status'] == 'completed')
+                                                            <span style="font-size: 13px;" class="badge bg-success">Completed.</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        <a onclick="processOrder('accepted', {{ $order->id }})" data-bs-toggle="tooltip" data-bs-placement="top" title="Accept Order" class="btn btn-sm btn-info text-white"><i class="fa-solid fa-check-circle"></i></a>
+                                                        <a href="{{ route('orders.show',encrypt($order->id)) }}" data-bs-toggle="tooltip" data-bs-placement="top" title="View Order" class="btn btn-sm custom-btn"><i class="fa-solid fa-eye"></i></a>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        @else
+                                            <tr class="text-center">
+                                                <td colspan="6">
+                                                    <h5>Records not found!</h5>
+                                                </td>
+                                            </tr>
+                                        @endif
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -167,8 +223,31 @@
 
 {{-- Custom JS --}}
 @section('page-js')
+<script type="text/javascript">
 
-    <script type="text/javascript">
-    </script>
+    // Process Order
+    function processOrder(status, id){
+        $.ajax({
+            type: "POST",
+            url: "{{ route('orders.process') }}",
+            data: {
+                "_token": "{{ csrf_token() }}",
+                "status": status,
+                'id': id,
+            },
+            dataType: "JSON",
+            success: function (response) {
+                if(response.success == true){
+                    toastr.success(response.message);
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1200);
+                }else{
+                    toastr.error(response.message);
+                }
+            }
+        });
+    }
 
+</script>
 @endsection

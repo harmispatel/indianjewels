@@ -34,8 +34,8 @@ class OrderController extends Controller
             $orders = Order::query();
 
             if(!empty($search)){
-                // $orders->where('name', 'LIKE', "%{$search}%")->orWhere('code', 'LIKE', "%{$search}%");
-                // $totalData = $totalData->where('name', 'LIKE', "%{$search}%")->orWhere('code', 'LIKE', "%{$search}%");
+                $orders->where('id', 'LIKE', "%{$search}%")->orWhere('name', 'LIKE', "%{$search}%")->orWhere('phone', 'LIKE', "%{$search}%")->orWhere('order_status', 'LIKE', "%{$search}%");
+                $totalData = $totalData->where('id', 'LIKE', "%{$search}%")->orWhere('name', 'LIKE', "%{$search}%")->orWhere('phone', 'LIKE', "%{$search}%")->orWhere('order_status', 'LIKE', "%{$search}%");
             }
 
             $totalData = $totalData->count();
@@ -67,7 +67,7 @@ class OrderController extends Controller
                     $item['order_status'] = $order_status_html;
 
                     $action_html = '';
-                    $action_html .= '<a href="'.route('orders.show',encrypt($order->id)).'" class="btn btn-sm custom-btn"><i class="fa-solid fa-eye"></a>';
+                    $action_html .= '<a href="'.route('orders.show',encrypt($order->id)).'" class="btn btn-sm custom-btn"><i class="fa-solid fa-eye"></i></a>';
                     $item['actions'] = $action_html;
 
                     $all_items[] = $item;

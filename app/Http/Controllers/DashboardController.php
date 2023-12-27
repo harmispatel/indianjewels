@@ -2,14 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{
-    Admin,
-    User,
-    Design,
-    Category,
-    Page,
-    Tag,
-};
+use App\Models\{Admin, Design, Category, Order, Page, Tag, User};
 
 class DashboardController extends Controller
 {
@@ -32,20 +25,22 @@ class DashboardController extends Controller
         $data['inactive_users'] = Admin::where('status',0)->count();
 
         // Dealers Count
-        $data['active_dealers'] = Admin::where('user_type', 1)->where('status',1)->count();
-        $data['inactive_dealers'] = Admin::where('user_type', 1)->where('status',0)->count();
+        $data['active_dealers'] = User::where('user_type', 1)->where('status',1)->count();
+        $data['inactive_dealers'] = User::where('user_type', 1)->where('status',0)->count();
 
         // Customers Count
-        $data['active_customers'] = Admin::where('user_type', 2)->where('status',1)->count();
-        $data['inactive_customers'] = Admin::where('user_type', 2)->where('status',0)->count();
+        $data['active_customers'] = User::where('user_type', 2)->where('status',1)->count();
+        $data['inactive_customers'] = User::where('user_type', 2)->where('status',0)->count();
 
         // Pages Count
         $data['active_pages'] = Page::where('status',1)->count();
         $data['inactive_pages'] = Page::where('status',0)->count();
 
         // Orders Count
-        $data['active_orders'] = 0;
-        $data['inactive_orders'] = 0;
+        $data['pending_orders'] = Order::where('order_status', 'pending')->count();
+        $data['completed_orders'] = Order::where('order_status', 'completed')->count();
+
+        $data['pending_orders_datas'] = Order::where('order_status', 'pending')->orderBy('created_at', 'DESC')->get();
 
         return view('admin.dashboard', $data);
     }
