@@ -205,8 +205,11 @@ Route::group(['prefix' => 'admin'], function ()
         Route::get('dealer-performance', [ReportController::class,'dealerperrformanceindex'])->name('reports.dealer.performace');
 
         // Orders
-        Route::get('orders', [OrderController::class,'index'])->name('orders.index');
-        Route::get('orders/load', [OrderController::class,'load'])->name('orders.load');
+        Route::controller(OrderController::class)->group(function () {
+            Route::get('orders', 'index')->name('orders.index');
+            Route::get('orders/load', 'load')->name('orders.load');
+            Route::get('orders/show/{id}', 'show')->name('orders.show');
+        });
 
         // Import/Export
         Route::controller(ImportExportController::class)->group(function () {

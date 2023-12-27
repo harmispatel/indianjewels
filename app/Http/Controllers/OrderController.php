@@ -67,7 +67,7 @@ class OrderController extends Controller
                     $item['order_status'] = $order_status_html;
 
                     $action_html = '';
-                    $action_html .= '<a class="btn btn-sm custom-btn"><i class="fa-solid fa-eye"></a>';
+                    $action_html .= '<a href="'.route('orders.show',encrypt($order->id)).'" class="btn btn-sm custom-btn"><i class="fa-solid fa-eye"></a>';
                     $item['actions'] = $action_html;
 
                     $all_items[] = $item;
@@ -104,15 +104,15 @@ class OrderController extends Controller
         //
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    // Display the specified resource.
     public function show($id)
     {
-        //
+        try {
+            $order = Order::with(['order_items'])->find(decrypt($id));
+            return view('admin.orders.show', compact(['order']));
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'Oops, Something went wrong!');
+        }
     }
 
     /**
