@@ -27,17 +27,23 @@
                         <div class="row">
                             <div class="col-md-12 text-end">
 
-                                @if(isset($order->order_status) && $order->order_status == 'pending')
-                                    <a onclick="processOrder('accepted', {{ $order->id }})" class="mb-2 btn btn-sm btn-info text-white"><strong>ACCEPT</strong> <i class="fa-solid fa-check-circle"></i></a>
-                                @endif
+                                @can('orders.accept')
+                                    @if(isset($order->order_status) && $order->order_status == 'pending')
+                                        <a onclick="processOrder('accepted', {{ $order->id }})" class="mb-2 btn btn-sm btn-info text-white"><strong>ACCEPT</strong> <i class="fa-solid fa-check-circle"></i></a>
+                                    @endif
+                                @endcan
 
-                                @if(isset($order->order_status) && ($order->order_status == 'pending' || $order->order_status == 'accepted'))
-                                    <a onclick="processOrder('processing', {{ $order->id }})" class="ms-1 mb-2 btn btn-sm btn-primary"><strong>PROCESS</strong> <i class="fa-solid fa-check-circle"></i></a>
-                                @endif
+                                @can('orders.process')
+                                    @if(isset($order->order_status) && ($order->order_status == 'pending' || $order->order_status == 'accepted'))
+                                        <a onclick="processOrder('processing', {{ $order->id }})" class="ms-1 mb-2 btn btn-sm btn-primary"><strong>PROCESS</strong> <i class="fa-solid fa-check-circle"></i></a>
+                                    @endif
+                                @endcan
 
-                                @if(isset($order->order_status) && ($order->order_status == 'pending' || $order->order_status == 'accepted' || $order->order_status == 'processing'))
-                                    <a onclick="processOrder('completed', {{ $order->id }})" class="ms-1 mb-2 btn btn-sm btn-success"><strong>COMPLETE</strong> <i class="fa-solid fa-check-circle"></i></a>
-                                @endif
+                                @can('orders.complete')
+                                    @if(isset($order->order_status) && ($order->order_status == 'pending' || $order->order_status == 'accepted' || $order->order_status == 'processing'))
+                                        <a onclick="processOrder('completed', {{ $order->id }})" class="ms-1 mb-2 btn btn-sm btn-success"><strong>COMPLETE</strong> <i class="fa-solid fa-check-circle"></i></a>
+                                    @endif
+                                @endcan
                             </div>
                         </div>
                         <div class="row mt-3">

@@ -15,9 +15,11 @@
                 </nav>
             </div>
             @if($total_middle_banner < 1)
-                <div class="col-md-4" style="text-align: right;">
-                    <a href="{{ route('middle-banners.create') }}" class="btn btn-sm btn-primary"><i class="bi bi-plus"></i></a>
-                </div>
+                @can('middle-banners.create')
+                    <div class="col-md-4" style="text-align: right;">
+                        <a href="{{ route('middle-banners.create') }}" class="btn btn-sm custom-btn"><i class="bi bi-plus"></i></a>
+                    </div>
+                @endcan
             @endif
         </div>
     </div>

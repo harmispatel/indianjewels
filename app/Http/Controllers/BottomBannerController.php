@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\{Tag, BottomBanner};
 use Yajra\DataTables\Facades\DataTables;
 use App\Http\Requests\BottomBannerRequest;
+use Illuminate\Support\Facades\Auth;
 
 class BottomBannerController extends Controller
 {
@@ -15,8 +16,12 @@ class BottomBannerController extends Controller
     // Display a listing of the resource.
     public function index()
     {
-        $total_bottom_banner = BottomBanner::count();
-        return view('admin.bottom_banners.index', compact(['total_bottom_banner']));
+        if(Auth::guard('admin')->user()->can('bottom-banners.index')){
+            $total_bottom_banner = BottomBanner::count();
+            return view('admin.bottom_banners.index', compact(['total_bottom_banner']));
+        }else{
+            return redirect()->route('admin.dashboard')->with('error','You have no rights for this action!');
+        }
     }
 
     // Load all bottom banners helping with AJAX Datatable
@@ -34,7 +39,11 @@ class BottomBannerController extends Controller
             })
             ->addColumn('status', function ($row){
                 $isChecked = ($row->status == 1) ? 'checked' : '';
-                return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus(\''.encrypt($row->id).'\')" id="statusBtn" '.$isChecked.'></div>';
+                if(Auth::guard('admin')->user()->can('bottom-banners.status')){
+                    return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus(\''.encrypt($row->id).'\')" id="statusBtn" '.$isChecked.'></div>';
+                }else{
+                    return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" id="statusBtn" '.$isChecked.' disabled></div>';
+                }
             })
             ->addColumn('tag', function ($row){
                 $tag_name = (isset($row['tag']['name'])) ? $row['tag']['name'] : '';
@@ -42,8 +51,18 @@ class BottomBannerController extends Controller
             })
             ->addColumn('actions',function($row){
                 $action_html = '';
-                $action_html .= '<a href="'.route('bottom-banners.edit',encrypt($row->id)).'" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>';
-                $action_html .= '<a onclick="deleteBottomBanner(\''.encrypt($row->id).'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
+                if(Auth::guard('admin')->user()->can('bottom-banners.edit')){
+                    $action_html .= '<a href="'.route('bottom-banners.edit',encrypt($row->id)).'" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>';
+                }else{
+                    $action_html.= '- ';
+                }
+
+                if(Auth::guard('admin')->user()->can('bottom-banners.destroy')){
+                    $action_html .= '<a onclick="deleteBottomBanner(\''.encrypt($row->id).'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
+                }else{
+                    $action_html.= '- ';
+                }
+
                 return $action_html;
             })
             ->rawColumns(['status','actions','image','tag'])
@@ -54,8 +73,12 @@ class BottomBannerController extends Controller
     // Show the form for creating a new resource.
     public function create()
     {
-        $tags = Tag::get();
-        return view('admin.bottom_banners.create', compact(['tags']));
+        if(Auth::guard('admin')->user()->can('bottom-banners.create')){
+            $tags = Tag::get();
+            return view('admin.bottom_banners.create', compact(['tags']));
+        }else{
+            return redirect()->route('admin.dashboard')->with('error','You have no rights for this action!');
+        }
     }
 
     // Store a newly created resource in storage.
@@ -81,9 +104,13 @@ class BottomBannerController extends Controller
     public function edit($id)
     {
         try{
-            $bottom_banner = BottomBanner::find(decrypt($id));
-            $tags = Tag::all();
-            return view('admin.bottom_banners.edit', compact(['bottom_banner','tags']));
+            if(Auth::guard('admin')->user()->can('bottom-banners.edit')){
+                $bottom_banner = BottomBanner::find(decrypt($id));
+                $tags = Tag::all();
+                return view('admin.bottom_banners.c', compact(['bottom_banner','tags']));
+            }else{
+                return redirect()->route('admin.dashboard')->with('error','You have no rights for this action!');
+            }
         }catch (\Throwable $th){
             return redirect()->back()->with('error', 'Oops, Something went wrong!');
         }

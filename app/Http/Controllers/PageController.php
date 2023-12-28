@@ -30,14 +30,28 @@ class PageController extends Controller
             ->addIndexColumn()
             ->addColumn('status', function ($row){
                 $checked = ($row->status == 1) ? 'checked' : '';
-                return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus('.$row->id.')" id="statusBtn" '.$checked.'></div>';
+                if(Auth::guard('admin')->user()->can('pages.status')){
+                    return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus('.$row->id.')" id="statusBtn" '.$checked.'></div>';
+                }else{
+                    return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" id="statusBtn" '.$checked.' disabled></div>';
+                }
             })
             ->addColumn('actions',function($row){
                 $action_html = '';
                 // Edit Button
-                $action_html .= '<a href="'.route('pages.edit',encrypt($row->id)).'" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>';
+                if(Auth::guard('admin')->user()->can('pages.edit')){
+                    $action_html .= '<a href="'.route('pages.edit',encrypt($row->id)).'" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>';
+                }else{
+                    $action_html .= '- ';
+                }
+
                 // Delete Button
-                $action_html .= '<a onclick="deletePage(\''.encrypt($row->id).'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
+                if(Auth::guard('admin')->user()->can('pages.destroy')){
+                    $action_html .= '<a onclick="deletePage(\''.encrypt($row->id).'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
+                }else{
+                    $action_html .= '- ';
+                }
+
                 return $action_html;
             })
             ->rawColumns(['actions','status'])
@@ -48,7 +62,11 @@ class PageController extends Controller
     // Show the form for creating a new resource.
     public function create()
     {
-        return view('admin.pages.create');
+        if(Auth::guard('admin')->user()->can('pages.create')){
+            return view('admin.pages.create');
+        }else{
+            return redirect()->route('admin.dashboard')->with('error','You have no rights for this action!');
+        }
     }
 
     // Store a newly created resource in storage.
@@ -75,8 +93,12 @@ class PageController extends Controller
     public function edit($id)
     {
         try {
-            $page = Page::find(decrypt($id));
-            return view('admin.pages.edit', compact(['page']));
+            if(Auth::guard('admin')->user()->can('pages.edit')){
+                $page = Page::find(decrypt($id));
+                return view('admin.pages.edit', compact(['page']));
+            }else{
+                return redirect()->route('admin.dashboard')->with('error','You have no rights for this action!');
+            }
         } catch (\Throwable $th) {
             return back()->with('error', 'Oops, Something went wrong!');
         }

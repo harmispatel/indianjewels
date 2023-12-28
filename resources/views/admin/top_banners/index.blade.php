@@ -15,9 +15,11 @@
                 </nav>
             </div>
             @if($total_top_banner < 7)
-                <div class="col-md-4" style="text-align: right;">
-                    <a href="{{ route('top-banners.create') }}" class="btn btn-sm btn-primary"><i class="bi bi-plus"></i></a>
-                </div>
+                @can('top-banners.create')
+                    <div class="col-md-4" style="text-align: right;">
+                        <a href="{{ route('top-banners.create') }}" class="btn btn-sm custom-btn"><i class="bi bi-plus"></i></a>
+                    </div>
+                @endcan
             @endif
         </div>
     </div>

@@ -72,7 +72,11 @@ class OrderController extends Controller
                     $item['order_status'] = $order_status_html;
 
                     $action_html = '';
-                    $action_html .= '<a href="'.route('orders.show',encrypt($order->id)).'" class="btn btn-sm custom-btn"><i class="fa-solid fa-eye"></i></a>';
+                    if(Auth::guard('admin')->user()->can('orders.show')){
+                        $action_html .= '<a href="'.route('orders.show',encrypt($order->id)).'" class="btn btn-sm custom-btn"><i class="fa-solid fa-eye"></i></a>';
+                    }else{
+                        $action_html .= '-';
+                    }
                     $item['actions'] = $action_html;
 
                     $all_items[] = $item;

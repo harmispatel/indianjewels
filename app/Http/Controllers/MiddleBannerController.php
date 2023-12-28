@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\{Tag, MiddleBanner};
 use Yajra\DataTables\Facades\DataTables;
 use App\Http\Requests\MiddleBannerRequest;
+use Illuminate\Support\Facades\Auth;
 
 class MiddleBannerController extends Controller
 {
@@ -15,8 +16,12 @@ class MiddleBannerController extends Controller
     // Display a listing of the resource.
     public function index()
     {
-        $total_middle_banner = MiddleBanner::count();
-        return view('admin.middle_banners.index', compact(['total_middle_banner']));
+        if(Auth::guard('admin')->user()->can('middle-banners.index')){
+            $total_middle_banner = MiddleBanner::count();
+            return view('admin.middle_banners.index', compact(['total_middle_banner']));
+        }else{
+            return redirect()->route('admin.dashboard')->with('error','You have no rights for this action!');
+        }
     }
 
     // Load all middle banners helping with AJAX Datatable
@@ -34,7 +39,11 @@ class MiddleBannerController extends Controller
             })
             ->addColumn('status', function ($row){
                 $isChecked = ($row->status == 1) ? 'checked' : '';
-                return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus(\''.encrypt($row->id).'\')" id="statusBtn" '.$isChecked.'></div>';
+                if(Auth::guard('admin')->user()->can('middle-banners.status')){
+                    return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus(\''.encrypt($row->id).'\')" id="statusBtn" '.$isChecked.'></div>';
+                }else{
+                    return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" id="statusBtn" '.$isChecked.' disabled></div>';
+                }
             })
             ->addColumn('tag', function ($row){
                 $tag_name = (isset($row['tag']['name'])) ? $row['tag']['name'] : '';
@@ -42,8 +51,18 @@ class MiddleBannerController extends Controller
             })
             ->addColumn('actions',function($row){
                 $action_html = '';
-                $action_html .= '<a href="'.route('middle-banners.edit',encrypt($row->id)).'" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>';
-                $action_html .= '<a onclick="deleteMiddleBanner(\''.encrypt($row->id).'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
+                if(Auth::guard('admin')->user()->can('middle-banners.edit')){
+                    $action_html .= '<a href="'.route('middle-banners.edit',encrypt($row->id)).'" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>';
+                }else{
+                    $action_html .= '- ';
+                }
+
+                if(Auth::guard('admin')->user()->can('middle-banners.destroy')){
+                    $action_html .= '<a onclick="deleteMiddleBanner(\''.encrypt($row->id).'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
+                }else{
+                    $action_html .= '- ';
+                }
+
                 return $action_html;
             })
             ->rawColumns(['status','actions','image','tag'])
@@ -54,8 +73,12 @@ class MiddleBannerController extends Controller
     // Show the form for creating a new resource.
     public function create()
     {
-        $tags = Tag::get();
-        return view('admin.middle_banners.create', compact(['tags']));
+        if(Auth::guard('admin')->user()->can('middle-banners.create')){
+            $tags = Tag::get();
+            return view('admin.middle_banners.create', compact(['tags']));
+        }else{
+            return redirect()->route('admin.dashboard')->with('error','You have no rights for this action!');
+        }
     }
 
     // Store a newly created resource in storage.
@@ -80,9 +103,13 @@ class MiddleBannerController extends Controller
     public function edit($id)
     {
         try{
-            $middle_banner = MiddleBanner::find(decrypt($id));
-            $tags = Tag::all();
-            return view('admin.middle_banners.edit', compact(['middle_banner','tags']));
+            if(Auth::guard('admin')->user()->can('middle-banners.edit')){
+                $middle_banner = MiddleBanner::find(decrypt($id));
+                $tags = Tag::all();
+                return view('admin.middle_banners.edit', compact(['middle_banner','tags']));
+            }else{
+                return redirect()->route('admin.dashboard')->with('error','You have no rights for this action!');
+            }
         }catch (\Throwable $th){
             return redirect()->back()->with('error', 'Oops, Something went wrong!');
         }
