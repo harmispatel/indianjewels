@@ -60,7 +60,11 @@ class DesignController extends Controller
 
                     // Status Button
                     $checked = ($design->status == 1) ? 'checked' : '';
-                    $item['status'] = '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus('.$design->id.')" id="statusBtn" '.$checked.'></div>';
+                    if(Auth::guard('admin')->user()->can('designs.status')){
+                        $item['status'] = '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus('.$design->id.')" id="statusBtn" '.$checked.'></div>';
+                    }else{
+                        $item['status'] = '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" id="statusBtn" '.$checked.' disabled></div>';
+                    }
 
                     // Image
                     if(isset($design->image) && !empty($design->image) && file_exists('public/images/uploads/item_images/'.$design->code.'/'.$design->image)){
@@ -71,7 +75,11 @@ class DesignController extends Controller
 
                     // Top Selling Button
                     $isCheckedTopSelling = ($design->highest_selling == 1) ? 'checked' : '';
-                    $item['top_selling'] = '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeTopSelling('.$design->id.')" id="statusBtn" '.$isCheckedTopSelling.'></div>';
+                    if(Auth::guard('admin')->user()->can('designs.top-selling.status')){
+                        $item['top_selling'] = '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeTopSelling('.$design->id.')" id="statusBtn" '.$isCheckedTopSelling.'></div>';
+                    }else{
+                        $item['top_selling'] = '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" id="statusBtn" '.$isCheckedTopSelling.' disabled></div>';
+                    }
 
                     // Actions Buttons
                     // $action_html = '';
@@ -95,11 +103,15 @@ class DesignController extends Controller
     // Show the form for creating a new resource.
     public function create()
     {
-        $tags = Tag::get();
-        $metals = Metal::get();
-        $genders = Gender::get();
-        $categories = Category::where('parent_category','!=',0)->get();
-        return view('admin.designs.create',compact('categories','genders','metals','tags'));
+        if(Auth::guard('admin')->user()->can('designs.create')){
+            $tags = Tag::get();
+            $metals = Metal::get();
+            $genders = Gender::get();
+            $categories = Category::where('parent_category','!=',0)->get();
+            return view('admin.designs.create',compact('categories','genders','metals','tags'));
+        }else{
+            return redirect()->route('admin.dashboard')->with('error','You have no rights for this action!');
+        }
     }
 
     // Store a newly created resource in storage.
@@ -121,12 +133,16 @@ class DesignController extends Controller
     public function edit($id)
     {
         try {
-            $tags = Tag::get();
-            $metals = Metal::get();
-            $genders = Gender::get();
-            $categories = Category::where('parent_category','!=',0)->get();
-            $design = Design::find(decrypt($id));
-            return view('admin.designs.edit',compact('categories','genders','metals','tags','design'));
+            if(Auth::guard('admin')->user()->can('designs.edit')){
+                $tags = Tag::get();
+                $metals = Metal::get();
+                $genders = Gender::get();
+                $categories = Category::where('parent_category','!=',0)->get();
+                $design = Design::find(decrypt($id));
+                return view('admin.designs.edit',compact('categories','genders','metals','tags','design'));
+            }else{
+                return redirect()->route('admin.dashboard')->with('error','You have no rights for this action!');
+            }
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', 'Oops, Something went wrong!');
         }

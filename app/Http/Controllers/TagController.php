@@ -31,11 +31,19 @@ class TagController extends Controller
             ->addIndexColumn()
             ->addColumn('status', function ($row){
                 $checked = ($row->status == 1) ? 'checked' : '';
-                return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus('.$row->id.')" id="statusBtn" '.$checked.'></div>';
+                if(Auth::guard('admin')->user()->can('tags.status')){
+                    return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus('.$row->id.')" id="statusBtn" '.$checked.'></div>';
+                }else{
+                    return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" id="statusBtn" '.$checked.' disabled></div>';
+                }
             })
             ->addColumn('display_on_header', function ($row){
                 $checked = ($row->display_on_header == 1) ? 'checked' : '';
-                return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="displayHeaderStatus('.$row->id.')" id="statusBtn" '.$checked.'></div>';
+                if(Auth::guard('admin')->user()->can('tags.header.status')){
+                    return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="displayHeaderStatus('.$row->id.')" id="statusBtn" '.$checked.'></div>';
+                }else{
+                    return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" id="statusBtn" '.$checked.' disabled></div>';
+                }
             })
             // ->addColumn('actions',function($row){
             //     $action_html = '';

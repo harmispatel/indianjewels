@@ -52,13 +52,21 @@ class CustomerController extends Controller
             })
             ->addColumn('status', function ($row){
                 $checked = ($row->status == 1) ? 'checked' : '';
-                $customer_id = isset($row->id) ? $row->id : '';
-                return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus('.$customer_id.')" id="statusBtn" '.$checked.'></div>';
+                if(Auth::guard('admin')->user()->can('customers.status')){
+                    return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus('.$row->id.')" id="statusBtn" '.$checked.'></div>';
+                }else{
+                    return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" id="statusBtn" '.$checked.' disabled></div>';
+                }
             })
             // ->addColumn('actions',function($row){
             //     $action_html = '';
+
             //     // Edit Button
-            //     $action_html .= '<a href="'.route('customers.edit',encrypt($row->id)).'" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>';
+            //     if(Auth::guard('admin')->user()->can('customers.edit')){
+            //         $action_html .= '<a href="'.route('customers.edit',encrypt($row->id)).'" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>';
+            //     }else{
+            //         $action_html .= '-';
+            //     }
             //     return $action_html;
             // })
             ->rawColumns(['verification','profile','actions','status'])

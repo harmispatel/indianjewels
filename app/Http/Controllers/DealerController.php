@@ -46,12 +46,25 @@ class DealerController extends Controller
             })
             ->addColumn('status', function ($row){
                 $checked = ($row->status == 1) ? 'checked' : '';
-                return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus('.$row->id.')" id="statusBtn" '.$checked.'></div>';
+                if(Auth::guard('admin')->user()->can('dealers.status')){
+                    return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus('.$row->id.')" id="statusBtn" '.$checked.'></div>';
+                }else{
+                    return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" id="statusBtn" '.$checked.' disabled></div>';
+                }
             })
             ->addColumn('actions',function($row){
                 $action_html = '';
-                $action_html .= '<a href="'.route('dealers.edit',encrypt($row->id)).'" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>';
-                // $action_html .= '<a onclick="deleteDealer(\''.encrypt($row->id).'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
+
+                if(Auth::guard('admin')->user()->can('dealers.edit')){
+                    $action_html .= '<a href="'.route('dealers.edit',encrypt($row->id)).'" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>';
+                }else{
+                    $action_html .= '-';
+                }
+
+                if(Auth::guard('admin')->user()->can('dealers.destroy')){
+                    // $action_html .= '<a onclick="deleteDealer(\''.encrypt($row->id).'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
+                }
+
                 return $action_html;
             })
             ->rawColumns(['status','actions','joined_at', 'profile_picture'])
@@ -62,8 +75,12 @@ class DealerController extends Controller
     // Show the form for creating a new resource.
     public function create()
     {
-        $states = State::get();
-        return view('admin.dealers.create',compact(['states']));
+        if(Auth::guard('admin')->user()->can('dealers.create')){
+            $states = State::get();
+            return view('admin.dealers.create',compact(['states']));
+        }else{
+            return redirect()->route('admin.dashboard')->with('error','You have no rights for this action!');
+        }
     }
 
     // Store a newly created resource in storage.
@@ -110,10 +127,14 @@ class DealerController extends Controller
     public function edit($id)
     {
         try {
-            $dealer = User::with(['document'])->find(decrypt($id));
-            $states = State::get();
-            $cities = City::where('state_id',$dealer->state)->get();
-            return view('admin.dealers.edit',compact('dealer','states','cities'));
+            if(Auth::guard('admin')->user()->can('dealers.edit')){
+                $dealer = User::with(['document'])->find(decrypt($id));
+                $states = State::get();
+                $cities = City::where('state_id',$dealer->state)->get();
+                return view('admin.dealers.edit',compact('dealer','states','cities'));
+            }else{
+                return redirect()->route('admin.dashboard')->with('error','You have no rights for this action!');
+            }
         } catch (\Throwable $th) {
             return back()->with('error', 'Oops, Something went wrong!');
         }

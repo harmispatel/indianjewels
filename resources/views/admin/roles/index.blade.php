@@ -14,11 +14,13 @@
                     </ol>
                 </nav>
             </div>
-            <div class="col-md-4" style="text-align: right;">
-                <a href="{{ route('roles.create') }}" class="btn btn-sm new-category custom-btn">
-                    <i class="bi bi-plus-lg"></i>
-                </a>
-            </div>
+            @can('roles.create')
+                <div class="col-md-4" style="text-align: right;">
+                    <a href="{{ route('roles.create') }}" class="btn btn-sm new-category custom-btn">
+                        <i class="bi bi-plus-lg"></i>
+                    </a>
+                </div>
+            @endcan
         </div>
     </div>
 

@@ -4,23 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Models\RoleHasPermissions;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 use Spatie\Permission\Models\{Role, Permission};
 
 class RoleController extends Controller
 {
-    // function __construct()
-    // {
-    //     $this->middleware('permission:roles|roles.create|roles.edit|roles.destroy', ['only' => ['index','store']]);
-    //     $this->middleware('permission:roles.create', ['only' => ['create','store']]);
-    //     $this->middleware('permission:roles.edit', ['only' => ['edit','update']]);
-    //     $this->middleware('permission:roles.destroy', ['only' => ['destroy']]);
-    // }
-
     // Display a listing of the resource.
     public function index()
     {
-        return view('admin.roles.index');
+        if(Auth::guard('admin')->user()->can('roles.index')){
+            return view('admin.roles.index');
+        }else{
+            return redirect()->route('admin.dashboard')->with('error','You have no rights for this action!');
+        }
     }
 
     // Load all roles helping AJAX Datatable
@@ -52,8 +49,17 @@ class RoleController extends Controller
             ->addColumn('actions',function($row){
                 $action_html = '';
                 if($row->id > 1){
-                    $action_html .= '<a href="'.route('roles.edit',encrypt($row->id)).'" class="btn btn-sm custom-btn me-1 "><i class="bi bi-pencil"></i></a>';
-                    $action_html .= '<a  onclick="deleteRole(\''.encrypt($row->id).'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
+                    if(Auth::guard('admin')->user()->can('roles.edit')){
+                        $action_html .= '<a href="'.route('roles.edit',encrypt($row->id)).'" class="btn btn-sm custom-btn me-1 "><i class="bi bi-pencil"></i></a>';
+                    }else{
+                        $action_html .= '- ';
+                    }
+
+                    if(Auth::guard('admin')->user()->can('roles.destroy')){
+                        $action_html .= '<a  onclick="deleteRole(\''.encrypt($row->id).'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
+                    }else{
+                        $action_html .= '- ';
+                    }
                 }else{
                     $action_html = '-';
                 }
@@ -67,8 +73,12 @@ class RoleController extends Controller
     // Show the form for creating a new resource.
     public function create()
     {
-        $permissions = Permission::pluck('id', 'name')->toArray();
-        return view('admin.roles.create',compact('permissions'));
+        if(Auth::guard('admin')->user()->can('roles.create')){
+            $permissions = Permission::pluck('id', 'name')->toArray();
+            return view('admin.roles.create',compact('permissions'));
+        }else{
+            return redirect()->route('admin.dashboard')->with('error','You have no rights for this action!');
+        }
     }
 
     // Store a newly created resource in storage.
@@ -92,10 +102,14 @@ class RoleController extends Controller
     public function edit($id)
     {
         try {
-            $permissions = Permission::pluck('id', 'name')->toArray();
-            $role = Role::find(decrypt($id));
-            $role_permissions = RoleHasPermissions::where("role_id", decrypt($id))->pluck('permission_id', 'permission_id')->all();
-            return view('admin.roles.edit',compact('role','permissions','role_permissions'));
+            if(Auth::guard('admin')->user()->can('roles.edit')){
+                $permissions = Permission::pluck('id', 'name')->toArray();
+                $role = Role::find(decrypt($id));
+                $role_permissions = RoleHasPermissions::where("role_id", decrypt($id))->pluck('permission_id', 'permission_id')->all();
+                return view('admin.roles.edit',compact('role','permissions','role_permissions'));
+            }else{
+                return redirect()->route('admin.dashboard')->with('error','You have no rights for this action!');
+            }
         } catch (\Throwable $th) {
             return back()->with('error','Oops, Something went wrong!');
         }

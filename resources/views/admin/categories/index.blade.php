@@ -115,11 +115,13 @@
                     </ol>
                 </nav>
             </div>
-            <div class="col-md-4" style="text-align: right;">
-                <a data-bs-toggle="modal" data-bs-target="#categoryModal" class="btn btn-sm new-category custom-btn">
-                    <i class="bi bi-plus-lg"></i>
-                </a>
-            </div>
+            @can('categories.create')
+                <div class="col-md-4" style="text-align: right;">
+                    <a data-bs-toggle="modal" data-bs-target="#categoryModal" class="btn btn-sm new-category custom-btn">
+                        <i class="bi bi-plus-lg"></i>
+                    </a>
+                </div>
+            @endcan
         </div>
     </div>
 
@@ -137,7 +139,9 @@
                                         <th>Name</th>
                                         <th>Image</th>
                                         <th>Status</th>
-                                        <th>Actions</th>
+                                        @canany(['categories.edit', 'categories.destroy'])
+                                            <th>Actions</th>
+                                        @endcan
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -154,14 +158,29 @@
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    <div class="form-check form-switch">
-                                                        <input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus('{{ encrypt($category->id) }}')" id="statusBtn" {{ ($category->status == 1) ? 'checked' : '' }}>
-                                                    </div>
+                                                    @can('categories.status')
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus('{{ encrypt($category->id) }}')" id="statusBtn" {{ ($category->status == 1) ? 'checked' : '' }}>
+                                                        </div>
+                                                    @else
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox" role="switch" id="statusBtn" {{ ($category->status == 1) ? 'checked' : '' }} disabled>
+                                                        </div>
+                                                    @endcan
                                                 </td>
-                                                <td>
-                                                    <a onclick="editCategory('{{ encrypt($category->id) }}')" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>
-                                                    <a onclick="deleteCategory('{{ encrypt($category->id) }}')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>
-                                                </td>
+                                                @canany(['categories.edit', 'categories.destroy'])
+                                                    <td>
+                                                        {{-- Edit Button --}}
+                                                        @can('categories.edit')
+                                                            <a onclick="editCategory('{{ encrypt($category->id) }}')" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>
+                                                        @endcan
+
+                                                        {{-- Delete Button --}}
+                                                        @can('categories.destroy')
+                                                            <a onclick="deleteCategory('{{ encrypt($category->id) }}')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>
+                                                        @endcan
+                                                    </td>
+                                                @endcan
                                             </tr>
                                             @php
                                                 $quote = '';

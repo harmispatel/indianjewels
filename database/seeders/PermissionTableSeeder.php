@@ -69,7 +69,6 @@ class PermissionTableSeeder extends Seeder
             'roles.create',
             'roles.edit',
             'roles.destroy',
-            'roles.status',
 
             // Customers
             'customers.index',

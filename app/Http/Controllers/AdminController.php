@@ -46,14 +46,31 @@ class AdminController extends Controller
             ->addColumn('status', function ($row){
                 $checked = ($row->status == 1) ? 'checked' : '';
                 if($row->id != 1){
-                    return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus('.$row->id.')" id="statusBtn" '.$checked.'></div>';
+                    if(Auth::guard('admin')->user()->can('users.status')){
+                        return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus('.$row->id.')" id="statusBtn" '.$checked.'></div>';
+                    }else{
+                        return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" id="statusBtn" '.$checked.' disabled></div>';
+                    }
+                }else{
+                    return '-';
                 }
             })
             ->addColumn('actions',function($row){
                 $action_html = '';
-                $action_html .= '<a href="'.route('users.edit',encrypt($row->id)).'" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>';
                 if($row->id != 1){
-                    $action_html .= '<a onclick="deleteUsers(\''.encrypt($row->id).'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
+                    if(Auth::guard('admin')->user()->can('users.edit')){
+                        $action_html .= '<a href="'.route('users.edit',encrypt($row->id)).'" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>';
+                    }else{
+                        $action_html .= '- ';
+                    }
+
+                    if(Auth::guard('admin')->user()->can('users.destroy')){
+                        $action_html .= '<a onclick="deleteUsers(\''.encrypt($row->id).'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
+                    }else{
+                        $action_html .= '- ';
+                    }
+                }else{
+                    $action_html .= '-';
                 }
                 return $action_html;
             })
@@ -65,8 +82,12 @@ class AdminController extends Controller
     // Show the form for creating a new resource.
     public function create()
     {
-        $roles = Role::all();
+        if(Auth::guard('admin')->user()->can('users.create')){
+            $roles = Role::all();
         return view('admin.users.create', compact('roles'));
+        }else{
+            return redirect()->route('admin.dashboard')->with('error','You have no rights for this action!');
+        }
     }
 
     // Store a newly created resource in storage.
@@ -95,12 +116,22 @@ class AdminController extends Controller
     public function edit($id)
     {
         try {
-            if(Auth::guard('admin')->user()->canany(['users.index', 'myprofile.update'])){
-                $roles = Role::all();
-                $user = Admin::find(decrypt($id));
-                return view('admin.users.edit',compact('user','roles'));
+            if(Auth::guard('admin')->user()->id == decrypt($id)){
+                if(Auth::guard('admin')->user()->can('myprofile.update')){
+                    $roles = Role::all();
+                    $user = Admin::find(decrypt($id));
+                    return view('admin.users.edit',compact('user','roles'));
+                }else{
+                    return redirect()->route('admin.dashboard')->with('error','You have no rights for this action!');
+                }
             }else{
-                return redirect()->route('admin.dashboard')->with('error','You have no rights for this action!');
+                if(Auth::guard('admin')->user()->can('users.edit')){
+                    $roles = Role::all();
+                    $user = Admin::find(decrypt($id));
+                    return view('admin.users.edit',compact('user','roles'));
+                }else{
+                    return redirect()->route('admin.dashboard')->with('error','You have no rights for this action!');
+                }
             }
         } catch (\Throwable $th) {
             return back()->with('error', 'Oops, Something went wrong!');
