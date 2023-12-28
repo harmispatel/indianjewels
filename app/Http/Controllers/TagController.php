@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\{Tag};
 use Illuminate\Http\Request;
 use App\Http\Requests\TagRequest;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 
 
@@ -14,7 +15,11 @@ class TagController extends Controller
     // Display a listing of the resource.
     public function index()
     {
-        return view('admin.tags.index');
+        if(Auth::guard('admin')->user()->can('tags.index')){
+            return view('admin.tags.index');
+        }else{
+            return redirect()->route('admin.dashboard')->with('error','You have no rights for this action!');
+        }
     }
 
     // Load all tags helping with AJAX Datatable

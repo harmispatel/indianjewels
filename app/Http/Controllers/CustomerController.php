@@ -6,6 +6,7 @@ use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 use App\Models\{User, City, State};
 use App\Http\Requests\CustomerRequest;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 
 class CustomerController extends Controller
@@ -15,7 +16,11 @@ class CustomerController extends Controller
     // Display a listing of the resource.
     public function index()
     {
-        return view('admin.customers.index');
+        if(Auth::guard('admin')->user()->can('customers.index')){
+            return view('admin.customers.index');
+        }else{
+            return redirect()->route('admin.dashboard')->with('error','You have no rights for this action!');
+        }
     }
 
     // Load all customers with helping AJAX Datatable

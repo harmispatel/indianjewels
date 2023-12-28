@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\DealerRequest;
 use Yajra\DataTables\Facades\DataTables;
 use App\Models\{City,User,State,UserDocument};
+use Illuminate\Support\Facades\Auth;
 
 class DealerController extends Controller
 {
@@ -16,7 +17,11 @@ class DealerController extends Controller
     // Display a listing of the resource.
     public function index()
     {
-        return view('admin.dealers.index');
+        if(Auth::guard('admin')->user()->can('dealers.index')){
+            return view('admin.dealers.index');
+        }else{
+            return redirect()->route('admin.dashboard')->with('error','You have no rights for this action!');
+        }
     }
 
     // Load all dealers helping AJAX Datatable

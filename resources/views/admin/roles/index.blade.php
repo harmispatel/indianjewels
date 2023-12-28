@@ -1,17 +1,8 @@
 @extends('admin.layouts.admin-layout')
-@section('title', 'Impel Jewellers | Roles')
-
+@section('title', 'ROLES - IMPEL JEWELLERS')
 @section('content')
-@php
-$role = Auth::guard('admin')->user()->user_type;
-$role_add = Spatie\Permission\Models\Permission::where('name','roles.create')->first();
 
-$permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('permission_id');
-    foreach ($permissions as $permission) {
-        $permission_ids[] = $permission;
-    }
-@endphp
-
+    {{-- Page Title --}}
     <div class="pagetitle">
         <h1>Roles</h1>
         <div class="row">
@@ -24,36 +15,27 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
                 </nav>
             </div>
             <div class="col-md-4" style="text-align: right;">
-                @if (in_array($role_add->id, $permission_ids))
-                    <a href="{{ route('roles.create') }}" class="btn btn-sm new-category custom-btn">
-                        <i class="bi bi-plus-lg"></i>
-                    </a>
-                @else
-                    <a href="{{ route('roles.create') }}" class="btn btn-sm new-category custom-btn disabled">
-                        <i class="bi bi-plus-lg"></i>
-                    </a>
-                @endif
+                <a href="{{ route('roles.create') }}" class="btn btn-sm new-category custom-btn">
+                    <i class="bi bi-plus-lg"></i>
+                </a>
             </div>
         </div>
     </div>
 
-    {{-- Category Section --}}
+    {{-- Roles Section --}}
     <section class="section dashboard">
         <div class="row">
-
-            {{-- Categories Card --}}
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="card-title">
-                        </div>
                         <div class="table-responsive custom_dt_table">
-                            <table class="table w-100" id="RoleTable">
+                            <table class="table w-100" id="rolesTable">
                                 <thead>
                                     <tr>
                                         <th>Id</th>
                                         <th>Name</th>
-                                        <th>Actions</th>
+                                        <th>Permissions</th>
+                                        <th style="width: 12%;">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -65,93 +47,74 @@ $permissions = App\Models\RoleHasPermissions::where('role_id',$role)->pluck('per
         </div>
     </section>
 
-
 @endsection
 
 {{-- Custom Script --}}
 @section('page-js')
+<script type="text/javascript">
 
-
-    <script type="text/javascript">
-        $(function() {
-
-            var table = $('#RoleTable').DataTable({
-                processing: true,
-                serverSide: true,
-                pageLength: 100,
-                ajax: "{{ route('roles.index') }}",
-                columns: [{
-                        data: 'id',
-                        name: 'id'
-                    },
-                    {
-                        data: 'name',
-                        name: 'name'
-                    },
-                    {
-                        data: 'actions',
-                        name: 'actions',
-                        orderable: false,
-                        searchable: false
-                    },
-                ]
-            });
-
-        });
-
-        function changeStatus(status, id) {
-            $.ajax({
-                type: "POST",
-                url: '{{ route('tags.status') }}',
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    "status": status,
-                    "id": id
+    // Load all Roles
+    $(function() {
+        var table = $('#rolesTable').DataTable({
+            processing: true,
+            serverSide: true,
+            pageLength: 100,
+            ajax: "{{ route('roles.load') }}",
+            columns: [
+                {
+                    data: 'id',
+                    name: 'id'
                 },
-                dataType: 'JSON',
-                success: function(response) {
-                    if (response.success == 1) {
-                        toastr.success(response.message);
-                    } else {
-                        toastr.error(response.message);
-                    }
-                }
-            })
-        }
-        // Function for Delete Tags
-        function deleteRole(roleId) {
+                {
+                    data: 'name',
+                    name: 'name'
+                },
+                {
+                    data: 'permissions',
+                    name: 'permissions'
+                },
+                {
+                    data: 'actions',
+                    name: 'actions',
+                    orderable: false,
+                    searchable: false
+                },
+            ]
+        });
+    });
 
-            swal({
-                    title: "Are you sure You want to Delete It ?",
-                    icon: "warning",
-                    buttons: true,
-                    dangerMode: true,
-                })
-                .then((willDeleteRole) => {
-                    if (willDeleteRole) {
-                        $.ajax({
-                            type: "POST",
-                            url: '{{ route('roles.destroy') }}',
-                            data: {
-                                "_token": "{{ csrf_token() }}",
-                                'id': roleId,
-                            },
-                            dataType: 'JSON',
-                            success: function(response) {
-                                if (response.success == 1) {
-                                    toastr.success(response.message);
-                                    $('#RoleTable').DataTable().ajax.reload();
-                                } else {
-                                    swal(response.message, "", "error");
-                                }
-                            }
-                        });
-                    } else {
-                        swal("Cancelled", "", "error");
 
+    // Function for Delete Tags
+    function deleteRole(id) {
+        swal({
+            title: "Are you sure You want to Delete It ?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((willDeleteRole) => {
+            if (willDeleteRole) {
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('roles.destroy') }}",
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        'id': id,
+                    },
+                    dataType: 'JSON',
+                    success: function(response) {
+                        if (response.success == 1) {
+                            swal(response.message, "", "success");
+                            $('#rolesTable').DataTable().ajax.reload();
+                        } else {
+                            swal(response.message, "", "error");
+                        }
                     }
                 });
-        }
-    </script>
-
+            } else {
+                swal("Cancelled", "", "error");
+            }
+        });
+    }
+</script>
 @endsection

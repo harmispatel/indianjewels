@@ -97,6 +97,7 @@ Route::group(['prefix' => 'admin'], function ()
         // Roles
         Route::controller(RoleController::class)->group(function () {
             Route::get('roles','index')->name('roles.index');
+            Route::get('roles/load','load')->name('roles.load');
             Route::get('roles/create','create')->name('roles.create');
             Route::post('roles/store','store')->name('roles.store');
             Route::get('roles/edit/{id}','edit')->name('roles.edit');
@@ -210,7 +211,7 @@ Route::group(['prefix' => 'admin'], function ()
 
         // Settings
         Route::controller(AdminSettingsController::class)->group(function () {
-            Route::get('settings',  'index')->name('settings');
+            Route::get('settings',  'index')->name('settings.index');
             Route::post('settings/update',  'update')->name('settings.update');
         });
 

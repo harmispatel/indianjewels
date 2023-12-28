@@ -6,6 +6,7 @@ use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 use App\Http\Requests\DesignRequest;
 use App\Models\{Tag, Metal, Gender, Design, Category, Design_image};
+use Illuminate\Support\Facades\Auth;
 
 class DesignController extends Controller
 {
@@ -14,7 +15,11 @@ class DesignController extends Controller
     // Display a listing of the resource.
     public function index()
     {
-        return view('admin.designs.index');
+        if(Auth::guard('admin')->user()->can('designs.index')){
+            return view('admin.designs.index');
+        }else{
+            return redirect()->route('admin.dashboard')->with('error','You have no rights for this action!');
+        }
     }
 
     // Load all designs helping with AJAX Datatable

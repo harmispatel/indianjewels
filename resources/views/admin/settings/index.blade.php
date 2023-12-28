@@ -96,7 +96,9 @@
                             </div>
                         </div>
                         <div class="card-footer text-center">
-                            <button class="btn form_button">Update</button>
+                            @can('settings.update')
+                                <button class="btn form_button">Update</button>
+                            @endcan
                         </div>
                     </form>
                 </div>
@@ -109,9 +111,9 @@
 @section('page-js')
 <script type="text/javascript">
 
-    @if (Session::has('success'))
-        toastr.success('{{ Session::get('success') }}')
-    @endif
+    @cannot('settings.update')
+        $('input').prop('disabled', true);
+    @endcannot
 
 </script>
 @endsection

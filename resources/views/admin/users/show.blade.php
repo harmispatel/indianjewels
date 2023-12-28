@@ -35,7 +35,11 @@
                     <div class="card-body pt-3">
                        <div class="row">
                             <div class="col-md-6"><h5 class="card-title">Profile Details</h5></div>
-                            <div class="col-md-6 text-end"><a href="{{ route('users.edit', encrypt($user->id)) }}" class="btn btn-sm custom-btn"><i class="fa-solid fa-edit"></i></a></div>
+
+                            @can('myprofile.update')
+                                <div class="col-md-6 text-end"><a href="{{ route('users.edit', encrypt($user->id)) }}" class="btn btn-sm custom-btn"><i class="fa-solid fa-edit"></i></a></div>
+                            @endcan
+
                        </div>
                         <div class="row">
                             <div class="col-md-12">

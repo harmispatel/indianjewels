@@ -6,6 +6,7 @@ use App\Models\{Category, Design};
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 use App\Http\Requests\CategoriesRequest;
+use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
@@ -14,8 +15,12 @@ class CategoryController extends Controller
     // Display a listing of the resource.
     public function index()
     {
-        $categories = Category::with(['subcategories','parentcategory'])->where('parent_category',0)->get();
-        return view('admin.categories.index', compact('categories'));
+        if(Auth::guard('admin')->user()->can('categories.index')){
+            $categories = Category::with(['subcategories','parentcategory'])->where('parent_category',0)->get();
+            return view('admin.categories.index', compact('categories'));
+        }else{
+            return redirect()->route('admin.dashboard')->with('error','You have no rights for this action!');
+        }
     }
 
 

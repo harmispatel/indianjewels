@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 
-
 class PermissionTableSeeder extends Seeder
 {
     /**
@@ -16,49 +15,113 @@ class PermissionTableSeeder extends Seeder
     public function run()
     {
         $permissions = [
-            'roles',
-            'roles.create',
-            'roles.edit',
-            'roles.destroy',
-            'tags',
+
+            // Dashboard
+            'categories.count',
+            'tags.count',
+            'designs.count',
+            'pages.count',
+            'orders.count',
+            'users.count',
+            'dealers.count',
+            'customers.count',
+            'pending.orders.list',
+
+            // Categories
+            'categories.index',
+            'categories.create',
+            'categories.edit',
+            'categories.destroy',
+            'categories.status',
+
+            // Tags
+            'tags.index',
             'tags.create',
             'tags.edit',
+            'tags.status',
             'tags.destroy',
-            'designs',
+            'tags.header.status',
+
+            // Designs
+            'designs.index',
             'designs.create',
             'designs.edit',
             'designs.destroy',
-            'categories',
-            'categories.add',
-            'categories.edit',
-            'categories.destroy',
-            'users',
-            'users.create',
-            'users.edit',
-            'users.destroy',
-            'sliders',
-            'sliders.add-slider',
-            'sliders.edit-slider',
-            'sliders.destroy',
-            'dealers',
+            'designs.status',
+            'designs.top-selling.status',
+
+            // Dealers
+            'dealers.index',
             'dealers.create',
             'dealers.edit',
             'dealers.destroy',
-            'westage.discount',
-            'westage.discount.create',
-            'westage.discount.edit',
-            'westage.discount.destroy',
-            'reports.summary.items',
-            'reports.star',
-            'reports.scheme',
-            'reports.dealer.performace',
-            'order',
-            'marketing',
-            'import.export',
-         ];
+            'dealers.status',
 
-         foreach ($permissions as $permission) {
-              Permission::create(['name' => $permission]);
-         }
+            // Users
+            'users.index',
+            'users.create',
+            'users.edit',
+            'users.destroy',
+            'users.status',
+
+            // Roles
+            'roles.index',
+            'roles.create',
+            'roles.edit',
+            'roles.destroy',
+            'roles.status',
+
+            // Customers
+            'customers.index',
+            'customers.edit',
+            'customers.status',
+
+            // Orders
+            'orders.index',
+            'orders.show',
+            'orders.accept',
+            'orders.process',
+            'orders.complete',
+
+            // Top Banners
+            'top-banners.index',
+            'top-banners.create',
+            'top-banners.edit',
+            'top-banners.destroy',
+            'top-banners.status',
+
+            // Middle Banners
+            'middle-banners.index',
+            'middle-banners.create',
+            'middle-banners.edit',
+            'middle-banners.destroy',
+            'middle-banners.status',
+
+            // Bottom Banners
+            'bottom-banners.index',
+            'bottom-banners.create',
+            'bottom-banners.edit',
+            'bottom-banners.destroy',
+            'bottom-banners.status',
+
+            // Pages
+            'pages.index',
+            'pages.create',
+            'pages.edit',
+            'pages.destroy',
+            'pages.status',
+
+            // Report
+
+            // Other
+            'settings.index',
+            'settings.update',
+            'myprofile.index',
+            'myprofile.update',
+        ];
+
+        foreach ($permissions as $permission) {
+            Permission::create(['name' => $permission]);
+        }
     }
 }

@@ -17,7 +17,11 @@ class AdminController extends Controller
     // Display a listing of the resource.
     public function index()
     {
-        return view('admin.users.index');
+        if(Auth::guard('admin')->user()->can('users.index')){
+            return view('admin.users.index');
+        }else{
+            return redirect()->route('admin.dashboard')->with('error','You have no rights for this action!');
+        }
     }
 
     // Load all users with helping AJAX Datatable
@@ -91,9 +95,13 @@ class AdminController extends Controller
     public function edit($id)
     {
         try {
-            $roles = Role::all();
-            $user = Admin::find(decrypt($id));
-            return view('admin.users.edit',compact('user','roles'));
+            if(Auth::guard('admin')->user()->canany(['users.index', 'myprofile.update'])){
+                $roles = Role::all();
+                $user = Admin::find(decrypt($id));
+                return view('admin.users.edit',compact('user','roles'));
+            }else{
+                return redirect()->route('admin.dashboard')->with('error','You have no rights for this action!');
+            }
         } catch (\Throwable $th) {
             return back()->with('error', 'Oops, Something went wrong!');
         }
@@ -134,8 +142,12 @@ class AdminController extends Controller
     public function show()
     {
         try {
-            $user = Auth::guard('admin')->user();
-            return view('admin.users.show', compact(['user']));
+            if(Auth::guard('admin')->user()->can('myprofile.index')){
+                $user = Auth::guard('admin')->user();
+                return view('admin.users.show', compact(['user']));
+            }else{
+                return redirect()->route('admin.dashboard')->with('error','You have no rights for this action!');
+            }
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', 'Oops, Something went wrong!');
         }

@@ -5,13 +5,18 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use App\Models\{Page};
+use Illuminate\Support\Facades\Auth;
 
 class PageController extends Controller
 {
     // Display a listing of the resource.
     public function index()
     {
-        return view('admin.pages.index');
+        if(Auth::guard('admin')->user()->can('pages.index')){
+            return view('admin.pages.index');
+        }else{
+            return redirect()->route('admin.dashboard')->with('error','You have no rights for this action!');
+        }
     }
 
     // Load all pages helping with AJAX Datatable

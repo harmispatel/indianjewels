@@ -4,13 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
     // Display a listing of the resource.
     public function index()
     {
-        return view('admin.orders.index');
+        if(Auth::guard('admin')->user()->can('orders.index')){
+            return view('admin.orders.index');
+        }else{
+            return redirect()->route('admin.dashboard')->with('error','You have no rights for this action!');
+        }
     }
 
     // Load all orders helping with AJAX Datatable
@@ -108,8 +113,12 @@ class OrderController extends Controller
     public function show($id)
     {
         try {
-            $order = Order::with(['order_items'])->find(decrypt($id));
-            return view('admin.orders.show', compact(['order']));
+            if(Auth::guard('admin')->user()->can('orders.show')){
+                $order = Order::with(['order_items'])->find(decrypt($id));
+                return view('admin.orders.show', compact(['order']));
+            }else{
+                return redirect()->route('admin.dashboard')->with('error','You have no rights for this action!');
+            }
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', 'Oops, Something went wrong!');
         }
