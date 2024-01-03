@@ -6,8 +6,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\CustomerResource;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class AuthApiController extends Controller
 {
@@ -94,6 +98,55 @@ class AuthApiController extends Controller
         } catch (\Throwable $th) {
 
             return $this->sendApiResponse(false, 0,'Failed to Login!', (object)[]);
+        }
+    }
+
+    public function forgetPassword(Request $request)
+    {
+        try {
+            $email = (isset($request->email)) ? $request->email : '';
+            $reset_url = (isset($request->reset_url)) ? $request->reset_url : '';
+
+            if(empty($email)){
+                return $this->sendApiResponse(false, 0,'The email field is Required!', (object)[]);
+            }
+
+            if(!empty($reset_url)){
+
+                $dealer = User::where('email', $email)->where('user_type', 1)->first();
+
+                if(isset($dealer->id)){
+                    $token = Str::random(20);
+                    $reset_url = $reset_url."/".$token;
+
+                    DB::table('password_resets')->insert([
+                        'email' => $email,
+                        'token' => $token,
+                        'created_at' => Carbon::now()
+                    ]);
+
+                    Mail::send(
+                        'auth.admin.dealer_reset_password_mail',
+                        ['reset_url' => $reset_url],
+                        function ($message) use ($email) {
+                            $message->from(env('MAIL_USERNAME'));
+                            $message->to($email);
+                            $message->subject('Reset Password');
+                        }
+                    );
+
+                   User::where('email', $email)->update(['remember_token' => $token]);
+
+                   return $this->sendResponse(true, 'We have e-mailed your password reset link!', (object)[]);
+                }else{
+                    return $this->sendApiResponse(false, 0,'Please Enter Valid Email!', (object)[]);
+                }
+            }else{
+                return $this->sendApiResponse(false, 0,'Oops, Something went wrong!', (object)[]);
+            }
+
+        } catch (\Throwable $th) {
+            return $this->sendApiResponse(false, 0,'Oops, Something went wrong!', (object)[]);
         }
     }
 }
