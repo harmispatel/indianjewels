@@ -323,6 +323,31 @@
 @endsection
 
 @section('page-js')
-    <script type="text/javascript">
-    </script>
+<script type="text/javascript">
+
+    // Get Cities When Change State
+    $('#state').on('change', function() {
+        $.ajax({
+            type: "POST",
+            url: "{{ route('states.cities') }}",
+            data: {
+                "_token": "{{ csrf_token() }}",
+                "state_id": $(this).val(),
+            },
+            dataType: "JSON",
+            success: function(response) {
+                if (response.success == 1) {
+                    $('#city').html('');
+                    $('#city').append(response.cities);
+                } else {
+                    toastr.error(response.message);
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1200);
+                }
+            }
+        });
+    });
+
+</script>
 @endsection
