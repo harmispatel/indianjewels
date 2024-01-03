@@ -73,3 +73,4 @@ Route::post('order-details', [CustomerApiController::class, 'orderDetails']);
 Route::post('my-orders', [CustomerApiController::class, 'myOrders']);
 
 Route::post('forget-password', [AuthApiController::class, 'forgetPassword']);
+Route::post('reset-password', [AuthApiController::class, 'resetPassword']);

@@ -79,7 +79,6 @@ class AuthController extends Controller
 
            Admin::where('email', $request->email)->update(['remember_token' => $token]);
         } catch (\Throwable $th) {
-            dd($th);
             return back()->with('error', 'Failed to send an Email');
         }
 

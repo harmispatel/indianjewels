@@ -149,4 +149,41 @@ class AuthApiController extends Controller
             return $this->sendApiResponse(false, 0,'Oops, Something went wrong!', (object)[]);
         }
     }
+
+    public function resetPassword(Request $request){
+        try {
+            $remember_token = (isset($request->remember_token)) ? $request->remember_token : '';
+            $password = (isset($request->password)) ? $request->password : '';
+            $confirm_password = (isset($request->confirm_password)) ? $request->confirm_password : '';
+
+            if(empty($remember_token)){
+                return $this->sendApiResponse(false, 0,'Invalid Token!', (object)[]);
+            }elseif(empty($password)){
+                return $this->sendApiResponse(false, 0,'The password field is Required!', (object)[]);
+            }elseif(empty($confirm_password)){
+                return $this->sendApiResponse(false, 0,'The comfirm password field is Required!', (object)[]);
+            }
+
+            if($password == $confirm_password){
+                $isValidToken = DB::table('password_resets')->where(['token' => $remember_token])->first();
+                if (!$isValidToken) {
+                    return $this->sendApiResponse(false, 0,'Invalid Token!', (object)[]);
+                }
+
+                // User Update Password
+                $user = User::where('remember_token', $remember_token)->first();
+                if(isset($user->id)){
+                    User::where('remember_token', $remember_token)->update(['password' => bcrypt($password), 'remember_token' => null]);
+                    DB::table('password_resets')->where('token',$remember_token)->delete();
+                    return $this->sendResponse(true, 'Your Password has been Changed.', (object)[]);
+                }else{
+                    return $this->sendApiResponse(false, 0,'Invalid Token!', (object)[]);
+                }
+            }else{
+                return $this->sendApiResponse(false, 0,'password & confirm password doesn\'t Match!', (object)[]);
+            }
+        } catch (\Throwable $th) {
+            return $this->sendApiResponse(false, 0,'Oops, Something went wrong!', (object)[]);
+        }
+    }
 }
