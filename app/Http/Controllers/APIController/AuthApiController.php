@@ -71,6 +71,7 @@ class AuthApiController extends Controller
                         'user_type' => $new_customer->user_type,
                         'user_id' => $new_customer->id,
                         'verification' => $new_customer->verification,
+                        'mobile' => $customer->phone,
                     ], Response::HTTP_OK);
             }else{
                 if($customer->status == 1){
@@ -82,6 +83,7 @@ class AuthApiController extends Controller
                         'user_type' => $customer->user_type,
                         'user_id' => $customer->id,
                         'verification' => $customer->verification,
+                        'mobile' => $customer->phone,
                     ], Response::HTTP_OK);
                 }else{
                     return response()->json(
@@ -92,6 +94,7 @@ class AuthApiController extends Controller
                             'user_type' => $customer->user_type,
                             'user_id' => $customer->id,
                             'verification' => $customer->verification,
+                            'mobile' => $request->phone,
                         ], Response::HTTP_OK);
                 }
             }
