@@ -322,9 +322,10 @@ class CustomerApiController extends Controller
             if($user_type == 1){
                 $designs = $designs->with(['dealer_collections' => function ($query) use ($user_id) {
                     $query->where('user_id', $user_id);
-                }])->offset($offset)->limit(20)->get()->sortBy(function($design) {
+                }])->get()->sortBy(function($design) {
                     return optional($design->dealer_collections)->first()->design_id ?? PHP_INT_MAX;
                 })->values();
+                $designs = $designs->slice($offset, 20);
             }else{
                 $designs = $designs->offset($offset)->limit(20)->get();
             }

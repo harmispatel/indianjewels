@@ -48,6 +48,7 @@ class DetailDesignResource extends JsonResource
             $data['id'] = $design->id;
             $data['name'] = $design->name;
             $data['category_id'] = $category_name;
+            $data['description'] = $design->description;
             $data['gender_id'] = $gender_name;
             $data['metal_id'] = $metal_name;
             $data['companies'] = isset($company) ? $companyname : [];
