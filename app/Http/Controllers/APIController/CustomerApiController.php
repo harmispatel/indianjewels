@@ -601,6 +601,7 @@ class CustomerApiController extends Controller
                         'success' => true,
                         'message' => 'Design has been Added to Wishlist.',
                         'wishlist_status' => 1,
+                        'total_quantity' =>  UserWishlist::where('user_id',$user->id)->count(),
                     ], Response::HTTP_OK);
                 }
                 else{
@@ -642,6 +643,7 @@ class CustomerApiController extends Controller
                         'success' => true,
                         'message' => 'Remove User wishlist SuccessFully',
                         'wishlist_status' => 0,
+                        'total_quantity' =>  UserWishlist::where('user_id',$userId)->count(),
                     ], Response::HTTP_OK);
             }else{
                 return response()->json(

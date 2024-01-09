@@ -27,6 +27,8 @@ class DesignCollectionListResource extends JsonResource
             $designscollections_array[] = $data;
         }
 
-        return $designscollections_array;
+        $response['wishlist_items'] = $designscollections_array;
+        $response['total_quantity'] = count($designscollections);
+        return $response;
     }
 }
