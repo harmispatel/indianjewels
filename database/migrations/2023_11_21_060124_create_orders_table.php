@@ -28,6 +28,10 @@ class CreateOrdersTable extends Migration
             $table->string('dealer_code')->nullable();
             $table->string('dealer_discount_type',50)->nullable();
             $table->string('dealer_discount_value',50)->nullable();
+            $table->string('dealer_commission_type',50)->nullable();
+            $table->string('dealer_commission_value',50)->nullable();
+            $table->string('dealer_commission',50)->nullable();
+            $table->tinyInteger('commission_status')->nullable();
             $table->json('product_ids')->nullable();
             $table->json('gold_price')->nullable();
             $table->double('sub_total')->default(0.00);

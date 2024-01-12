@@ -25,14 +25,12 @@
     </div>
 
     {{-- Dealers Section --}}
-    <section class="section dashboard">
+    <section class="section dealers">
         <div class="row">
                 <div class="card">
                     <div class="card-body">
-                        <div class="card-title">
-                        </div>
                         <div class="table-responsive custom_dt_table">
-                            <table class="table w-100" id="DealersTable">
+                            <table class="table nowrap w-100" id="DealersTable">
                                 <thead>
                                     <tr>
                                         <th>Id</th>
@@ -40,7 +38,7 @@
                                         <th>Code</th>
                                         <th>Profile</th>
                                         <th>Status</th>
-                                        <th>Joined At</th>
+                                        <th>Joined On</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -95,8 +93,8 @@
                         searchable: false
                     },
                     {
-                        data: 'joined_at',
-                        name: 'joined_at',
+                        data: 'joined_on',
+                        name: 'joined_on',
                         orderable: false,
                         searchable: false
                     },

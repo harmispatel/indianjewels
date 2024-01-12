@@ -34,9 +34,9 @@ class DealerController extends Controller
 
             return DataTables::of($dealers)
             ->addIndexColumn()
-            ->addColumn('joined_at', function ($row){
-                $joined_at =  "(".$row->created_at->diffForHumans().")</br>".date('d-m-Y', strtotime($row->created_at));
-               return $joined_at;
+            ->addColumn('joined_on', function ($row){
+                $joined_on =  "(".$row->created_at->diffForHumans().")</br>".date('d-m-Y', strtotime($row->created_at));
+               return $joined_on;
             })
             ->addColumn('profile_picture', function ($row){
                 $default_profile_picture = asset('public/images/default_images/profiles/profile1.jpg');
@@ -67,7 +67,7 @@ class DealerController extends Controller
 
                 return $action_html;
             })
-            ->rawColumns(['status','actions','joined_at', 'profile_picture'])
+            ->rawColumns(['status','actions','joined_on', 'profile_picture'])
             ->make(true);
         }
     }

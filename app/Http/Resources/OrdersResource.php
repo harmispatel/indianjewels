@@ -36,6 +36,8 @@ class OrdersResource extends JsonResource
                 $order_details['sub_total'] = (isset($order['sub_total'])) ? $order['sub_total'] : '';
                 $order_details['charges'] = (isset($order['charges'])) ? $order['charges'] : '';
                 $order_details['total'] = (isset($order['total'])) ? $order['total'] : '';
+                $order_details['dealer_commission'] = (isset($order['dealer_commission'])) ? $order['dealer_commission'] : '';
+                $order_details['commission_status'] = (isset($order['commission_status'])) ? $order['commission_status'] : '';
                 $order_details['order_date'] = (isset($order['created_at'])) ? date('d-m-Y', strtotime($order['created_at'])) : '';
                 $order_details['order_time'] = (isset($order['created_at'])) ? date('h:i:s a', strtotime($order['created_at'])) : '';
                 $orders[] = $order_details;

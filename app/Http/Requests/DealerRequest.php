@@ -24,6 +24,7 @@ class DealerRequest extends FormRequest
             'pincode' => 'required',
             'comapany_name' => 'required',
             'discount_value' => 'required',
+            'commission_value' => 'required',
             'company_logo' => 'mimes:png,jpg,gif,svg',
             'profile_picture' => 'mimes:png,jpg,gif,svg',
             'documents.*' => 'mimes:jpg,png,pdf,doc,docx',

@@ -125,6 +125,27 @@
                                                 @endif
                                             </div>
                                             <div class="col-md-6 mb-3">
+                                                <label for="commission_type" class="form-label">Commission Type</label>
+                                                <select name="commission_type" id="commission_type" class="form-select">
+                                                    <option value="percentage" {{ (old('commission_type', $dealer->commission_type) == 'percentage') ? 'selected' : '' }}>Percentage</option>
+                                                    <option value="fixed"  {{ (old('commission_type', $dealer->commission_type) == 'fixed') ? 'selected' : '' }}>Fixed</option>
+                                                </select>
+                                                @if ($errors->has('commission_type'))
+                                                    <div class="invalid-feedback">
+                                                        {{ $errors->first('commission_type') }}
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="commission_value" class="form-label">Commission Value <span class="text-danger">*</span></label>
+                                                <input type="number" name="commission_value" id="commission_value" class="form-control {{ ($errors->has('commission_value')) ? 'is-invalid' : '' }}" value="{{ old('commission_value', $dealer->commission_value) }}" placeholder="Enter Commission Value">
+                                                @if ($errors->has('commission_value'))
+                                                    <div class="invalid-feedback">
+                                                        {{ $errors->first('commission_value') }}
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            <div class="col-md-6 mb-3">
                                                 <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
                                                 <input type="email" name="email" id="email" class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}" placeholder="Enter Dealer Email" value="{{ old('email', $dealer->email) }}">
                                                 @if ($errors->has('email'))

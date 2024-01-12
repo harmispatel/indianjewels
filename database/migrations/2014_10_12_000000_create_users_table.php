@@ -41,6 +41,8 @@ class CreateUsersTable extends Migration
             $table->string('dealer_code')->nullable();
             $table->string('discount_type')->nullable();
             $table->string('discount_value')->nullable();
+            $table->string('commission_type')->nullable();
+            $table->string('commission_value')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();

@@ -961,6 +961,8 @@ class CustomerApiController extends Controller
 
             $user = User::find($user_id);
             $dealer = User::where('dealer_code', $dealer_code)->first();
+            $commission_type = (isset($dealer->commission_type)) ? $dealer->commission_type : '';
+            $commission_value = (isset($dealer->commission_value)) ? $dealer->commission_value : 0;
 
             if($user && count($cart_items) > 0){
 
@@ -1028,6 +1030,20 @@ class CustomerApiController extends Controller
                     $update_order = Order::find($order->id);
                     $update_order->gold_price = $gold_price;
                     $update_order->product_ids = $product_ids;
+
+                    // Add Dealer Commission
+                    if(!empty($commission_type) && $commission_value > 0 && $charges > 0){
+                        if($commission_type == 'percentage'){
+                            $commission_val = $charges * $commission_value / 100;
+                        }else{
+                            $commission_val = $charges - $commission_value;
+                        }
+                        $update_order->dealer_commission_type = $commission_type;
+                        $update_order->dealer_commission_value = $commission_value;
+                        $update_order->dealer_commission = $commission_val;
+                        $update_order->commission_status = 0;
+                    }
+
                     $update_order->update();
 
                     // Delete Items from Cart
