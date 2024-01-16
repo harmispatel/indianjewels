@@ -177,10 +177,13 @@ Route::group(['prefix' => 'admin'], function ()
         });
 
         // Reports
-        Route::get('summary-items', [ReportController::class,'summaryitemsindex'])->name('reports.summary.items');
-        Route::get('star-reports', [ReportController::class,'starreportindex'])->name('reports.star');
-        Route::get('scheme-reports', [ReportController::class,'schemereportindex'])->name('reports.scheme');
-        Route::get('dealer-performance', [ReportController::class,'dealerperrformanceindex'])->name('reports.dealer.performace');
+        Route::controller(ReportController::class)->group(function () {
+            Route::get('reports/summary', 'summaryReport')->name('reports.summary');
+            Route::get('reports/star', 'starReport')->name('reports.star');
+            Route::get('reports/scheme', 'schemeReport')->name('reports.scheme');
+            Route::get('reports/performance', 'performanceReport')->name('reports.performance');
+            Route::get('reports/performance/load', 'loadPerformanceReport')->name('reports.performance.load');
+        });
 
         // Orders
         Route::controller(OrderController::class)->group(function () {

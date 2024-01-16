@@ -126,68 +126,42 @@
 
         {{-- Reports --}}
         <li class="nav-item">
-            <a class="nav-link {{ $currentRouteName != 'reports.summary.items' && $currentRouteName != 'reports.star' && $currentRouteName != 'reports.scheme' && $currentRouteName != 'reports.dealer.performace' ? 'collapsed' : '' }} {{ $currentRouteName == 'reports.summary.items' || $currentRouteName == 'reports.star' || $currentRouteName == 'reports.scheme' || $currentRouteName == 'reports.dealer.performace' ? 'active-tab' : '' }}" data-bs-target="#report-nav" data-bs-toggle="collapse" href="#">
+            <a class="nav-link {{ $currentRouteName == 'reports.summary' || $currentRouteName == 'reports.star' || $currentRouteName == 'reports.scheme' || $currentRouteName == 'reports.performance' ? '' : 'collapsed' }}" data-bs-target="#report-nav" data-bs-toggle="collapse" href="#">
                 <i class="fa-solid fa-file"></i> <span>Reports</span> <i class="bi bi-chevron-down ms-auto"></i>
             </a>
-            <ul id="report-nav"
-                class="nav-content collapse {{ $currentRouteName == 'reports.summary.items' || $currentRouteName == 'reports.star' || $currentRouteName == 'reports.scheme' || $currentRouteName == 'reports.dealer.performace' ? 'show' : '' }} {{ $currentRouteName == 'reports.summary.items' || $currentRouteName == 'reports.star' || $currentRouteName == 'reports.scheme' || $currentRouteName == 'reports.dealer.performace' ? 'active-tab' : '' }}"
-                data-bs-parent="#sidebar-nav"
-                aria-expanded="{{ $currentRouteName == 'reports.summary.items' || $currentRouteName == 'reports.star' || $currentRouteName == 'reports.scheme' || $currentRouteName == 'reports.dealer.performace' ? 'true' : 'false' }}">
-
+            <ul id="report-nav" class="nav-content collapse {{ $currentRouteName == 'reports.summary' || $currentRouteName == 'reports.star' || $currentRouteName == 'reports.scheme' || $currentRouteName == 'reports.performance' ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
                 <li class="nav-item">
-                    <a class="nav-link {{ $currentRouteName != 'reports.summary.items' && $currentRouteName != 'reports.star' ? 'collapsed' : '' }} {{ $currentRouteName == 'reports.summary.items' || $currentRouteName == 'reports.star' ? 'active-tab' : '' }}"
-                        data-bs-target="#item-reports" data-bs-toggle="collapse" href="#"
-                        aria-expanded="{{ $currentRouteName == 'reports.summary.items' || $currentRouteName == 'reports.star' ? 'true' : 'false' }}">
-                        <i class=""></i><span> Item Reports</span>
-                        <i class="bi bi-chevron-down ms-auto"></i>
+                    <a class="nav-link {{ $currentRouteName == 'reports.summary' || $currentRouteName == 'reports.star' ? '' : 'collapsed' }}" data-bs-target="#item-reports" data-bs-toggle="collapse" href="#">
+                        <span> Item Reports</span><i class="bi bi-chevron-down ms-auto"></i>
                     </a>
-                    <ul id="item-reports"
-                        class="nav-content collapse {{ $currentRouteName == 'reports.summary.items' || $currentRouteName == 'reports.star' ? 'show' : '' }} {{ $currentRouteName == 'reports.summary.items' || $currentRouteName == 'reports.star' ? 'active-tab' : '' }}"
-                        data-bs-parent="#report-nav">
-                            <ol>
-                                <a href="{{ route('reports.summary.items') }}"
-                                    class="{{ $currentRouteName == 'reports.summary.items' ? 'active' : '' }}">
-                                    <i
-                                        class="{{ $currentRouteName == 'reports.summary.items' ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Summary
-                                        for Item</span>
-                                </a>
-                            </ol>
-                            <ol>
-                                <a href="{{ route('reports.star') }}"
-                                    class="{{ $currentRouteName == 'reports.star' ? 'active' : '' }}">
-                                    <i
-                                        class="{{ $currentRouteName == 'reports.star' ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Star
-                                        Report</span>
-                                </a>
-                            </ol>
+                    <ul id="item-reports" class="nav-content collapse {{ $currentRouteName == 'reports.summary' || $currentRouteName == 'reports.star' ? 'show' : '' }}" data-bs-parent="#report-nav">
+                        <ol>
+                            <a href="{{ route('reports.summary') }}" class="{{ $currentRouteName == 'reports.summary' ? 'active' : '' }}">
+                                <i class="bi bi-circle"></i><span>Summary</span>
+                            </a>
+                        </ol>
+                        <ol>
+                            <a href="{{ route('reports.star') }}" class="{{ $currentRouteName == 'reports.star' ? 'active' : '' }}">
+                                <i class="bi bi-circle"></i><span>Star Report</span>
+                            </a>
+                        </ol>
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ $currentRouteName != 'reports.scheme' && $currentRouteName != 'reports.dealer.performace' ? 'collapsed' : '' }} {{ $currentRouteName == 'reports.scheme' || $currentRouteName == 'reports.dealer.performace' ? 'active-tab' : '' }}"
-                        aria-expanded="{{ $currentRouteName == 'reports.scheme' || $currentRouteName == 'reports.dealer.performace' ? 'true' : 'false' }}"
-                        data-bs-target="#dealer-report" data-bs-toggle="collapse" href="#">
-                        <i class=""></i><span> Dealer Reports</span>
-                        <i class="bi bi-chevron-down ms-auto"></i>
+                    <a class="nav-link {{ $currentRouteName == 'reports.scheme' || $currentRouteName == 'reports.performance' ? '' : 'collapsed' }}" data-bs-target="#dealer-reports" data-bs-toggle="collapse" href="#">
+                        <span> Dealer Reports</span><i class="bi bi-chevron-down ms-auto"></i>
                     </a>
-                    <ul id="dealer-report"
-                        class="nav-content collapse {{ $currentRouteName == 'reports.scheme' || $currentRouteName == 'reports.dealer.performace' ? 'show' : '' }}"
-                        data-bs-parent="#report-nav">
-                            <ol>
-                                <a href="{{ route('reports.scheme') }}"
-                                    class="{{ $currentRouteName == 'reports.scheme' ? 'active' : '' }}">
-                                    <i
-                                        class="{{ $currentRouteName == 'reports.scheme' ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Scheme
-                                        Report</span>
-                                </a>
-                            </ol>
-                            <ol>
-                                <a href="{{ route('reports.dealer.performace') }}"
-                                    class="{{ $currentRouteName == 'reports.dealer.performace' ? 'active' : '' }}">
-                                    <i
-                                        class="{{ $currentRouteName == 'reports.dealer.performace' ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Dealer
-                                        Performance</span>
-                                </a>
-                            </ol>
+                    <ul id="dealer-reports" class="nav-content collapse {{ $currentRouteName == 'reports.scheme' || $currentRouteName == 'reports.performance' ? 'show' : '' }}" data-bs-parent="#report-nav">
+                        <ol>
+                            <a href="{{ route('reports.scheme') }}" class="{{ $currentRouteName == 'reports.scheme' ? 'active' : '' }}">
+                                <i class="bi bi-circle"></i><span>Scheme</span>
+                            </a>
+                        </ol>
+                        <ol>
+                            <a href="{{ route('reports.performance') }}" class="{{ $currentRouteName == 'reports.performance' ? 'active' : '' }}">
+                                <i class="bi bi-circle"></i><span>Performance</span>
+                            </a>
+                        </ol>
                     </ul>
                 </li>
             </ul>
