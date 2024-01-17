@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\User;
+use Carbon\Carbon;
 use Google\Service\ServiceControl\Auth;
 use Illuminate\Http\Request;
 
@@ -116,13 +117,13 @@ class ReportController extends Controller
     {
         if ($request->ajax()){
 
+            $current_date = strtotime(Carbon::now());
             $limit = $request->request->get('length');
             $start = $request->request->get('start');
             $search = $request->input('search.value');
             $start_date = $request->start_date;
             $end_date = $request->end_date;
             $dealer_id = $request->dealer_id;
-
             $orders = Order::where('dealer_id', $dealer_id);
 
             if(!empty($start_date) && !empty($end_date)){
@@ -146,14 +147,15 @@ class ReportController extends Controller
             if(count($orders) > 0){
                 $srno = 1;
                 foreach($orders as $order){
+                    $commission_date = strtotime($order->commission_date);
                     $item = [
                         'id' => $srno,
                         'orderno' => $order->id ?? '',
                         'customer' => $order->name ?? '',
                         'bill_amount' => number_format($order->total, 2) ?? 0.00,
                         'labour_amount' => number_format($order->charges, 2) ?? 0.00,
-                        'complete_commission' => 0,
-                        'pending_commission' => 0,
+                        'complete_commission' => ($current_date >= $commission_date) ? $order->dealer_commission : 0,
+                        'pending_commission' => ($current_date < $commission_date) ? $order->dealer_commission : 0,
                     ];
 
                     $all_items[] = $item;
