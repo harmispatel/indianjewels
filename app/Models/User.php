@@ -65,4 +65,9 @@ class User extends Authenticatable
         return $this->hasOne(State::class,'id','shipping_state')->select('id','name');
     }
 
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'dealer_id', 'id');
+    }
+
 }

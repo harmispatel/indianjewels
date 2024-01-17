@@ -29,8 +29,7 @@ class ReportController extends Controller
 
     public function performanceReport()
     {
-        $dealers = User::where('user_type', 1)->get();
-        return view('admin.reports.performance_report', compact(['dealers']));
+        return view('admin.reports.performance_report');
     }
 
 
@@ -38,73 +37,127 @@ class ReportController extends Controller
     {
         if ($request->ajax()){
 
-            $columns = array(
-                0 => 'id',
-            );
+            $limit = $request->request->get('length');
+            $start = $request->request->get('start');
+            $search = $request->input('search.value');
+            $start_date = $request->start_date;
+            $end_date = $request->end_date;
+
+            $dealers = User::where('user_type', 1);
+
+            if (!empty($search)) {
+                $dealers->where(function ($query) use ($search) {
+                    $query->where('dealer_code', 'LIKE', "%{$search}%")
+                        ->orWhere('name', 'LIKE', "%{$search}%")
+                        ->orWhere('phone', 'LIKE', "%{$search}%");
+                });
+            }
+
+            // Apply date range condition
+            if (!empty($start_date) && !empty($end_date)) {
+                $dealers->whereHas('orders', function ($subquery) use ($start_date, $end_date) {
+                    $subquery->whereBetween('created_at', [$start_date, $end_date]);
+                });
+            }
+
+            $dealers->with('orders');
+            $totalData = clone $dealers;
+            $totalFiltered = $totalData->count();
+            $totalData = $totalData->count();
+            $dealers = $dealers->offset($start)->limit($limit)->get();
+            $dealers = $dealers->sortByDesc(function ($dealer) {
+                return $dealer->orders->where('commission_status', 1)->sum('dealer_commission');
+            });
+
+            $all_items = [];
+
+            if(count($dealers) > 0){
+                $srno = 1;
+                foreach($dealers as $dealer){
+                    $complete_commission = $dealer->orders->where('commission_status', 1)->sum('dealer_commission');
+                    $pending_commission = $dealer->orders->where('commission_status', 0)->sum('dealer_commission');
+
+                    $item = [
+                        'id' => $srno,
+                        'code' => $dealer->dealer_code ?? '',
+                        'name' => $dealer->name ?? '',
+                        'phone' => $dealer->phone ?? '',
+                        'complete_commission' => number_format($complete_commission, 2),
+                        'pending_commission' => number_format($pending_commission, 2),
+                        'actions' => '<a href="'.route('reports.performance.details', $dealer->id).'" class="btn btn-sm btn-primary"><i class="fa-solid fa-info-circle"></i></a>',
+                    ];
+
+                    $all_items[] = $item;
+                    $srno++;
+                }
+            }
+
+            return response()->json([
+                "draw"            => intval($request->request->get('draw')),
+                "recordsTotal"    => intval($totalData),
+                "recordsFiltered" => intval(isset($totalFiltered) ? $totalFiltered : ''),
+                "data"            => $all_items
+            ]);
+        }
+    }
+
+
+    public function performanceReportDetails($id)
+    {
+        try {
+            $dealer = User::where('id', $id)->where('user_type', 1)->first();
+            return view('admin.reports.performance_report_details', compact(['dealer']));
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'Oops, Something went wrong!');
+        }
+    }
+
+    public function loadPerformanceReportDetails(Request $request)
+    {
+        if ($request->ajax()){
 
             $limit = $request->request->get('length');
             $start = $request->request->get('start');
-            $order = 'created_at';
-            $dir = 'DESC';
             $search = $request->input('search.value');
+            $start_date = $request->start_date;
+            $end_date = $request->end_date;
             $dealer_id = $request->dealer_id;
 
-            if($dealer_id != ''){
-                $totalData = Order::where('dealer_id', '=', $dealer_id);
-                $orders = Order::where('dealer_id', '=', $dealer_id);
-            }else{
-                $totalData = Order::where('dealer_id', '!=', '');
-                $orders = Order::where('dealer_id', '!=', '');
+            $orders = Order::where('dealer_id', $dealer_id);
+
+            if(!empty($start_date) && !empty($end_date)){
+                $orders = $orders->whereBetween('created_at', [$start_date, $end_date]);
             }
 
-            if(!empty($search)){
-                $orders->where('id', 'LIKE', "%{$search}%")->orWhere('name', 'LIKE', "%{$search}%")->orWhere('phone', 'LIKE', "%{$search}%")->orWhere('order_status', 'LIKE', "%{$search}%");
-                $totalData = $totalData->where('id', 'LIKE', "%{$search}%")->orWhere('name', 'LIKE', "%{$search}%")->orWhere('phone', 'LIKE', "%{$search}%")->orWhere('order_status', 'LIKE', "%{$search}%");
+            if (!empty($search)) {
+                $orders->where(function ($query) use ($search) {
+                    $query->where('id', 'LIKE', "%{$search}%")
+                    ->orWhere('name', 'LIKE', "%{$search}%");
+                });
             }
 
+            $totalData = clone $orders;
+            $totalFiltered = $totalData->count();
             $totalData = $totalData->count();
-            $totalFiltered = $totalData;
-            $orders = $orders->offset($start)->orderBy($order, $dir)->limit($limit)->get();
+            $orders = $orders->offset($start)->limit($limit)->get();
 
-            $item = array();
-            $all_items = array();
+            $all_items = [];
 
             if(count($orders) > 0){
-                foreach ($orders as $order) {
-                    $item['id'] = $order->id;
-                    $item['customer'] = (isset($order['name']) && !empty($order['name'])) ? $order['name'] : '';
-                    $item['phone'] = (isset($order['phone'])) ? $order['phone'] : '';
-                    $item['dealer'] = (isset($order->dealer['name'])) ? $order->dealer['name'] : '-';
-                    $item['commission'] = (isset($order['dealer_commission']) && !empty($order['dealer_commission'])) ? $order['dealer_commission'] : '-';
-
-                    // Order Status
-                    $order_status_html = '';
-                    if($order['order_status'] == 'pending'){
-                        $order_status_html .= '<span class="badge bg-warning">Pending.</span>';
-                    }elseif($order['order_status'] == 'accepted'){
-                        $order_status_html .= '<span class="badge bg-info">Accepted.</span>';
-                    }elseif($order['order_status'] == 'processing'){
-                        $order_status_html .= '<span class="badge bg-primary">Processing.</span>';
-                    }elseif($order['order_status'] == 'completed'){
-                        $order_status_html .= '<span class="badge bg-success">Completed.</span>';
-                    }
-                    $item['order_status'] = $order_status_html;
-
-                    // Commission Status
-                    $commission_status_html = '';
-                    if($order['commission_status'] == 0){
-                        $commission_status_html .= '<span class="badge bg-danger">Unpaid.</span>';
-                    }elseif($order['commission_status'] == 1){
-                        $commission_status_html .= '<span class="badge bg-success">Paid.</span>';
-                    }else{
-                        $commission_status_html .= '-';
-                    }
-                    $item['commission_status'] = $commission_status_html;
-
-                    $action_html = '-';
-                    $item['actions'] = $action_html;
+                $srno = 1;
+                foreach($orders as $order){
+                    $item = [
+                        'id' => $srno,
+                        'orderno' => $order->id ?? '',
+                        'customer' => $order->name ?? '',
+                        'bill_amount' => number_format($order->total, 2) ?? 0.00,
+                        'labour_amount' => number_format($order->charges, 2) ?? 0.00,
+                        'complete_commission' => 0,
+                        'pending_commission' => 0,
+                    ];
 
                     $all_items[] = $item;
+                    $srno++;
                 }
             }
 

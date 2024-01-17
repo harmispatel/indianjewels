@@ -1,16 +1,19 @@
 @extends('admin.layouts.admin-layout')
-@section('title', 'DEALER PERFORMANCE - REPORT - IMPEL JEWELLERS')
+@section('title', 'DEALER PERFORMANCE - REPORT DETAILS - IMPEL JEWELLERS')
 @section('content')
+
+    <input type="hidden" name="dealer_id" id="dealer_id" value="{{ (isset($dealer->id)) ? $dealer->id : '' }}">
 
     {{-- Page Title --}}
     <div class="pagetitle">
-        <h1>Dealer Performance Report</h1>
+        <h1>Dealer Performance Report Details</h1>
         <div class="row">
             <div class="col-md-8">
                 <nav>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item active">Dealer Performance Report</li>
+                        <li class="breadcrumb-item"><a href="{{ route('reports.performance') }}">Dealer Performance Report</a></li>
+                        <li class="breadcrumb-item active">Dealer Performance Report Details</li>
                     </ol>
                 </nav>
             </div>
@@ -29,16 +32,16 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive p-3">
-                            <table class="table nowrap" id="dealerPerformance">
+                            <table class="table nowrap" id="orderDetails">
                                 <thead>
                                     <tr>
                                         <th scope="col">#</th>
-                                        <th scope="col">Code</th>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Phone</th>
+                                        <th scope="col">Order No.</th>
+                                        <th scope="col">Customer</th>
+                                        <th scope="col">Bill Amount</th>
+                                        <th scope="col">Labour Amount</th>
                                         <th scope="col">Complete Commission</th>
                                         <th scope="col">Pending Commission</th>
-                                        <th scope="col">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -58,16 +61,17 @@
     loadRecords();
 
     function loadRecords(startDate = null, endDate = null){
-        $('#dealerPerformance').DataTable().destroy();
-        // Load All Reports
-        var table = $('#dealerPerformance').DataTable({
+        $('#orderDetails').DataTable().destroy();
+        // Load All Order Details
+        var table = $('#orderDetails').DataTable({
             processing: true,
             serverSide: true,
             pageLength: 100,
             ajax: {
-                url: "{{ route('reports.performance.load') }}",
+                url: "{{ route('reports.performance.details.load') }}",
                 type: "GET",
                 data: {
+                    'dealer_id' : $('#dealer_id').val(),
                     start_date: startDate,
                     end_date: endDate,
                 }
@@ -79,20 +83,26 @@
                     searchable: false,
                 },
                 {
-                    data: 'code',
-                    name: 'code',
+                    data: 'orderno',
+                    name: 'orderno',
                     searchable: true,
                     orderable: false,
                 },
                 {
-                    data: 'name',
-                    name: 'name',
+                    data: 'customer',
+                    name: 'customer',
                     searchable: true,
                     orderable: false,
                 },
                 {
-                    data: 'phone',
-                    name: 'phone',
+                    data: 'bill_amount',
+                    name: 'bill_amount',
+                    orderable: false,
+                    searchable: false
+                },
+                {
+                    data: 'labour_amount',
+                    name: 'labour_amount',
                     orderable: false,
                     searchable: false
                 },
@@ -105,12 +115,6 @@
                 {
                     data: 'pending_commission',
                     name: 'pending_commission',
-                    orderable: false,
-                    searchable: false
-                },
-                {
-                    data: 'actions',
-                    name: 'actions',
                     orderable: false,
                     searchable: false
                 },

@@ -183,6 +183,8 @@ Route::group(['prefix' => 'admin'], function ()
             Route::get('reports/scheme', 'schemeReport')->name('reports.scheme');
             Route::get('reports/performance', 'performanceReport')->name('reports.performance');
             Route::get('reports/performance/load', 'loadPerformanceReport')->name('reports.performance.load');
+            Route::get('reports/performance/details/{dealer_id}', 'performanceReportDetails')->name('reports.performance.details');
+            Route::get('reports/performance/details-load', 'loadPerformanceReportDetails')->name('reports.performance.details.load');
         });
 
         // Orders
