@@ -146,6 +146,15 @@
                                                 @endif
                                             </div>
                                             <div class="col-md-6 mb-3">
+                                                <label for="commission_days" class="form-label">Commission Days <span class="text-danger">*</span></label>
+                                                <input type="number" name="commission_days" id="commission_days" class="form-control {{ ($errors->has('commission_days')) ? 'is-invalid' : '' }}" value="{{ old('commission_days', $dealer->commission_days) }}" placeholder="Enter Commission Days">
+                                                @if ($errors->has('commission_days'))
+                                                    <div class="invalid-feedback">
+                                                        {{ $errors->first('commission_days') }}
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            <div class="col-md-6 mb-3">
                                                 <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
                                                 <input type="email" name="email" id="email" class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}" placeholder="Enter Dealer Email" value="{{ old('email', $dealer->email) }}">
                                                 @if ($errors->has('email'))

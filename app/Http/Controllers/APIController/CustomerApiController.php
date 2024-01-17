@@ -963,6 +963,8 @@ class CustomerApiController extends Controller
             $dealer = User::where('dealer_code', $dealer_code)->first();
             $commission_type = (isset($dealer->commission_type)) ? $dealer->commission_type : '';
             $commission_value = (isset($dealer->commission_value)) ? $dealer->commission_value : 0;
+            $commission_days = (isset($dealer->commission_days)) ? $dealer->commission_days : 10;
+            $commission_date = Carbon::now()->addDays($commission_days);
 
             if($user && count($cart_items) > 0){
 
@@ -1041,6 +1043,7 @@ class CustomerApiController extends Controller
                         $update_order->dealer_commission_type = $commission_type;
                         $update_order->dealer_commission_value = $commission_value;
                         $update_order->dealer_commission = $commission_val;
+                        $update_order->commission_date = $commission_date;
                         $update_order->commission_status = 0;
                     }
 

@@ -43,6 +43,7 @@ class CreateUsersTable extends Migration
             $table->string('discount_value')->nullable();
             $table->string('commission_type')->nullable();
             $table->string('commission_value')->nullable();
+            $table->string('commission_days',25)->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();

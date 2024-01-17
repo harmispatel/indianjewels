@@ -25,6 +25,7 @@ class DealerRequest extends FormRequest
             'comapany_name' => 'required',
             'discount_value' => 'required',
             'commission_value' => 'required',
+            'commission_days' => 'required',
             'company_logo' => 'mimes:png,jpg,gif,svg',
             'profile_picture' => 'mimes:png,jpg,gif,svg',
             'documents.*' => 'mimes:jpg,png,pdf,doc,docx',
