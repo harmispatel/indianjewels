@@ -180,6 +180,9 @@ Route::group(['prefix' => 'admin'], function ()
         Route::controller(ReportController::class)->group(function () {
             Route::get('reports/summary', 'summaryReport')->name('reports.summary');
             Route::get('reports/star', 'starReport')->name('reports.star');
+            Route::get('reports/star/details/{design_id}', 'starReportDetails')->name('reports.star.details');
+            Route::get('reports/star/details-load', 'loadStarReportDetails')->name('reports.star.details.load');
+            Route::get('reports/star/load', 'loadStarReport')->name('reports.star.load');
             Route::get('reports/scheme', 'schemeReport')->name('reports.scheme');
             Route::get('reports/performance', 'performanceReport')->name('reports.performance');
             Route::get('reports/performance/load', 'loadPerformanceReport')->name('reports.performance.load');

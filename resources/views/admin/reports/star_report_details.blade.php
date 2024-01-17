@@ -1,16 +1,19 @@
 @extends('admin.layouts.admin-layout')
-@section('title', 'STAR REPORT - IMPEL JEWELLERS')
+@section('title', 'STAR REPORT DETAILS - IMPEL JEWELLERS')
 @section('content')
+
+    <input type="hidden" name="design_id" id="design_id" value="{{ $design->id }}">
 
     {{-- Page Title --}}
     <div class="pagetitle">
-        <h1>Star Report</h1>
+        <h1>Star Report Details</h1>
         <div class="row">
             <div class="col-md-8">
                 <nav>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item active">Star Report</li>
+                        <li class="breadcrumb-item"><a href="{{ route('reports.star') }}">Star Report</a></li>
+                        <li class="breadcrumb-item active">Star Report Details</li>
                     </ol>
                 </nav>
             </div>
@@ -28,10 +31,10 @@
                                 <thead>
                                     <tr>
                                         <th scope="col">#</th>
-                                        <th scope="col">Design Code</th>
-                                        <th scope="col">Design Name</th>
-                                        <th scope="col">Stars</th>
-                                        <th scope="col">Actions</th>
+                                        <th scope="col">Dealer Code</th>
+                                        <th scope="col">Dealer Name</th>
+                                        <th scope="col">Dealer Contact</th>
+                                        <th scope="col">Dealer City</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -57,9 +60,10 @@
             serverSide: true,
             pageLength: 100,
             ajax: {
-                url: "{{ route('reports.star.load') }}",
+                url: "{{ route('reports.star.details.load') }}",
                 type: "GET",
                 data: {
+                    'design_id' : $('#design_id').val(),
                 }
             },
             columns: [{
@@ -69,26 +73,26 @@
                     searchable: false,
                 },
                 {
-                    data: 'code',
-                    name: 'code',
+                    data: 'dealer_code',
+                    name: 'dealer_code',
                     searchable: true,
                     orderable: false,
                 },
                 {
-                    data: 'name',
-                    name: 'name',
+                    data: 'dealer_name',
+                    name: 'dealer_name',
                     searchable: true,
                     orderable: false,
                 },
                 {
-                    data: 'stars',
-                    name: 'stars',
+                    data: 'dealer_contact',
+                    name: 'dealer_contact',
                     orderable: false,
                     searchable: false
                 },
                 {
-                    data: 'actions',
-                    name: 'actions',
+                    data: 'dealer_city',
+                    name: 'dealer_city',
                     orderable: false,
                     searchable: false
                 },

@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Order;
-use App\Models\User;
 use Carbon\Carbon;
-use Google\Service\ServiceControl\Auth;
 use Illuminate\Http\Request;
+use App\Models\{DealerCollection, Design, Order, User};
 
 class ReportController extends Controller
 {
@@ -19,6 +17,131 @@ class ReportController extends Controller
     public function starReport()
     {
         return view('admin.reports.star_report');
+    }
+
+
+    public function loadStarReport(Request $request)
+    {
+        if ($request->ajax()){
+
+            $limit = $request->request->get('length');
+            $start = $request->request->get('start');
+            $search = $request->input('search.value');
+
+            $designes = Design::withCount(['dealer_collections']);
+
+            if (!empty($search)) {
+                $designes->where(function ($query) use ($search) {
+                    $query->where('code', 'LIKE', "%{$search}%")
+                    ->orWhere('name', 'LIKE', "%{$search}%");
+                });
+            }
+
+            // Filter designs with dealer_collections_count greater than 0
+            $designes = $designes->get()->filter(function ($design) {
+                return $design->dealer_collections_count > 0;
+            });
+
+            // Order designs by dealer_collections_count in descending order
+            $designes = $designes->sortByDesc('dealer_collections_count')->values();
+
+            $totalData = clone $designes;
+            $totalFiltered = $totalData->count();
+            $totalData = $totalData->count();
+
+            // Apply offset and limit after filtering
+            $designes = $designes->slice($start)->take($limit);
+
+            $all_items = [];
+
+            if(count($designes) > 0){
+                $srno = 1;
+                foreach($designes as $design){
+                    $item = [
+                        'id' => $srno,
+                        'code' => $design->code ?? '',
+                        'name' => $design->name ?? '',
+                        'stars' => "<strong>$design->dealer_collections_count</strong>" ?? 0,
+                        'actions' => '<a href="'.route('reports.star.details', $design->id).'" class="btn btn-sm btn-primary"><i class="fa-solid fa-info-circle"></i></a>',
+                    ];
+
+                    $all_items[] = $item;
+                    $srno++;
+                }
+            }
+
+            return response()->json([
+                "draw"            => intval($request->request->get('draw')),
+                "recordsTotal"    => intval($totalData),
+                "recordsFiltered" => intval(isset($totalFiltered) ? $totalFiltered : ''),
+                "data"            => $all_items
+            ]);
+        }
+    }
+
+
+    public function starReportDetails($id)
+    {
+        try {
+            $design = Design::where('id', $id)->first();
+            return view('admin.reports.star_report_details', compact(['design']));
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'Oops, Something went wrong!');
+        }
+    }
+
+
+    public function loadStarReportDetails(Request $request)
+    {
+        if ($request->ajax()){
+
+            $limit = $request->request->get('length');
+            $start = $request->request->get('start');
+            $search = $request->input('search.value');
+            $design_id = $request->design_id;
+            $dealer_collections = DealerCollection::with(['dealer'])->where('design_id', $design_id);
+
+            if (!empty($search)) {
+                $dealer_collections->whereHas('dealer',function ($query) use ($search) {
+                    $query->where('dealer_code', 'LIKE', "%{$search}%")
+                    ->orWhere('name', 'LIKE', "%{$search}%")
+                    ->orWhere('phone', 'LIKE', "%{$search}%")
+                    ->orWhereHas('company_city', function ($subquery) use ($search) {
+                        $subquery->where('name', 'LIKE', "%{$search}%");
+                    });
+                });
+            }
+
+            $totalData = clone $dealer_collections;
+            $totalFiltered = $totalData->count();
+            $totalData = $totalData->count();
+            $dealer_collections = $dealer_collections->offset($start)->limit($limit)->latest()->get();
+
+            $all_items = [];
+
+            if(count($dealer_collections) > 0){
+                $srno = 1;
+                foreach($dealer_collections as $dealer_collection){
+                    $item = [
+                        'id' => $srno,
+                        'dealer_code' => $dealer_collection->dealer->dealer_code ?? '',
+                        'dealer_name' => $dealer_collection->dealer->name ?? '',
+                        'dealer_contact' => $dealer_collection->dealer->phone ?? '',
+                        'dealer_city' => $dealer_collection->dealer->company_city->name ?? '',
+                    ];
+
+                    $all_items[] = $item;
+                    $srno++;
+                }
+            }
+
+            return response()->json([
+                "draw"            => intval($request->request->get('draw')),
+                "recordsTotal"    => intval($totalData),
+                "recordsFiltered" => intval(isset($totalFiltered) ? $totalFiltered : ''),
+                "data"            => $all_items
+            ]);
+        }
     }
 
 

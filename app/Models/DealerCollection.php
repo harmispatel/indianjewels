@@ -17,5 +17,9 @@ class DealerCollection extends Model
         return $this->hasOne(Design::class, 'id', 'design_id');
     }
 
+    public function dealer()
+    {
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
 
 }
