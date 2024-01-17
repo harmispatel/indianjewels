@@ -156,6 +156,7 @@ class ReportController extends Controller
                         'labour_amount' => number_format($order->charges, 2) ?? 0.00,
                         'complete_commission' => ($current_date >= $commission_date) ? $order->dealer_commission : 0,
                         'pending_commission' => ($current_date < $commission_date) ? $order->dealer_commission : 0,
+                        'actions' => ($order->commission_status == 0) ? '<a onclick="payCommission('.$order->id.')" class="btn btn-sm btn-success"><i class="fa-solid fa-check-circle"></i></a>' : '<button class="btn btn-sm btn-success" disabled>PAID</button>',
                     ];
 
                     $all_items[] = $item;

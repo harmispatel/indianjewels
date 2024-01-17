@@ -193,6 +193,7 @@ Route::group(['prefix' => 'admin'], function ()
             Route::get('orders/load', 'load')->name('orders.load');
             Route::get('orders/show/{id}', 'show')->name('orders.show');
             Route::post('orders/process', 'orderProcess')->name('orders.process');
+            Route::post('orders/pay-commission', 'payCommission')->name('orders.pay-commission');
         });
 
         // Import/Export

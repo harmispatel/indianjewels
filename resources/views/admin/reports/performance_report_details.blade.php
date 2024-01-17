@@ -42,6 +42,7 @@
                                         <th scope="col">Labour Amount</th>
                                         <th scope="col">Complete Commission</th>
                                         <th scope="col">Pending Commission</th>
+                                        <th scope="col">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -118,6 +119,12 @@
                     orderable: false,
                     searchable: false
                 },
+                {
+                    data: 'actions',
+                    name: 'actions',
+                    orderable: false,
+                    searchable: false
+                },
             ]
         });
     }
@@ -130,6 +137,26 @@
             loadRecords(startDate, endDate);
         }
     );
+
+    function payCommission(id){
+        $.ajax({
+            type: "POST",
+            url: "{{ route('orders.pay-commission') }}",
+            data: {
+                "_token" : "{{ csrf_token() }}",
+                "id" : id,
+            },
+            dataType: "JSON",
+            success: function (response) {
+                if(response.success == 1){
+                    toastr.success(response.message);
+                    loadRecords();
+                }else{
+                    toastr.success(response.message);
+                }
+            }
+        });
+    }
 
 </script>
 @endsection

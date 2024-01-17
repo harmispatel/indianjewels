@@ -201,4 +201,23 @@ class OrderController extends Controller
             ]);
         }
     }
+
+    // Pay Order Commission
+    function payCommission(Request $request)
+    {
+        try {
+            $order = Order::find($request->id);
+            $order->commission_status = 1;
+            $order->update();
+            return response()->json([
+                'success' => 1,
+                'message' => 'Commission has been Paid.',
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => 0,
+                'message' => 'Oops, Something went wrong!',
+            ]);
+        }
+    }
 }
