@@ -255,7 +255,7 @@ class CustomerApiController extends Controller
             $parent_category = (isset($request->category_id)) ? $request->category_id : '';
             $metal = (isset($request->metal_id)) ? $request->metal_id : '';
             $gender = (isset($request->gender_id)) ? $request->gender_id : '';
-            $tags = (isset($request->tag_id)) ? $request->tag_id : [];
+            $tag = (isset($request->tag_id)) ? $request->tag_id : [];
             $search = (isset($request->search)) ? $request->search : '';
             $sort_by = (isset($request->sort_by)) ? $request->sort_by : '';
             $minprice = (isset($request->min_price)) ? $request->min_price : '';
@@ -290,11 +290,9 @@ class CustomerApiController extends Controller
                 }
 
                 // Tags Filter
-                if (isset($tags) && is_array($tags) && !empty($tags)) {
-                    $designs->where(function ($query) use ($tags) {
-                        foreach ($tags as $tag) {
-                            $query->orWhereJsonContains('tags', $tag);
-                        }
+                if (isset($tag) && !empty($tag)) {
+                    $designs->where(function ($query) use ($tag) {
+                        $query->orWhereJsonContains('tags', $tag);
                     });
                 }
 
@@ -325,9 +323,9 @@ class CustomerApiController extends Controller
                 }])->get()->sortBy(function($design) {
                     return optional($design->dealer_collections)->first()->design_id ?? PHP_INT_MAX;
                 })->values();
-                $designs = $designs->slice($offset, 20);
+                $designs = $designs->slice($offset, 40);
             }else{
-                $designs = $designs->offset($offset)->limit(20)->get();
+                $designs = $designs->offset($offset)->limit(40)->get();
             }
 
             $datas = new DesignsResource($designs, $sub_categories, $total_records);
