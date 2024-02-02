@@ -129,6 +129,28 @@ class OrderController extends Controller
         }
     }
 
+    // Print Order
+    public function print($id)
+    {
+        try {
+            $order = Order::with(['order_items'])->find(decrypt($id));
+            return view('admin.orders.print', compact(['order']));
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'Oops, Something went wrong!');
+        }
+    }
+
+    // Share Order
+    public function shared($id)
+    {
+        try {
+            $order = Order::with(['order_items'])->find(decrypt($id));
+            return view('admin.orders.shared', compact(['order']));
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'Oops, Something went wrong!');
+        }
+    }
+
     /**
      * Show the form for editing the specified resource.
      *

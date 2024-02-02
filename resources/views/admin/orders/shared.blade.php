@@ -1,53 +1,26 @@
-@extends('admin.layouts.admin-layout')
-@section('title', 'DETAILS - ORDERS - IMPEL JEWELLERS')
-@section('content')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Order {{ $order['id'] }}</title>
+    <link href="{{ asset('public/assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('public/assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+    <!-- Template Main CSS File -->
+    <link href="{{ asset('public/assets/css/style.css') }}" rel="stylesheet">
+    <link href="{{ asset('public/assets/css/custom.css') }}" rel="stylesheet">
+</head>
+<body>
 
-    {{-- Page Title --}}
-    <div class="pagetitle">
-        <h1>Orders</h1>
-        <div class="row">
-            <div class="col-md-8">
-                <nav>
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
-                        <li class="breadcrumb-item "><a href="{{ route('orders.index') }}">Orders</a></li>
-                        <li class="breadcrumb-item active">Details</li>
-                    </ol>
-                </nav>
-            </div>
-        </div>
-    </div>
-
-    {{-- Order Details Section --}}
-    <section class="section dashboard">
+    <div class="container mt-5">
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-12 text-end">
-
-                                @can('orders.accept')
-                                    @if(isset($order->order_status) && $order->order_status == 'pending')
-                                        <a onclick="processOrder('accepted', {{ $order->id }})" class="mb-2 btn btn-sm btn-info text-white"><strong>ACCEPT</strong> <i class="fa-solid fa-check-circle"></i></a>
-                                    @endif
-                                @endcan
-
-                                @can('orders.process')
-                                    @if(isset($order->order_status) && ($order->order_status == 'pending' || $order->order_status == 'accepted'))
-                                        <a onclick="processOrder('processing', {{ $order->id }})" class="ms-1 mb-2 btn btn-sm btn-primary"><strong>PROCESS</strong> <i class="fa-solid fa-check-circle"></i></a>
-                                    @endif
-                                @endcan
-
-                                @can('orders.complete')
-                                    @if(isset($order->order_status) && ($order->order_status == 'pending' || $order->order_status == 'accepted' || $order->order_status == 'processing'))
-                                        <a onclick="processOrder('completed', {{ $order->id }})" class="ms-1 mb-2 btn btn-sm btn-success"><strong>COMPLETE</strong> <i class="fa-solid fa-check-circle"></i></a>
-                                    @endif
-                                @endcan
-
-                                <a class="ms-1 mb-2 btn btn-sm btn-primary" href="{{ route('orders.print', encrypt($order->id)) }}" target="_blank">Print <i class="fa fa-print"></i></a>
-
-                                <a onclick="share()" class="btn btn-sm btn-primary ms-1 mb-2">Share <i class="bi bi-share"></i></a>
+                                <a class="ms-1 mb-2 btn btn-sm btn-primary" href="{{ route('orders.print', encrypt($order->id)) }}" target="_blank">Print <i class="bi bi-printer"></i></a>
                             </div>
                         </div>
                         <div class="row mt-3">
@@ -194,8 +167,6 @@
                                                         <th scope="col">Gold Type</th>
                                                         <th scope="col">Gold Color</th>
                                                         <th scope="col">Net Weight</th>
-                                                        <th scope="col">Metal Price</th>
-                                                        <th scope="col">Total</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody class="text-gray-600">
@@ -218,47 +189,9 @@
                                                                 <td>{{ $order_item['gold_type'] }}</td>
                                                                 <td>{{ $order_item['gold_color'] }}</td>
                                                                 <td>{{ $order_item['net_weight'] }} gm.</td>
-                                                                <td>₹ {{ $order_item['item_sub_total'] }}</td>
-                                                                <td>₹ {{ $order_item['item_total'] }}</td>
                                                             </tr>
                                                         @endforeach
                                                     @endif
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mt-3 justify-content-end">
-                            <div class="col-md-4">
-                                <div class="card mb-0">
-                                    <div class="card-body">
-                                        <div class="table-responsive">
-                                            <table class="table">
-                                                <tbody>
-                                                    <tr>
-                                                        <th scope="col">Metal Price : </th>
-                                                        <td class="text-end">₹ {{ $order->sub_total  }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th scope="col">Charges : </th>
-                                                        <td class="text-end">₹ {{ $order->charges  }}</td>
-                                                    </tr>
-                                                    @if(isset($order->dealer_code) && !empty($order->dealer_code) && isset($order->dealer_discount_type) && !empty($order->dealer_discount_type) && isset($order->dealer_discount_value) && !empty($order->dealer_discount_value))
-                                                        <tr class="text-success">
-                                                            <th>Dealer Discount <br> <span>({{ $order->dealer_code }}) {{ ($order->dealer_discount_type == 'percentage') ? '('.$order->dealer_discount_value.'%)' : '' }}</span></th>
-                                                            @if($order->dealer_discount_type == 'percentage')
-                                                                <td class="text-end">- ₹ {{ ($order->charges * $order->dealer_discount_value) / 100 }}</td>
-                                                            @else
-                                                                <td class="text-end">- ₹ {{ $order->dealer_discount_value }}</td>
-                                                            @endif
-                                                        </tr>
-                                                    @endif
-                                                    <tr>
-                                                        <th scope="col">Total (Approx.) : </th>
-                                                        <td class="text-end"><strong>₹ {{ $order->total }}</strong></td>
-                                                    </tr>
                                                 </tbody>
                                             </table>
                                         </div>
@@ -270,50 +203,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
-@endsection
-
-@section('page-js')
-<script type="text/javascript">
-
-    // Process Order
-    function processOrder(status, id){
-        $.ajax({
-            type: "POST",
-            url: "{{ route('orders.process') }}",
-            data: {
-                "_token": "{{ csrf_token() }}",
-                "status": status,
-                'id': id,
-            },
-            dataType: "JSON",
-            success: function (response) {
-                if(response.success == true){
-                    toastr.success(response.message);
-                    setTimeout(() => {
-                        location.reload();
-                    }, 1200);
-                }else{
-                    toastr.error(response.message);
-                }
-            }
-        });
-    }
-
-    function share(){
-        var currenturl = window.location.href;
-        if(navigator.share){
-            navigator.share({
-            title : 'IMPEL JEWELLERS ORDER :  {{ $order->id }}',
-            url : '{{ route("orders.shared",encrypt($order->id)) }}',
-            })
-            .then(()=> console.log('Successful share'))
-            .catch(error => console.log('Error sharing: ',error));
-        }else{
-            console.log('web share api not supported.');
-        }
-    }
-
-</script>
-@endsection
+</body>
+</html>

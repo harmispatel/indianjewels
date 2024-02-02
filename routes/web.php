@@ -226,4 +226,7 @@ Route::group(['prefix' => 'admin'], function ()
         });
 
     });
+
+    Route::get('orders/print/{id}', [OrderController::class, 'print'])->name('orders.print');
+    Route::get('orders/shared/{id}', [OrderController::class, 'shared'])->name('orders.shared');
 });
