@@ -211,6 +211,35 @@ class ReportController extends Controller
                         'actions' => '<a href="'.route('reports.performance.details', $dealer->id).'" class="btn btn-sm btn-primary"><i class="fa-solid fa-info-circle"></i></a>',
                     ];
 
+
+                    if(isset($dealer->orders) && count($dealer->orders) > 0)
+                    {
+                        $payable_orders = 0;
+                        foreach($dealer->orders as $order){
+                            $commission_date = strtotime($order->commission_date);
+                            if(!empty($commission_date)){
+                                $current_date = Carbon::now();
+                                $commission_date = Carbon::parse($order->commission_date);
+                                if(strtotime($current_date) > strtotime($commission_date)){
+                                    $remaining_days = 0;
+                                }else{
+                                    $remaining_days = $current_date->diffInDays($commission_date);
+                                }
+
+                                if($remaining_days == 0 && $order->commission_status == 0){
+                                    $payable_orders += 1;
+                                }
+                            }
+                        }
+                    }
+
+                    if($payable_orders > 0){
+                        $item['ready_to_pay'] = '<div class="bg-success text-white p-1" style="border-radius: 50%; width: 30px!important; height: 30px!important; text-align: center;">'.$payable_orders.'</div>';
+                    }else{
+                        $item['ready_to_pay'] = '<div class="bg-danger text-white p-1" style="border-radius: 50%; width: 30px!important; height: 30px!important; text-align: center;">'.$payable_orders.'</div>';
+                    }
+
+
                     $all_items[] = $item;
                     $srno++;
                 }
@@ -271,17 +300,43 @@ class ReportController extends Controller
                 $srno = 1;
                 foreach($orders as $order){
                     $commission_date = strtotime($order->commission_date);
+                    $current_date = Carbon::now();
+                    $commission_date = Carbon::parse($order->commission_date);
+                    if(strtotime($current_date) > strtotime($commission_date)){
+                        $remaining_days = 0;
+                    }else{
+                        $remaining_days = $current_date->diffInDays($commission_date);
+                    }
+
                     $item = [
                         'id' => $srno,
                         'orderno' => $order->id ?? '',
                         'customer' => $order->name ?? '',
-                        'bill_amount' => number_format($order->total, 2) ?? 0.00,
-                        'labour_amount' => number_format($order->charges, 2) ?? 0.00,
-                        'complete_commission' => ($current_date >= $commission_date) ? $order->dealer_commission : 0,
-                        'pending_commission' => ($current_date < $commission_date) ? $order->dealer_commission : 0,
-                        'actions' => ($order->commission_status == 0) ? '<a onclick="payCommission('.$order->id.')" class="btn btn-sm btn-success"><i class="fa-solid fa-check-circle"></i></a>' : '<button class="btn btn-sm btn-success" disabled>PAID</button>',
+                        'commission_value' => number_format($order->dealer_commission, 2) ?? 0.00,
                     ];
 
+                    if($order->commission_status === 1){
+                        $item['commission_status'] = '<span class="badge bg-success">COMPLETED</span>';
+                    }else if($order->commission_status === 0){
+                        $item['commission_status'] = '<span class="' . ($remaining_days == 0 ? 'text-success' : '') . ' fs-5">' . $remaining_days . ' Days Left.</span>';
+                    }else{
+                        $item['commission_status'] = ' - ';
+                    }
+
+                    $actions = '';
+
+                    if($order->commission_status === 0){
+                        if($remaining_days == 0){
+                            $actions .= '<a class="btn btn-sm btn-success"  onclick="$(\'#commissionPayModal\').modal(\'show\'); $(\'#pay_order_commission #order_id\').val('.$order->id.')" data-bs-toggle="tooltip" data-bs-placement="top" title="Pay Commission"><i class="fa fa-check-circle"></i></a>';
+                        }else{
+                            $actions .= '<button class="btn btn-sm btn-success" disabled><i class="fa fa-check-circle"></i></button>';
+                        }
+                    }elseif($order->commission_status === NULL){
+                        $actions .= '<a class="btn btn-sm btn-primary" onclick="$(\'#commissionApplyModal\').modal(\'show\'); $(\'#process_order_commission #order_id\').val('.$order->id.')" data-bs-toggle="tooltip" data-bs-placement="top" title="Issue Commission"><i class="fa fa-check-circle"></i></a>';
+                    }
+
+
+                    $item['actions'] = $actions;
                     $all_items[] = $item;
                     $srno++;
                 }

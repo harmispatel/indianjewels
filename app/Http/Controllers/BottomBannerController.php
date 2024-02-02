@@ -107,7 +107,7 @@ class BottomBannerController extends Controller
             if(Auth::guard('admin')->user()->can('bottom-banners.edit')){
                 $bottom_banner = BottomBanner::find(decrypt($id));
                 $tags = Tag::all();
-                return view('admin.bottom_banners.c', compact(['bottom_banner','tags']));
+                return view('admin.bottom_banners.edit', compact(['bottom_banner','tags']));
             }else{
                 return redirect()->route('admin.dashboard')->with('error','You have no rights for this action!');
             }

@@ -697,7 +697,7 @@ class CustomerApiController extends Controller
         }
     }
 
-    function uploadUserImage(Request $request)
+    public function uploadUserImage(Request $request)
     {
         try {
             $user = User::find($request->user_id);
@@ -874,7 +874,7 @@ class CustomerApiController extends Controller
         }
     }
 
-    function userCartUpdate(Request $request) {
+    public function userCartUpdate(Request $request) {
         try {
             $cart_item_id = $request->id;
             $update_type = $request->update_type;
@@ -959,10 +959,10 @@ class CustomerApiController extends Controller
 
             $user = User::find($user_id);
             $dealer = User::where('dealer_code', $dealer_code)->first();
-            $commission_type = (isset($dealer->commission_type)) ? $dealer->commission_type : '';
-            $commission_value = (isset($dealer->commission_value)) ? $dealer->commission_value : 0;
-            $commission_days = (isset($dealer->commission_days)) ? $dealer->commission_days : 10;
-            $commission_date = Carbon::now()->addDays($commission_days);
+            // $commission_type = (isset($dealer->commission_type)) ? $dealer->commission_type : '';
+            // $commission_value = (isset($dealer->commission_value)) ? $dealer->commission_value : 0;
+            // $commission_days = (isset($dealer->commission_days)) ? $dealer->commission_days : 10;
+            // $commission_date = Carbon::now()->addDays($commission_days);
 
             if($user && count($cart_items) > 0){
 
@@ -1032,18 +1032,18 @@ class CustomerApiController extends Controller
                     $update_order->product_ids = $product_ids;
 
                     // Add Dealer Commission
-                    if(!empty($commission_type) && $commission_value > 0 && $charges > 0){
-                        if($commission_type == 'percentage'){
-                            $commission_val = $charges * $commission_value / 100;
-                        }else{
-                            $commission_val = $charges - $commission_value;
-                        }
-                        $update_order->dealer_commission_type = $commission_type;
-                        $update_order->dealer_commission_value = $commission_value;
-                        $update_order->dealer_commission = $commission_val;
-                        $update_order->commission_date = $commission_date;
-                        $update_order->commission_status = 0;
-                    }
+                    // if(!empty($commission_type) && $commission_value > 0 && $charges > 0){
+                    //     if($commission_type == 'percentage'){
+                    //         $commission_val = $charges * $commission_value / 100;
+                    //     }else{
+                    //         $commission_val = $charges - $commission_value;
+                    //     }
+                    //     $update_order->dealer_commission_type = $commission_type;
+                    //     $update_order->dealer_commission_value = $commission_value;
+                    //     $update_order->dealer_commission = $commission_val;
+                    //     $update_order->commission_date = $commission_date;
+                    //     $update_order->commission_status = 0;
+                    // }
 
                     $update_order->update();
 
@@ -1077,7 +1077,7 @@ class CustomerApiController extends Controller
     }
 
     // Function for Get Header Tags
-    function getHeaderTags()
+    public function getHeaderTags()
     {
         try {
             $tags = Tag::where('display_on_header',1)->where('status',1)->get();
@@ -1089,7 +1089,7 @@ class CustomerApiController extends Controller
     }
 
     // Function for Apply Dealer Code
-    function applyDealerCode(Request $request)
+    public function applyDealerCode(Request $request)
     {
         try {
             $dealer_code = (isset($request->dealer_code)) ? $request->dealer_code : '';
@@ -1115,7 +1115,7 @@ class CustomerApiController extends Controller
 
 
     // Function for Get Settings
-    function getSiteSettings()
+    public function getSiteSettings()
     {
         try
         {
@@ -1145,7 +1145,7 @@ class CustomerApiController extends Controller
 
 
     // Function for Get Page Settings
-    function customPages(Request $request)
+    public function customPages(Request $request)
     {
         try {
             $page_slug = (isset($request->page_slug)) ? $request->page_slug : '';
@@ -1162,7 +1162,7 @@ class CustomerApiController extends Controller
     }
 
     // Function for Get Order Details
-    function orderDetails(Request $request)
+    public function orderDetails(Request $request)
     {
         try {
             $order_id = $request->order_id;
@@ -1193,7 +1193,7 @@ class CustomerApiController extends Controller
     }
 
     // Function for Get Customer & Dealers Orders
-    function myOrders(Request $request)
+    public function myOrders(Request $request)
     {
         try {
             $user_type = $request->user_type;

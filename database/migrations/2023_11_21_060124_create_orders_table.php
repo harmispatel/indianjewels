@@ -32,7 +32,12 @@ class CreateOrdersTable extends Migration
             $table->string('dealer_commission_value',50)->nullable();
             $table->string('dealer_commission',50)->nullable();
             $table->tinyInteger('commission_status')->nullable();
+            $table->dateTime('bill_date')->nullable();
+            $table->string('bill_number')->nullable();
+            $table->tinyText('transaction_id')->nullable();
+            $table->double('labour_value')->default(0.00);
             $table->dateTime('commission_date')->nullable();
+            $table->dateTime('commission_payment_date')->nullable();
             $table->json('product_ids')->nullable();
             $table->json('gold_price')->nullable();
             $table->double('sub_total')->default(0.00);
