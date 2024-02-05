@@ -1150,12 +1150,18 @@ class CustomerApiController extends Controller
         try {
             $page_slug = (isset($request->page_slug)) ? $request->page_slug : '';
             if(empty($page_slug)){
-                $pages = Page::where('status',1)->get();
+                $pages = Page::where('status',1)->where('is_static', 0)->get();
             }else{
                 $pages = Page::where('slug',$page_slug)->get();
             }
-            $data = new CustomPagesResource($pages);
-            return $this->sendApiResponse(true, 0,'Pages retrived SuccessFully..', $data);
+
+            if(count($pages) > 0){
+                $data = new CustomPagesResource($pages);
+                return $this->sendApiResponse(true, 0,'Pages retrived SuccessFully..', $data);
+            }else{
+                return $this->sendApiResponse(false, 0,'Oops, Page Not Found!', (object)[]);
+            }
+
         } catch (\Throwable $th) {
             return $this->sendApiResponse(false, 0,'Something went Wrong!', (object)[]);
         }

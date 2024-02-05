@@ -45,11 +45,13 @@ class PageController extends Controller
                     $action_html .= '- ';
                 }
 
-                // Delete Button
-                if(Auth::guard('admin')->user()->can('pages.destroy')){
-                    $action_html .= '<a onclick="deletePage(\''.encrypt($row->id).'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
-                }else{
-                    $action_html .= '- ';
+                if($row->is_static == 0){
+                    // Delete Button
+                    if(Auth::guard('admin')->user()->can('pages.destroy')){
+                        $action_html .= '<a onclick="deletePage(\''.encrypt($row->id).'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
+                    }else{
+                        $action_html .= '- ';
+                    }
                 }
 
                 return $action_html;

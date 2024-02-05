@@ -19,6 +19,7 @@ class CreatePagesTable extends Migration
             $table->string('slug');
             $table->longText('content')->nullable();
             $table->tinyInteger('status');
+            $table->tinyInteger('is_static')->default(0);
             $table->timestamps();
         });
     }

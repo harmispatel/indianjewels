@@ -27,15 +27,17 @@
                         <form action="{{ route('pages.update') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" name="id" name="id" value="{{ $page->id }}">
-                            <div class="form-group mb-3">
-                                <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
-                                <input type="text" name="name" id="name" class="form-control {{ ($errors->has('name')) ? 'is-invalid' : '' }}" placeholder="Enter Page Name" value="{{ old('name',$page->name) }}">
-                                @if($errors->has('name'))
-                                    <div class="invalid-feedback">
-                                        {{ $errors->first('name') }}
-                                    </div>
-                                @endif
-                            </div>
+                            @if($page->is_static == 0)
+                                <div class="form-group mb-3">
+                                    <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
+                                    <input type="text" name="name" id="name" class="form-control {{ ($errors->has('name')) ? 'is-invalid' : '' }}" placeholder="Enter Page Name" value="{{ old('name',$page->name) }}">
+                                    @if($errors->has('name'))
+                                        <div class="invalid-feedback">
+                                            {{ $errors->first('name') }}
+                                        </div>
+                                    @endif
+                                </div>
+                            @endif
                             <div class="form-group mb-3">
                                 <label for="content" class="form-label">Content <span class="text-danger">*</span></label>
                                 <textarea name="content" id="content" class="form-control {{ ($errors->has('content')) ? 'is-invalid' : '' }}" rows="10">{{ old('content', $page->content) }}</textarea>
