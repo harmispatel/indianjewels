@@ -27,10 +27,13 @@ class DetailDesignResource extends JsonResource
             }
 
             $image = (isset($design->image) && !empty($design->image) && file_exists('public/images/uploads/item_images/'.$design->code.'/'.$design->image)) ? asset('public/images/uploads/item_images/'.$design->code.'/'.$design->image) : asset('public/images/default_images/not-found/no_img1.jpg');
+            $ogimage = (isset($design->image) && !empty($design->image) && file_exists('public/images/uploads/item_images/'.$design->code.'/og_image/'.$design->image)) ? asset('public/images/uploads/item_images/'.$design->code.'/og_image/'.$design->image) : asset('public/images/default_images/not-found/no_img1.jpg');
 
             $mul_images = $design->designImages;
             $images = [];
             $images[] = $image;
+            $og_images = [];
+            $og_images[] = $ogimage;
             if ($mul_images)
             {
                 foreach ($mul_images as $mul_image)
@@ -38,7 +41,9 @@ class DetailDesignResource extends JsonResource
                     if(isset($mul_image->image) && !empty($mul_image->image) && file_exists('public/images/uploads/item_images/'.$design->code.'/'.$mul_image->image))
                     {
                         $imgs =  asset('public/images/uploads/item_images/'.$design->code.'/'.$mul_image->image);
+                        $og_img =  asset('public/images/uploads/item_images/'.$design->code.'/og_image/'.$mul_image->image);
                         $images[] = $imgs;
+                        $og_images[] = $og_img;
                     }
                 }
             }
@@ -76,6 +81,7 @@ class DetailDesignResource extends JsonResource
             $data['iaj_gross_weight'] = isset($design->iaj_weight) ? $design->iaj_weight : '';
             $data['image'] = $image;
             $data['multiple_image'] = isset($mul_images) ? $images : [] ;
+            $data['og_images'] = isset($mul_images) ? $og_images : [] ;
             $data['gemstone_price'] = isset($design->gemstone_price) ? round($design->gemstone_price,2) : 0;
             $data['cz_stone_price'] = isset($design->cz_stone_price) ? round($design->cz_stone_price,2) : 0;
             $data['less_gems_stone'] = isset($design->less_gems_stone) ? $design->less_gems_stone : 0;

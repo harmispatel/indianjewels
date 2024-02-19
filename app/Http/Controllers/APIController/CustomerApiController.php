@@ -98,7 +98,7 @@ class CustomerApiController extends Controller
     {
         try
         {
-            $designs = Design::where('highest_selling',1)->where('status',1)->take(6)->get();
+            $designs = Design::where('highest_selling',1)->where('status',1)->take(50)->get();
             $data = new HighestDesignResource($designs);
             return $this->sendApiResponse(true, 0,'Highest selling Designs Loaded SuccessFully', $data);
         }
@@ -145,7 +145,7 @@ class CustomerApiController extends Controller
     {
         try
         {
-            $designs = Design::where('status', 1)->orderBy('id', 'desc')->take(6)->get();
+            $designs = Design::where('status', 1)->orderBy('id', 'desc')->take(50)->get();
             $data = new HighestDesignResource($designs);
             return $this->sendApiResponse(true, 0,'Latest Designs Loaded SuccessFully.', $data);
         }
