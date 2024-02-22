@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\{Auth, Route, Artisan};
 use App\Http\Controllers\{AuthController, DashboardController, CategoryController, TagController, DesignController, RoleController, AdminController, AdminSettingsController, BottomBannerController, CommonController, CustomerController, DealerController , OrderController, ReportController, ImportExportController, MiddleBannerController, PageController, TopBannerController};
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -224,6 +225,21 @@ Route::group(['prefix' => 'admin'], function ()
             Route::get('settings',  'index')->name('settings.index');
             Route::post('settings/update',  'update')->name('settings.update');
         });
+
+        Route::post('/fetch-excel-by-cmd', function (Request $request){
+            try {
+                Artisan::call('import:design-from-google-sheet');
+                return response()->json([
+                    'success' => 1,
+                    'message' => 'Excel has been Fetched.',
+                ]);
+            } catch (\Throwable $th) {
+                return response()->json([
+                    'success' => 0,
+                    'message' => 'Oops, Something went wrong!',
+                ]);
+            }
+        })->name('fetch.design.excel');
 
     });
 

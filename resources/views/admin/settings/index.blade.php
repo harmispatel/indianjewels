@@ -51,6 +51,12 @@
                                                     <input type="text" name="settings[developer_key]" id="developer_key" class="form-control" placeholder="Enter Developer Key" value="{{ (isset($settings['developer_key'])) ? $settings['developer_key'] : '' }}">
                                                 </div>
                                             </div>
+                                            <div class="col-md-6 mb-3">
+                                                <div class="form-group">
+                                                    <a id="xcel-upload-btn" class="btn btn-sm btn-primary">Update Designes <i class="fa-solid fa-upload"></i></a>
+                                                    <button id="xcel-upload-btn-loader" class="btn btn-sm btn-primary" type="button" disabled style="display: none;"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Uploading...</button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -114,6 +120,32 @@
     @cannot('settings.update')
         $('input').prop('disabled', true);
     @endcannot
+
+    $('#xcel-upload-btn').on('click', function(){
+        $.ajax({
+            type: "POST",
+            url: "{{ route('fetch.design.excel') }}",
+            beforeSend : function(){
+                $('#xcel-upload-btn').hide();
+                $('#xcel-upload-btn-loader').show();
+            },
+            data: {
+                "_token" : "{{ csrf_token() }}",
+            },
+            dataType: "JSON",
+            success: function (response) {
+                if(response.success == 1){
+                    toastr.success(response.message);
+                    $('#xcel-upload-btn').show();
+                    $('#xcel-upload-btn-loader').hide();
+                }else{
+                    toastr.error(response.message);
+                    $('#xcel-upload-btn').show();
+                    $('#xcel-upload-btn-loader').hide();
+                }
+            }
+        });
+    });
 
 </script>
 @endsection
