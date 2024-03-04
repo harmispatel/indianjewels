@@ -210,14 +210,8 @@ Route::group(['prefix' => 'admin'], function ()
 
         // Pages
         Route::controller(PageController::class)->group(function () {
-            Route::get('pages', 'index')->name('pages.index');
-            Route::get('pages/load', 'load')->name('pages.load');
-            Route::get('pages/create', 'create')->name('pages.create');
-            Route::post('pages/store', 'store')->name('pages.store');
-            Route::get('pages/edit/{id}', 'edit')->name('pages.edit');
+            Route::get('pages/{page_key}', 'index')->name('pages.index');
             Route::post('pages/update', 'update')->name('pages.update');
-            Route::post('pages/status', 'status')->name('pages.status');
-            Route::post('pages/destroy', 'destroy')->name('pages.destroy');
         });
 
         // Settings

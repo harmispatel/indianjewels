@@ -90,15 +90,15 @@
                         <div class="col-md-3">
                             <div class="card info-card sales-card">
                                 <div class="card-body">
-                                    <h5 class="card-title" style="padding: 5px; margin: 5px;"><a href="{{ route('pages.index') }}">Pages</a></h5>
+                                    <h5 class="card-title" style="padding: 5px; margin: 5px;"><a href="{{ route('pages.index','faq') }}">Pages</a></h5>
                                     <div class="d-flex align-items-center">
                                         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                             <i class="fa-solid fa-file-text"></i>
                                         </div>
                                         <div class="ps-3">
-                                            <h6>{{ $active_pages + $inactive_pages }} </h6>
-                                            <span class="text-success small pt-1 fw-bold"><span class="text-muted small pt-2 ps-1">Active</span> ({{ $active_pages }})</span> <br>
-                                            <span class="text-danger small pt-1 fw-bold"><span class="text-muted small pt-2 ps-1">Inactive</span> ({{ $inactive_pages }})</span>
+                                            <h6>{{ $pages_count }} </h6>
+                                            <span class="text-success small pt-1 fw-bold"><span class="text-muted small pt-2 ps-1">Active</span> ({{ $pages_count }})</span> <br>
+                                            <span class="text-danger small pt-1 fw-bold"><span class="text-muted small pt-2 ps-1">Inactive</span> (0)</span>
                                         </div>
                                     </div>
                                 </div>

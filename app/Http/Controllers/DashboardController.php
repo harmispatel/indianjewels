@@ -33,8 +33,7 @@ class DashboardController extends Controller
         $data['inactive_customers'] = User::where('user_type', 2)->where('status',0)->count();
 
         // Pages Count
-        $data['active_pages'] = Page::where('status',1)->count();
-        $data['inactive_pages'] = Page::where('status',0)->count();
+        $data['pages_count'] = Page::count();
 
         // Orders Count
         $data['pending_orders'] = Order::where('order_status', 'pending')->count();

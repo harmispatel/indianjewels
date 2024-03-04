@@ -14,21 +14,14 @@ class CustomPagesResource extends JsonResource
      */
     public function toArray($request)
     {
-        $pages = isset($this->resource) ? $this->resource : [];
-        $pages_array = [];
-
-        if(count($pages) > 0)
-        {
-            foreach($pages as $page)
-            {
-                $data['id'] = $page->id;
-                $data['name'] = $page->name;
-                $data['slug'] = $page->slug;
-                $data['content'] = $page->content;
-                $data['status'] = $page->status;
-                $pages_array[] = $data;
-            }
-        }
-        return $pages_array;
+        $page_details = isset($this->resource) ? $this->resource : [];
+        if (isset($page_details) > 0) {
+            $data['id'] = $page_details->id;
+            $data['name'] = $page_details->name;
+            $data['slug'] = $page_details->slug;
+            $data['image'] = (isset($page_details->image) && !empty($page_details->image) && file_exists('public/images/uploads/pages/'.$page_details->image)) ? asset('public/images/uploads/pages/'.$page_details->image) : "";
+            $data['content'] = $page_details->content;
+    }
+        return $data;
     }
 }

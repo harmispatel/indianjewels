@@ -2,164 +2,88 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Page;
 use Illuminate\Http\Request;
-use Yajra\DataTables\Facades\DataTables;
-use App\Models\{Page};
 use Illuminate\Support\Facades\Auth;
 
 class PageController extends Controller
 {
     // Display a listing of the resource.
-    public function index()
+    public function index($page_slug)
     {
-        if(Auth::guard('admin')->user()->can('pages.index')){
-            return view('admin.pages.index');
-        }else{
-            return redirect()->route('admin.dashboard')->with('error','You have no rights for this action!');
+        if ($page_slug == 'faq') {
+            $page_title = 'FAQ Page';
+        } else if ($page_slug == 'stores') {
+            $page_title = 'Stores Page';
+        } else if ($page_slug == 'about-us') {
+            $page_title = 'About US Page';
+        } else if ($page_slug == 'customization') {
+            $page_title = 'Customization Page';
+        } else if ($page_slug == 'shopping-and-returns') {
+            $page_title = 'Shopping and Resturns Page';
+        } else {
+            return redirect()->back()->with('error', 'You have no rights for this action!');
+        }
+
+        if (Auth::guard('admin')->user()->can('pages.index')) {
+            $page_details = Page::where('slug', $page_slug)->first();
+            return view('admin.pages.index', compact(['page_details', 'page_title', 'page_slug']));
+        } else {
+            return redirect()->route('admin.dashboard')->with('error', 'You have no rights for this action!');
         }
     }
 
-    // Load all pages helping with AJAX Datatable
-    public function load(Request $request)
-    {
-        if ($request->ajax()){
-            // Get all Pages
-            $pages = Page::all();
-
-            return DataTables::of($pages)
-            ->addIndexColumn()
-            ->addColumn('status', function ($row){
-                $checked = ($row->status == 1) ? 'checked' : '';
-                if(Auth::guard('admin')->user()->can('pages.status')){
-                    return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" onchange="changeStatus('.$row->id.')" id="statusBtn" '.$checked.'></div>';
-                }else{
-                    return '<div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" id="statusBtn" '.$checked.' disabled></div>';
-                }
-            })
-            ->addColumn('actions',function($row){
-                $action_html = '';
-                // Edit Button
-                if(Auth::guard('admin')->user()->can('pages.edit')){
-                    $action_html .= '<a href="'.route('pages.edit',encrypt($row->id)).'" class="btn btn-sm custom-btn me-1"><i class="bi bi-pencil"></i></a>';
-                }else{
-                    $action_html .= '- ';
-                }
-
-                if($row->is_static == 0){
-                    // Delete Button
-                    if(Auth::guard('admin')->user()->can('pages.destroy')){
-                        $action_html .= '<a onclick="deletePage(\''.encrypt($row->id).'\')" class="btn btn-sm btn-danger me-1"><i class="bi bi-trash"></i></a>';
-                    }else{
-                        $action_html .= '- ';
-                    }
-                }
-
-                return $action_html;
-            })
-            ->rawColumns(['actions','status'])
-            ->make(true);
-        }
-    }
-
-    // Show the form for creating a new resource.
-    public function create()
-    {
-        if(Auth::guard('admin')->user()->can('pages.create')){
-            return view('admin.pages.create');
-        }else{
-            return redirect()->route('admin.dashboard')->with('error','You have no rights for this action!');
-        }
-    }
-
-    // Store a newly created resource in storage.
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|max:255|unique:pages,name',
-            'content' => 'required',
-        ]);
-
-        try {
-            $input = $request->except(['_token']);
-            $input['status'] = 1;
-            $slug = str_replace(' ','_',strtolower($request->name));
-            $input['slug'] = str_replace('&','and',$slug);
-            Page::create($input);
-            return redirect()->route('pages.index')->with('success', 'Page has been Created.');
-        } catch (\Throwable $th) {
-            return back()->with('error', 'Oops, Something went wrong!');
-        }
-    }
-
-    // Show the form for editing the specified resource.
-    public function edit($id)
-    {
-        try {
-            if(Auth::guard('admin')->user()->can('pages.edit')){
-                $page = Page::find(decrypt($id));
-                return view('admin.pages.edit', compact(['page']));
-            }else{
-                return redirect()->route('admin.dashboard')->with('error','You have no rights for this action!');
-            }
-        } catch (\Throwable $th) {
-            return back()->with('error', 'Oops, Something went wrong!');
-        }
-    }
-
-    // Update the specified resource in storage.
+    // Update Page
     public function update(Request $request)
     {
         $request->validate([
-            'name' => 'required|max:255|unique:pages,name,'.$request->id,
-            'content' => 'required',
+            'name' => 'required',
+            'image' => 'image',
         ]);
 
         try {
-            $input = $request->except(['_token']);
-            $input['status'] = 1;
-            $slug = str_replace(' ','_',strtolower($request->name));
-            $input['slug'] = str_replace('&','and',$slug);
-            Page::find($request->id)->update($input);
-            return redirect()->route('pages.index')->with('success', 'Page has been Updated.');
-        } catch (\Throwable $th) {
-            return back()->with('error', 'Oops, Something went wrong!');
-        }
-    }
+            $page_name = $request->name;
+            $page_slug = $request->slug;
+            $page_content = $request->content;
 
-    // Function for Change Page Status
-    public function status(Request $request)
-    {
-        try {
-            $page = Page::find($request->id);
-            $page->status =  ($page->status == 1) ? 0 : 1;
-            $page->update();
-            return response()->json([
-                'success' => 1,
-                'message' => "Status has been Changed.",
-            ]);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'success' => 0,
-                'message' => "Oops, Something went wrong!",
-            ]);
-        }
-    }
+            $page_exist = Page::where('slug', $page_slug)->first();
+            $page_id = (isset($page_exist->id)) ? $page_exist->id : '';
+            if (!empty($page_id)) {
+                $page = Page::find($page_id);
+                $page->name = $page_name;
+                $page->content = $page_content;
 
-    // Remove the specified resource from storage.
-    public function destroy(Request $request)
-    {
-        try{
-            $page = Page::find(decrypt($request->id));
-            $page->delete();
-            return response()->json([
-                'success' => 1,
-                'message' => "Page has been Deleted.",
-            ]);
-        }catch (\Throwable $th){
-            return response()->json([
-                'success' => 0,
-                'message' => "Oops, Something went wrong!",
-            ]);
+                // Upload Image if Exists
+                if ($request->hasFile('image')) {
+                    // Delete Old
+                    if (isset($page->image) && !empty($page->image) && file_exists('public/images/uploads/pages/' . $page->image)) {
+                        unlink('public/images/uploads/pages/' . $page->image);
+                    }
+
+                    $image_name = 'page_' . $page_slug . '.' . $request->file('image')->getClientOriginalExtension();
+                    $request->file('image')->move(public_path('images/uploads/pages/'), $image_name);
+                    $page->image = $image_name;
+                }
+                $page->update();
+            } else {
+                $page = new Page();
+                $page->name = $page_name;
+                $page->slug = $page_slug;
+                $page->content = $page_content;
+
+                // Upload Image if Exists
+                if ($request->hasFile('image')) {
+                    $image_name = 'page_' . $page_slug . '.' . $request->file('image')->getClientOriginalExtension();
+                    $request->file('image')->move(public_path('images/uploads/pages/'), $image_name);
+                    $page->image = $image_name;
+                }
+
+                $page->save();
+            }
+
+            return redirect()->back()->with('success', 'Page Details has been Updated.');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'Oops, Something went wrong!');
         }
     }
 }

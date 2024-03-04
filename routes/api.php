@@ -66,7 +66,7 @@ Route::post('state/cities',[CustomerApiController::class,'getStateCities']);
 
 Route::get('header-tags', [CustomerApiController::class, 'getHeaderTags']);
 Route::post('apply-dealer-code',[CustomerApiController::class, 'applyDealerCode']);
-Route::post('custom-pages',[CustomerApiController::class, 'customPages']);
+Route::post('get-page-details',[CustomerApiController::class, 'getPageDetails']);
 Route::get('site-settings', [CustomerApiController::class, 'getSiteSettings']);
 
 Route::post('order-details', [CustomerApiController::class, 'orderDetails']);

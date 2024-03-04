@@ -6,56 +6,10 @@ use Hash;
 use Carbon\Carbon;
 use App\Traits\ImageTrait;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\{
-    Request,
-    Response
-};
-use App\Models\{
-    Tag,
-    User,
-    City,
-    Page,
-    Order,
-    Metal,
-    Design,
-    Gender,
-    Category,
-    CartUser,
-    CartDealer,
-    AdminSetting,
-    UserDocument,
-    UserWishlist,
-    DealerCollection,
-    OrderDealerReport,
-    OrderItems,
-};
-use App\Http\Resources\{
-    BannerResource,
-    CategoryResource,
-    DesignsResource,
-    DetailDesignResource,
-    FlashDesignResource,
-    HighestDesignResource,
-    MetalResource,
-    GenderResource,
-    CustomerResource,
-    DesignsCollectionFirstResource,
-    DesignCollectionListResource,
-    CartDelaerListResource,
-    OrderDelaerListResource,
-    CartUserListResource,
-    CustomPagesResource,
-    HeaderTagsResource,
-    OrderDetailsResource,
-    OrdersResource,
-    StateCitiesResource
-};
-use App\Http\Requests\APIRequest\{
-    DesignDetailRequest,
-    DesignsRequest,
-    SubCategoryRequest,
-    UserProfileRequest
-};
+use Illuminate\Http\{Request, Response};
+use App\Models\{Tag, User, City, Page, Order, Metal, Design, Gender, Category, CartUser, CartDealer, AdminSetting, UserDocument, UserWishlist, DealerCollection, OrderDealerReport, OrderItems};
+use App\Http\Resources\{BannerResource, CategoryResource, DesignsResource, DetailDesignResource, FlashDesignResource, HighestDesignResource, MetalResource, GenderResource, CustomerResource, DesignsCollectionFirstResource, DesignCollectionListResource, CartDelaerListResource, OrderDelaerListResource, CartUserListResource, CustomPagesResource, HeaderTagsResource, OrderDetailsResource, OrdersResource, StateCitiesResource};
+use App\Http\Requests\APIRequest\{DesignDetailRequest, DesignsRequest, SubCategoryRequest, UserProfileRequest};
 use Illuminate\Support\Collection;
 
 class CustomerApiController extends Controller
@@ -65,125 +19,101 @@ class CustomerApiController extends Controller
     // Function for Fetch Parent categories
     public function getParentCategories()
     {
-        try
-        {
+        try {
             $categories = Category::where('parent_category', 0)->where('status', 1)->get();
             $data = new CategoryResource($categories);
-            return $this->sendApiResponse(true, 0,'Parent Categories Loaded SuccessFully', $data);
-        }
-        catch (\Throwable $th)
-        {
-            return $this->sendApiResponse(false, 0,'Failed to Load Categories!', (object)[]);
+            return $this->sendApiResponse(true, 0, 'Parent Categories Loaded SuccessFully', $data);
+        } catch (\Throwable $th) {
+            return $this->sendApiResponse(false, 0, 'Failed to Load Categories!', (object)[]);
         }
     }
 
     // Function for Fetch Sub categories
     public function getSubCategories(SubCategoryRequest $request)
     {
-        try
-        {
+        try {
             $id = $request->parent_category;
-            $categories = Category::where('parent_category',$id)->where('status', 1)->get();
+            $categories = Category::where('parent_category', $id)->where('status', 1)->get();
             $data = new CategoryResource($categories);
-            return $this->sendApiResponse(true, 0,'SubCategories Loaded SuccessFully', $data);
-        }
-        catch (\Throwable $th)
-        {
-            return $this->sendApiResponse(false, 0,'Failed to Load Categories!', (object)[]);
+            return $this->sendApiResponse(true, 0, 'SubCategories Loaded SuccessFully', $data);
+        } catch (\Throwable $th) {
+            return $this->sendApiResponse(false, 0, 'Failed to Load Categories!', (object)[]);
         }
     }
 
     // Function for fetch higest selling designs
     public function getHigestSellingDesigns(Request $request)
     {
-        try
-        {
-            $designs = Design::where('highest_selling',1)->where('status',1)->take(50)->get();
+        try {
+            $designs = Design::where('highest_selling', 1)->where('status', 1)->take(50)->get();
             $data = new HighestDesignResource($designs);
-            return $this->sendApiResponse(true, 0,'Highest selling Designs Loaded SuccessFully', $data);
-        }
-        catch (\Throwable $th)
-        {
-            return $this->sendApiResponse(false, 0,'Failed to Load Designs!', (object)[]);
+            return $this->sendApiResponse(true, 0, 'Highest selling Designs Loaded SuccessFully', $data);
+        } catch (\Throwable $th) {
+            return $this->sendApiResponse(false, 0, 'Failed to Load Designs!', (object)[]);
         }
     }
 
     // Function for fetch Flash designs
     public function getFlashDesign()
     {
-        try
-        {
-            $designs = Design::where('is_flash',1)->where('status',1)->take(5)->get();
+        try {
+            $designs = Design::where('is_flash', 1)->where('status', 1)->take(5)->get();
             $data = new FlashDesignResource($designs);
-            return $this->sendApiResponse(true, 0,'Flash Design Loaded SuccessFully', $data);
-        }
-        catch (\Throwable $th)
-        {
-            return $this->sendApiResponse(false, 0,'Failed to Load Design!', (object)[]);
+            return $this->sendApiResponse(true, 0, 'Flash Design Loaded SuccessFully', $data);
+        } catch (\Throwable $th) {
+            return $this->sendApiResponse(false, 0, 'Failed to Load Design!', (object)[]);
         }
     }
 
     // Function for fetch Slider
     public function getAllBanners()
     {
-        try
-        {
+        try {
             $currentDayIndex = Carbon::now()->dayOfWeek;
             $days_array = ["0", "1", "2", "3", "4", "5", "6"];
             $reorderder_days = array_merge(array_slice($days_array, $currentDayIndex), array_slice($days_array, 0, $currentDayIndex));
             $data = new BannerResource($reorderder_days);
-            return $this->sendApiResponse(true, 0,'Banners Loaded SuccessFully', $data);
-        }
-        catch (\Throwable $th)
-        {
-            return $this->sendApiResponse(false, 0,'Failed to Load Slider!', (object)[]);
+            return $this->sendApiResponse(true, 0, 'Banners Loaded SuccessFully', $data);
+        } catch (\Throwable $th) {
+            return $this->sendApiResponse(false, 0, 'Failed to Load Slider!', (object)[]);
         }
     }
 
     // Function for fetch lstest designs
     public function getLatestDesign(Request $request)
     {
-        try
-        {
+        try {
             $designs = Design::where('status', 1)->orderBy('id', 'desc')->take(50)->get();
             $data = new HighestDesignResource($designs);
-            return $this->sendApiResponse(true, 0,'Latest Designs Loaded SuccessFully.', $data);
-        }
-        catch (\Throwable $th)
-        {
-            return $this->sendApiResponse(false, 0,'Failed to Load Designs!', (object)[]);
+            return $this->sendApiResponse(true, 0, 'Latest Designs Loaded SuccessFully.', $data);
+        } catch (\Throwable $th) {
+            return $this->sendApiResponse(false, 0, 'Failed to Load Designs!', (object)[]);
         }
     }
 
     // Function for design details
     public function getDesignDetail(DesignDetailRequest $request)
     {
-        try
-        {
+        try {
             $id = $request->id;
-            $design = Design::where('id', $id)->with('categories','metal','gender','designImages')->first();
+            $design = Design::where('id', $id)->with('categories', 'metal', 'gender', 'designImages')->first();
             $data = new DetailDesignResource($design);
-            return $this->sendApiResponse(true, 0,'Design Loaded SuccessFully.', $data);
-        }
-        catch (\Throwable $th)
-        {
-            return $this->sendApiResponse(false, 0,'Failed to Load Designs!', (object)[]);
+            return $this->sendApiResponse(true, 0, 'Design Loaded SuccessFully.', $data);
+        } catch (\Throwable $th) {
+            return $this->sendApiResponse(false, 0, 'Failed to Load Designs!', (object)[]);
         }
     }
 
     // Function for design details from category
     public function getDesigns(DesignsRequest $request)
     {
-        try
-        {
+        try {
             $id = $request->category_id;
-            $designs = Design::where('category_id', $id)->with('categories','metal','gender','designImages')->get();
+            $designs = Design::where('category_id', $id)->with('categories', 'metal', 'gender', 'designImages')->get();
             $data = new DesignsResource($designs);
-            return $this->sendApiResponse(true, 0,'Designs Loaded SuccessFully.', $data);
-        }
-        catch (\Throwable $th)
-        {
-            return $this->sendApiResponse(false, 0,'Failed to Load Designs!', (object)[]);
+            return $this->sendApiResponse(true, 0, 'Designs Loaded SuccessFully.', $data);
+        } catch (\Throwable $th) {
+            return $this->sendApiResponse(false, 0, 'Failed to Load Designs!', (object)[]);
         }
     }
 
@@ -195,13 +125,11 @@ class CustomerApiController extends Controller
 
             $metal = Metal::get();
             $data = new MetalResource($metal);
-            return $this->sendApiResponse(true, 0,'Metal Loaded SuccessFully.', $data);
+            return $this->sendApiResponse(true, 0, 'Metal Loaded SuccessFully.', $data);
         } catch (\Throwable $th) {
 
-            return $this->sendApiResponse(false, 0,'Failed to Load Designs!', (object)[]);
-
+            return $this->sendApiResponse(false, 0, 'Failed to Load Designs!', (object)[]);
         }
-
     }
 
     // Function for Gender List from Gender
@@ -211,10 +139,9 @@ class CustomerApiController extends Controller
             //code...
             $gender = Gender::get();
             $data = new GenderResource($gender);
-            return $this->sendApiResponse(true, 0,'Gender Loaded SuccessFully.', $data);
-
+            return $this->sendApiResponse(true, 0, 'Gender Loaded SuccessFully.', $data);
         } catch (\Throwable $th) {
-            return $this->sendApiResponse(false, 0,'Failed to Load Designs!', (object)[]);
+            return $this->sendApiResponse(false, 0, 'Failed to Load Designs!', (object)[]);
         }
     }
 
@@ -224,31 +151,28 @@ class CustomerApiController extends Controller
 
             $tags = Tag::get();
             $data = new GenderResource($tags);
-            return $this->sendApiResponse(true, 0,'Tags Loaded SuccessFully.', $data);
+            return $this->sendApiResponse(true, 0, 'Tags Loaded SuccessFully.', $data);
         } catch (\Throwable $th) {
 
-            return $this->sendApiResponse(false, 0,'Failed to Load Designs!', (object)[]);
-
+            return $this->sendApiResponse(false, 0, 'Failed to Load Designs!', (object)[]);
         }
-
     }
 
     // Function for child category List from Category
     public function getChildCategories()
     {
         try {
-            $categories = Category::where('parent_category','!=', 0)->where('status', 1)->get();
+            $categories = Category::where('parent_category', '!=', 0)->where('status', 1)->get();
             $data = new CategoryResource($categories);
-            return $this->sendApiResponse(true, 0,'Child Categories Loaded SuccessFully', $data);
+            return $this->sendApiResponse(true, 0, 'Child Categories Loaded SuccessFully', $data);
         } catch (\Throwable $th) {
 
-            return $this->sendApiResponse(false, 0,'Failed to Load Designs!', (object)[]);
-
+            return $this->sendApiResponse(false, 0, 'Failed to Load Designs!', (object)[]);
         }
     }
 
     // Get Designs using filters (search, sorting);
-    Public function filterDesign(Request $request)
+    public function filterDesign(Request $request)
     {
         try {
             $sub_categories = [];
@@ -264,28 +188,28 @@ class CustomerApiController extends Controller
             $user_type = $request->userType;
             $user_id = $request->userId;
 
-            if(isset($parent_category) && !empty($parent_category)){
+            if (isset($parent_category) && !empty($parent_category)) {
                 $sub_categories = Category::where('parent_category', $parent_category)->pluck('id')->toArray();
             }
 
             $designs = Design::where('status', 1);
 
-            if(isset($search) && !empty($search)){
+            if (isset($search) && !empty($search)) {
                 // Search Filter
                 $designs = $designs->where('code', $search);
-            }else{
+            } else {
                 // Category Filter
-                if(isset($sub_categories) && count($sub_categories) > 0){
+                if (isset($sub_categories) && count($sub_categories) > 0) {
                     $designs = $designs->whereIn('category_id', $sub_categories);
                 }
 
                 // Gender Filter
-                if(isset($gender) && !empty($gender)){
+                if (isset($gender) && !empty($gender)) {
                     $designs = $designs->where('gender_id', $gender);
                 }
 
                 // Metal Filter
-                if(isset($metal) && !empty($metal)){
+                if (isset($metal) && !empty($metal)) {
                     $designs = $designs->where('metal_id', $metal);
                 }
 
@@ -297,19 +221,19 @@ class CustomerApiController extends Controller
                 }
 
                 // Price Range Filter
-                if(isset($minprice) && !empty($minprice) && isset($maxprice) && !empty($maxprice)){
+                if (isset($minprice) && !empty($minprice) && isset($maxprice) && !empty($maxprice)) {
                     $designs->whereBetween('total_price_18k', [$minprice, $maxprice]);
                 }
 
                 // Sort By Filter
-                if(isset($sort_by) && !empty($sort_by)){
-                    if($sort_by == 'new_added'){
+                if (isset($sort_by) && !empty($sort_by)) {
+                    if ($sort_by == 'new_added') {
                         $designs = $designs->orderBy('created_at', 'DESC');
-                    }elseif($sort_by == 'low_to_high'){
+                    } elseif ($sort_by == 'low_to_high') {
                         $designs = $designs->orderByRaw('CAST(total_price_18k as DECIMAL(8,2)) ASC');
-                    }elseif($sort_by == 'high_to_low'){
+                    } elseif ($sort_by == 'high_to_low') {
                         $designs = $designs->orderByRaw('CAST(total_price_18k as DECIMAL(8,2)) DESC');
-                    }else{
+                    } else {
                         $designs = $designs->where('highest_selling', 1);
                     }
                 }
@@ -317,22 +241,21 @@ class CustomerApiController extends Controller
 
             $total_records = $designs->count();
 
-            if($user_type == 1){
+            if ($user_type == 1) {
                 $designs = $designs->with(['dealer_collections' => function ($query) use ($user_id) {
                     $query->where('user_id', $user_id);
-                }])->get()->sortBy(function($design) {
+                }])->get()->sortBy(function ($design) {
                     return optional($design->dealer_collections)->first()->design_id ?? PHP_INT_MAX;
                 })->values();
                 $designs = $designs->slice($offset, 40);
-            }else{
-                $designs = $designs->offset($offset)->limit(40)->get();
+            } else {
+                $designs = $designs->orderBy('updated_at', 'DESC')->offset($offset)->limit(40)->get();
             }
 
             $datas = new DesignsResource($designs, $sub_categories, $total_records);
-            return $this->sendApiResponse(true, 1,'Designs has been Loaded.', $datas);
-
+            return $this->sendApiResponse(true, 1, 'Designs has been Loaded.', $datas);
         } catch (\Throwable $th) {
-            return $this->sendApiResponse(false, 0,'Failed to Load Designs!', (object)[]);
+            return $this->sendApiResponse(false, 0, 'Failed to Load Designs!', (object)[]);
         }
     }
 
@@ -342,10 +265,10 @@ class CustomerApiController extends Controller
         try {
             $id = $request->categoryId;
             $offset = (isset($request->offset)) ? $request->offset : 0;
-            $sub_categories = Category::where('parent_category',$id)->pluck('id');
-            $total_designs =  Design::whereIn('category_id',$sub_categories)->count();
-            $designs = Design::whereIn('category_id',$sub_categories)->with('categories')->offset($offset)->limit(20)->get();
-            $data = new DesignsResource($designs , null, $total_designs);
+            $sub_categories = Category::where('parent_category', $id)->pluck('id');
+            $total_designs =  Design::whereIn('category_id', $sub_categories)->count();
+            $designs = Design::whereIn('category_id', $sub_categories)->with('categories')->offset($offset)->limit(20)->get();
+            $data = new DesignsResource($designs, null, $total_designs);
             return response()->json([
                 'success' => true,
                 'message' => 'Related Design Loaded SuccessFully',
@@ -353,26 +276,25 @@ class CustomerApiController extends Controller
                 'data'    => $data,
             ], Response::HTTP_OK);
         } catch (\Throwable $th) {
-            return $this->sendApiResponse(false, 0,'Failed to Load Designs!', (object)[]);
+            return $this->sendApiResponse(false, 0, 'Failed to Load Designs!', (object)[]);
         }
-
     }
 
     public function getalldesigns(Request $request)
     {
-        try{
+        try {
             $user_type = $request->userType;
             $user_id = $request->userId;
 
             $designs = Design::query();
 
-            if($user_type == 1){
+            if ($user_type == 1) {
                 $designs = $designs->with(['dealer_collections' => function ($query) use ($user_id) {
                     $query->where('user_id', $user_id);
-                }])->limit(500)->get()->sortBy(function($design) {
+                }])->limit(500)->get()->sortBy(function ($design) {
                     return optional($design->dealer_collections)->first()->design_id ?? PHP_INT_MAX;
                 })->values();
-            }else{
+            } else {
                 $designs = $designs->limit(500)->get();
             }
             $data = new DesignsResource($designs);
@@ -386,24 +308,24 @@ class CustomerApiController extends Controller
                     'minprice' => round($minprice),
                     'maxprice' => round($maxprice),
                     'data'    => $data,
-                ], Response::HTTP_OK);
-
+                ],
+                Response::HTTP_OK
+            );
         } catch (\Throwable $th) {
-             return $this->sendApiResponse(false, 0,'Failed to Load Designs!', (object)[]);
-
-         }
+            return $this->sendApiResponse(false, 0, 'Failed to Load Designs!', (object)[]);
+        }
     }
 
     public function profile(Request $request)
     {
         try {
             // $id = auth()->user()->id;
-            $user = User::where('email',$request->email)->with('document')->first();
+            $user = User::where('email', $request->email)->with('document')->first();
             $data = new CustomerResource($user);
-               return $this->sendApiResponse(true, 0,'Profile Loaded SuccessFully', $data);
-            } catch (\Throwable $th) {
-                dd($th);
-            return $this->sendApiResponse(false, 0,'Failed to Load Profile!', (object)[]);
+            return $this->sendApiResponse(true, 0, 'Profile Loaded SuccessFully', $data);
+        } catch (\Throwable $th) {
+            dd($th);
+            return $this->sendApiResponse(false, 0, 'Failed to Load Profile!', (object)[]);
         }
     }
 
@@ -413,19 +335,17 @@ class CustomerApiController extends Controller
 
         try {
             $id = $request->id;
-            $input = $request->except('id','password','document');
+            $input = $request->except('id', 'password', 'document');
             if ($request->password || $request->password != null) {
                 $input['password'] = Hash::make($request->password);
             }
             $dealer = User::find($id);
 
-            if ($request->has('logo'))
-            {
+            if ($request->has('logo')) {
                 $old_logo = (isset($dealer->logo)) ? $dealer->logo : '';
-                if( $request->hasFile('logo'))
-                {
+                if ($request->hasFile('logo')) {
                     $file = $request->file('logo');
-                    $image_url = $this->addSingleImage('comapany_logo','companies_logos',$file, $old_image = $old_logo,"300*300");
+                    $image_url = $this->addSingleImage('comapany_logo', 'companies_logos', $file, $old_image = $old_logo, "300*300");
                     $input['logo'] = $image_url;
                 }
             }
@@ -433,23 +353,21 @@ class CustomerApiController extends Controller
             if ($request->hasFile('document')) {
 
                 $multiple = $request->file('document');
-                foreach ($multiple as $value)
-                {
+                foreach ($multiple as $value) {
                     $doc = new UserDocument;
                     $doc->user_id = $id;
-                    $multiDoc = $this->addSingleImage('document','documents',$value,$old_image = '','default');
+                    $multiDoc = $this->addSingleImage('document', 'documents', $value, $old_image = '', 'default');
                     $doc->document = $multiDoc;
                     $doc->save();
                 }
             }
-            if ($dealer)
-            {
+            if ($dealer) {
                 $dealer->update($input);
             }
             $data = new CustomerResource($dealer);
-            return $this->sendApiResponse(true, 0,'Profile update Loaded SuccessFully', $data);
+            return $this->sendApiResponse(true, 0, 'Profile update Loaded SuccessFully', $data);
         } catch (\Throwable $th) {
-            return $this->sendApiResponse(false, 0,'Failed to Profile Update Profile!', (object)[]);
+            return $this->sendApiResponse(false, 0, 'Failed to Profile Update Profile!', (object)[]);
         }
     }
 
@@ -457,46 +375,46 @@ class CustomerApiController extends Controller
     public function dealerAddCollectionDesign(Request $request)
     {
         try {
-                    $email = $request->email;
-                    $designId = $request->design_id;
+            $email = $request->email;
+            $designId = $request->design_id;
 
-                    $user = User::where('email',$email)->first();
-                    $userId = $user->id;
+            $user = User::where('email', $email)->first();
+            $userId = $user->id;
 
 
-                    $collection = DealerCollection::where('user_id',$userId)->where('design_id',$designId)->first();
+            $collection = DealerCollection::where('user_id', $userId)->where('design_id', $designId)->first();
 
-                    if (empty($collection)) {
+            if (empty($collection)) {
 
-                        $insert = new DealerCollection;
-                        $insert->user_id = $userId;
-                        $insert->design_id = $designId;
-                        $insert->save();
-                        return response()->json(
-                            [
-                                'success' => true,
-                                'message' => 'Added design collection SuccessFully',
-                                'collection_status' => 1,
-                            ], Response::HTTP_OK);
+                $insert = new DealerCollection;
+                $insert->user_id = $userId;
+                $insert->design_id = $designId;
+                $insert->save();
+                return response()->json(
+                    [
+                        'success' => true,
+                        'message' => 'Added design collection SuccessFully',
+                        'collection_status' => 1,
+                    ],
+                    Response::HTTP_OK
+                );
+            } else {
 
-                    }else{
+                // $deletecollection = DealerCollection::find($collection->id);
+                // $collection->delete();
+                return response()->json(
+                    [
+                        'success' => true,
+                        'message' => 'Already design collection Exits',
+                        'collection_status' => 0,
+                    ],
+                    Response::HTTP_OK
+                );
+            }
+        } catch (\Throwable $th) {
 
-                        // $deletecollection = DealerCollection::find($collection->id);
-                        // $collection->delete();
-                        return response()->json(
-                            [
-                                'success' => true,
-                                'message' => 'Already design collection Exits',
-                                'collection_status' => 0,
-                            ], Response::HTTP_OK);
-
-                    }
-
-                } catch (\Throwable $th) {
-
-                    return $this->sendApiResponse(false, 0,'Failed to Load Update Profile!', (object)[]);
-                }
-
+            return $this->sendApiResponse(false, 0, 'Failed to Load Update Profile!', (object)[]);
+        }
     }
 
     public function dealerRemoveCollectionDesign(Request $request)
@@ -505,38 +423,38 @@ class CustomerApiController extends Controller
             $email = $request->email;
             $designId = $request->design_id;
 
-            $user = User::where('email',$email)->first();
+            $user = User::where('email', $email)->first();
             $userId = $user->id;
 
 
-            $collection = DealerCollection::where('user_id',$userId)->where('design_id',$designId)->first();
+            $collection = DealerCollection::where('user_id', $userId)->where('design_id', $designId)->first();
 
             if ($collection) {
 
                 $deletecollection = DealerCollection::find($collection->id);
                 $deletecollection->delete();
-                            return response()->json(
+                return response()->json(
                     [
                         'success' => true,
                         'message' => 'Remove design collection SuccessFully',
                         'collection_status' => 0,
-                    ], Response::HTTP_OK);
-            }else{
+                    ],
+                    Response::HTTP_OK
+                );
+            } else {
                 return response()->json(
                     [
                         'success' => true,
                         'message' => 'design collection Not Found',
                         'collection_status' => 0,
-                    ], Response::HTTP_OK);
+                    ],
+                    Response::HTTP_OK
+                );
             }
-
-
-
         } catch (\Throwable $th) {
             //throw $th;
             dd($th);
-            return $this->sendApiResponse(false, 0,'Failed to Dealer Remove Collection!', (object)[]);
-
+            return $this->sendApiResponse(false, 0, 'Failed to Dealer Remove Collection!', (object)[]);
         }
     }
 
@@ -544,16 +462,15 @@ class CustomerApiController extends Controller
     {
         try {
             $email = $request->email;
-            $user = User::where('email',$email)->first();
+            $user = User::where('email', $email)->first();
             $userId = $user->id;
-            $collection = DealerCollection::where('user_id',$userId)->with('designs')->get();
+            $collection = DealerCollection::where('user_id', $userId)->with('designs')->get();
 
             $data = new DesignCollectionListResource($collection);
 
-            return $this->sendApiResponse(true, 0,'Collection Design Loaded SuccessFully', $data);
+            return $this->sendApiResponse(true, 0, 'Collection Design Loaded SuccessFully', $data);
         } catch (\Throwable $th) {
-            return $this->sendApiResponse(false, 0,'Failed to Load Collection Design!', (object)[]);
-
+            return $this->sendApiResponse(false, 0, 'Failed to Load Collection Design!', (object)[]);
         }
     }
 
@@ -561,16 +478,14 @@ class CustomerApiController extends Controller
     {
         try {
             $email = $request->email;
-            $user = User::where('email',$email)->first();
+            $user = User::where('email', $email)->first();
             $userId = $user->id;
-            $collection = DealerCollection::where('user_id',$userId)->with('designs')->pluck('design_id');
+            $collection = DealerCollection::where('user_id', $userId)->with('designs')->pluck('design_id');
             $data = new DesignsCollectionFirstResource($collection);
-            return $this->sendApiResponse(true, 0,'Collection First Design Loaded SuccessFully', $data);
-
+            return $this->sendApiResponse(true, 0, 'Collection First Design Loaded SuccessFully', $data);
         } catch (\Throwable $th) {
             dd($th);
-            return $this->sendApiResponse(false, 0,'Failed to Load Collection First Design!', (object)[]);
-
+            return $this->sendApiResponse(false, 0, 'Failed to Load Collection First Design!', (object)[]);
         }
     }
 
@@ -583,10 +498,10 @@ class CustomerApiController extends Controller
             $gold_color = $request->gold_color;
             $gold_type = $request->gold_type;
 
-            $user = User::where('phone',$phone)->first();
+            $user = User::where('phone', $phone)->first();
 
-            if(isset($user->id)){
-                $wishlist = UserWishlist::where('user_id',$user->id)->where('design_id',$design_id)->first();
+            if (isset($user->id)) {
+                $wishlist = UserWishlist::where('user_id', $user->id)->where('design_id', $design_id)->first();
                 if (empty($wishlist)) {
                     $new_wishlist = new UserWishlist;
                     $new_wishlist->user_id = $user->id;
@@ -599,17 +514,16 @@ class CustomerApiController extends Controller
                         'success' => true,
                         'message' => 'Design has been Added to Wishlist.',
                         'wishlist_status' => 1,
-                        'total_quantity' =>  UserWishlist::where('user_id',$user->id)->count(),
+                        'total_quantity' =>  UserWishlist::where('user_id', $user->id)->count(),
                     ], Response::HTTP_OK);
-                }
-                else{
+                } else {
                     return response()->json([
                         'success' => true,
                         'message' => 'This design is already exists in your wishlist!',
                         'wishlist_status' => 0,
                     ], Response::HTTP_OK);
                 }
-            }else{
+            } else {
                 return response()->json([
                     'success' => true,
                     'message' => 'User not Found!',
@@ -617,9 +531,8 @@ class CustomerApiController extends Controller
                 ], Response::HTTP_OK);
             }
         } catch (\Throwable $th) {
-            return $this->sendApiResponse(false, 0,'Something went wrong!', (object)[]);
+            return $this->sendApiResponse(false, 0, 'Something went wrong!', (object)[]);
         }
-
     }
 
     public function userReomveWishlist(Request $request)
@@ -627,11 +540,11 @@ class CustomerApiController extends Controller
         try {
             $phone = $request->phone;
             $designId = $request->design_id;
-            $user = User::where('phone',$phone)->first();
+            $user = User::where('phone', $phone)->first();
             $userId = $user->id;
 
 
-            $wishlist = UserWishlist::where('user_id',$userId)->where('design_id',$designId)->first();
+            $wishlist = UserWishlist::where('user_id', $userId)->where('design_id', $designId)->first();
 
             if ($wishlist) {
                 $deletewishlist = UserWishlist::find($wishlist->id);
@@ -641,20 +554,22 @@ class CustomerApiController extends Controller
                         'success' => true,
                         'message' => 'Remove User wishlist SuccessFully',
                         'wishlist_status' => 0,
-                        'total_quantity' =>  UserWishlist::where('user_id',$userId)->count(),
-                    ], Response::HTTP_OK);
-            }else{
+                        'total_quantity' =>  UserWishlist::where('user_id', $userId)->count(),
+                    ],
+                    Response::HTTP_OK
+                );
+            } else {
                 return response()->json(
                     [
                         'success' => true,
                         'message' => 'User wishlist Not Found',
                         'wishlist_status' => 0,
-                    ], Response::HTTP_OK);
+                    ],
+                    Response::HTTP_OK
+                );
             }
-
-
         } catch (\Throwable $th) {
-            return $this->sendApiResponse(false, 0,'Failed to Load Collection Design!', (object)[]);
+            return $this->sendApiResponse(false, 0, 'Failed to Load Collection Design!', (object)[]);
         }
     }
 
@@ -664,11 +579,11 @@ class CustomerApiController extends Controller
         try {
 
             $phone = $request->phone;
-            $user = User::where('phone',$phone)->first();
+            $user = User::where('phone', $phone)->first();
             $data = new CustomerResource($user);
-            return $this->sendApiResponse(true, 0,'User Profile Loaded SuccessFully', $data);
+            return $this->sendApiResponse(true, 0, 'User Profile Loaded SuccessFully', $data);
         } catch (\Throwable $th) {
-            return $this->sendApiResponse(false, 0,'Failed to Load User Profile!', (object)[]);
+            return $this->sendApiResponse(false, 0, 'Failed to Load User Profile!', (object)[]);
         }
     }
 
@@ -679,21 +594,20 @@ class CustomerApiController extends Controller
             $input = $request->except('id');
             $user = User::find($id);
 
-            if (isset($user->id)){
+            if (isset($user->id)) {
                 $user->update($input);
-                if(isset($user->name) && !empty($user->name) && isset($user->email) && !empty($user->email) && isset($user->phone) && !empty($user->phone) && isset($user->pincode) && !empty($user->pincode) && isset($user->address) && !empty($user->address) && isset($user->city) && !empty($user->city) && isset($user->state) && !empty($user->state))
-                {
+                if (isset($user->name) && !empty($user->name) && isset($user->email) && !empty($user->email) && isset($user->phone) && !empty($user->phone) && isset($user->pincode) && !empty($user->pincode) && isset($user->address) && !empty($user->address) && isset($user->city) && !empty($user->city) && isset($user->state) && !empty($user->state)) {
                     $user->update(['verification' => 2]);
-                }else{
+                } else {
                     $user->update(['verification' => 1]);
                 }
                 $data = new CustomerResource($user);
-                return $this->sendApiResponse(true, 0,'Profile has been Updated.', $data);
-            }else{
-                return $this->sendApiResponse(false, 0,'User not Found!', (object)[]);
+                return $this->sendApiResponse(true, 0, 'Profile has been Updated.', $data);
+            } else {
+                return $this->sendApiResponse(false, 0, 'User not Found!', (object)[]);
             }
         } catch (\Throwable $th) {
-            return $this->sendApiResponse(false, 0,'Failed to Update Profile!', (object)[]);
+            return $this->sendApiResponse(false, 0, 'Failed to Update Profile!', (object)[]);
         }
     }
 
@@ -701,21 +615,21 @@ class CustomerApiController extends Controller
     {
         try {
             $user = User::find($request->user_id);
-            if(isset($user->id)){
-                if($request->hasFile('user_image')){
+            if (isset($user->id)) {
+                if ($request->hasFile('user_image')) {
                     $old_image = $user->profile;
                     $file = $request->file('user_image');
-                    $image_url = $this->addSingleImage('user_image','user_images',$file, $old_image,"300*300");
+                    $image_url = $this->addSingleImage('user_image', 'user_images', $file, $old_image, "300*300");
                     $user->profile = $image_url;
                     $user->update();
                 }
                 $data = new CustomerResource($user);
-                return $this->sendApiResponse(true, 0,'Image has been Uploaded.', $data);
-            }else{
-                return $this->sendApiResponse(false, 0,'User Not Found!', (object)[]);
+                return $this->sendApiResponse(true, 0, 'Image has been Uploaded.', $data);
+            } else {
+                return $this->sendApiResponse(false, 0, 'User Not Found!', (object)[]);
             }
         } catch (\Throwable $th) {
-            return $this->sendApiResponse(false, 0,'Failed to Upload Image!', (object)[]);
+            return $this->sendApiResponse(false, 0, 'Failed to Upload Image!', (object)[]);
         }
     }
 
@@ -723,17 +637,17 @@ class CustomerApiController extends Controller
     {
         try {
             $phone = $request->phone;
-            $user = User::where('phone',$phone)->first();
-            if(isset($user->id)){
+            $user = User::where('phone', $phone)->first();
+            if (isset($user->id)) {
                 $user_id = $user->id;
-                $collection = UserWishlist::where('user_id',$user_id)->with('designs')->get();
+                $collection = UserWishlist::where('user_id', $user_id)->with('designs')->get();
                 $data = new DesignCollectionListResource($collection);
-                return $this->sendApiResponse(true, 0,'User Wishlist Loaded SuccessFully', $data);
-            }else{
-                return $this->sendApiResponse(false, 0,'User not Found!', (object)[]);
+                return $this->sendApiResponse(true, 0, 'User Wishlist Loaded SuccessFully', $data);
+            } else {
+                return $this->sendApiResponse(false, 0, 'User not Found!', (object)[]);
             }
         } catch (\Throwable $th) {
-            return $this->sendApiResponse(false, 0,'Failed to Load User Wishlist!', (object)[]);
+            return $this->sendApiResponse(false, 0, 'Failed to Load User Wishlist!', (object)[]);
         }
     }
 
@@ -741,16 +655,16 @@ class CustomerApiController extends Controller
     {
         try {
             $email = $request->email;
-            $user = User::where('email',$email)->first();
+            $user = User::where('email', $email)->first();
             $userId = $user->id;
             $insert = $request->except('email');
             $insert['dealer_id'] = $userId;
             $data = CartDealer::create($insert);
 
-            return $this->sendApiResponse(true, 0,'Add To Cart SuccessFully', $data);
+            return $this->sendApiResponse(true, 0, 'Add To Cart SuccessFully', $data);
         } catch (\Throwable $th) {
             dd($th);
-            return $this->sendApiResponse(false, 0,'Failed to Add To Cart!', (object)[]);
+            return $this->sendApiResponse(false, 0, 'Failed to Add To Cart!', (object)[]);
         }
     }
 
@@ -758,15 +672,13 @@ class CustomerApiController extends Controller
     {
         try {
             $email = $request->email;
-            $user = User::where('email',$email)->first();
+            $user = User::where('email', $email)->first();
             $userId = $user->id;
-            $carts =  CartDealer::where('dealer_id',$userId)->with('designs')->get();
+            $carts =  CartDealer::where('dealer_id', $userId)->with('designs')->get();
             $data = new CartDelaerListResource($carts);
-            return $this->sendApiResponse(true, 0,'Cart List SuccessFully', $data);
-
+            return $this->sendApiResponse(true, 0, 'Cart List SuccessFully', $data);
         } catch (\Throwable $th) {
-            return $this->sendApiResponse(false, 0,'Failed to Cart List!', (object)[]);
-
+            return $this->sendApiResponse(false, 0, 'Failed to Cart List!', (object)[]);
         }
     }
 
@@ -775,16 +687,15 @@ class CustomerApiController extends Controller
         try {
             $cartId = $request->cart_id;
             if ($cartId) {
-                $cartRemove = CartDealer::where('id',$cartId);
+                $cartRemove = CartDealer::where('id', $cartId);
                 $cartRemove->delete();
 
-                return $this->sendApiResponse(true, 0,'Remove Cart SuccessFully', (object)[]);
+                return $this->sendApiResponse(true, 0, 'Remove Cart SuccessFully', (object)[]);
             }
         } catch (\Throwable $th) {
             //throw $th;
             dd($th);
-            return $this->sendApiResponse(false, 0,'Failed to Cart List!', (object)[]);
-
+            return $this->sendApiResponse(false, 0, 'Failed to Cart List!', (object)[]);
         }
     }
 
@@ -794,9 +705,9 @@ class CustomerApiController extends Controller
 
             $email = $request->email;
             $items = $request->items;
-            $user = User::where('email',$email)->first();
+            $user = User::where('email', $email)->first();
             $userId = $user->id;
-            foreach ($items as $item){
+            foreach ($items as $item) {
                 $data = new OrderDealerReport;
                 $data->order_date = Carbon::now()->format('Y-m-d');
                 $data->dealer_id = $userId;
@@ -805,26 +716,24 @@ class CustomerApiController extends Controller
                 $data->order_status = 'Pending';
                 $data->save();
             }
-            return $this->sendApiResponse(true, 0,'Order SuccessFully',(object)[]);
+            return $this->sendApiResponse(true, 0, 'Order SuccessFully', (object)[]);
         } catch (\Throwable $th) {
             dd($th);
-            return $this->sendApiResponse(false, 0,'Failed to Order!', (object)[]);
-
+            return $this->sendApiResponse(false, 0, 'Failed to Order!', (object)[]);
         }
-
     }
 
     public function dealerOrderList(Request $request)
     {
         try {
             $email = $request->email;
-            $user = User::where('email',$email)->first();
+            $user = User::where('email', $email)->first();
             $userId = $user->id;
-            $order =  OrderDealerReport::where('dealer_id',$userId)->with('designs')->get();
+            $order =  OrderDealerReport::where('dealer_id', $userId)->with('designs')->get();
             $data = new OrderDelaerListResource($order);
-            return $this->sendApiResponse(true, 0,'Order List SuccessFully', $data);
+            return $this->sendApiResponse(true, 0, 'Order List SuccessFully', $data);
         } catch (\Throwable $th) {
-            return $this->sendApiResponse(false, 0,'Failed to Order List!', (object)[]);
+            return $this->sendApiResponse(false, 0, 'Failed to Order List!', (object)[]);
         }
     }
 
@@ -832,29 +741,29 @@ class CustomerApiController extends Controller
     {
         try {
             $phone = $request->phone;
-            $user = User::where('phone',$phone)->first();
+            $user = User::where('phone', $phone)->first();
 
-            if($user->id){
+            if ($user->id) {
                 $user_id = $user->id;
                 $input = $request->except('phone');
                 $input['user_id'] = $user_id;
                 $input['quantity'] = (isset($request->quantity) && !empty($request->quantity)) ? $request->quantity : 1;
 
-                $is_exists = CartUser::where('user_id',$user_id)->where('design_id', $request->design_id)->where('gold_type', $request->gold_type)->where('gold_color', $request->gold_color)->first();
-                if(isset($is_exists->id)){
-                    UserWishlist::where('user_id',$user_id)->where('design_id', $request->design_id)->where('gold_type', $request->gold_type)->where('gold_color', $request->gold_color)->delete();
-                    return $this->sendApiResponse(false, 0,'Design has already exists in Your Cart!', (object)[]);
-                }else{
+                $is_exists = CartUser::where('user_id', $user_id)->where('design_id', $request->design_id)->where('gold_type', $request->gold_type)->where('gold_color', $request->gold_color)->first();
+                if (isset($is_exists->id)) {
+                    UserWishlist::where('user_id', $user_id)->where('design_id', $request->design_id)->where('gold_type', $request->gold_type)->where('gold_color', $request->gold_color)->delete();
+                    return $this->sendApiResponse(false, 0, 'Design has already exists in Your Cart!', (object)[]);
+                } else {
                     $data = CartUser::create($input);
-                    $data['total_quantity'] =  CartUser::where('user_id',$user_id)->sum('quantity');
-                    UserWishlist::where('user_id',$user_id)->where('design_id', $request->design_id)->where('gold_type', $request->gold_type)->where('gold_color', $request->gold_color)->delete();
-                    return $this->sendApiResponse(true, 0,'Design has been Added to Your Cart.', $data);
+                    $data['total_quantity'] =  CartUser::where('user_id', $user_id)->sum('quantity');
+                    UserWishlist::where('user_id', $user_id)->where('design_id', $request->design_id)->where('gold_type', $request->gold_type)->where('gold_color', $request->gold_color)->delete();
+                    return $this->sendApiResponse(true, 0, 'Design has been Added to Your Cart.', $data);
                 }
-            }else{
-                return $this->sendApiResponse(false, 0,'User not Found!', (object)[]);
+            } else {
+                return $this->sendApiResponse(false, 0, 'User not Found!', (object)[]);
             }
         } catch (\Throwable $th) {
-            return $this->sendApiResponse(false, 0,'Failed to Add to Cart!', (object)[]);
+            return $this->sendApiResponse(false, 0, 'Failed to Add to Cart!', (object)[]);
         }
     }
 
@@ -862,37 +771,38 @@ class CustomerApiController extends Controller
     {
         try {
             $phone = $request->phone;
-            $user = User::where('phone',$phone)->first();
+            $user = User::where('phone', $phone)->first();
             $userId = $user->id;
-            $cart_data['carts'] =  CartUser::where('user_id',$userId)->with('designs')->get();
-            $cart_data['total_qty'] =  CartUser::where('user_id',$userId)->sum('quantity');
+            $cart_data['carts'] =  CartUser::where('user_id', $userId)->with('designs')->get();
+            $cart_data['total_qty'] =  CartUser::where('user_id', $userId)->sum('quantity');
 
             $data = new CartUserListResource($cart_data);
-            return $this->sendApiResponse(true, 0,'Cart List SuccessFully', $data);
+            return $this->sendApiResponse(true, 0, 'Cart List SuccessFully', $data);
         } catch (\Throwable $th) {
-            return $this->sendApiResponse(false, 0,'Failed to Cart List!', (object)[]);
+            return $this->sendApiResponse(false, 0, 'Failed to Cart List!', (object)[]);
         }
     }
 
-    public function userCartUpdate(Request $request) {
+    public function userCartUpdate(Request $request)
+    {
         try {
             $cart_item_id = $request->id;
             $update_type = $request->update_type;
             $cart_item = CartUser::find($cart_item_id);
 
-            if($cart_item){
-                if($update_type == 'increment'){
+            if ($cart_item) {
+                if ($update_type == 'increment') {
                     $cart_item->quantity = $cart_item->quantity + 1;
-                }else{
+                } else {
                     $cart_item->quantity = $cart_item->quantity - 1;
                 }
                 $cart_item->update();
-                return $this->sendApiResponse(true, 0,'Cart has been Updated SuccessFully...', (object)[]);
-            }else{
-                return $this->sendApiResponse(false, 0,'Failed to Update Cart!', (object)[]);
+                return $this->sendApiResponse(true, 0, 'Cart has been Updated SuccessFully...', (object)[]);
+            } else {
+                return $this->sendApiResponse(false, 0, 'Failed to Update Cart!', (object)[]);
             }
         } catch (\Throwable $th) {
-            return $this->sendApiResponse(false, 0,'Failed to Update Cart!', (object)[]);
+            return $this->sendApiResponse(false, 0, 'Failed to Update Cart!', (object)[]);
         }
     }
 
@@ -901,22 +811,19 @@ class CustomerApiController extends Controller
         try {
             $cartId = $request->cart_id;
             if ($cartId) {
-                $cart_item = CartUser::where('id',$cartId)->first();
+                $cart_item = CartUser::where('id', $cartId)->first();
                 $cart_item->delete();
-                $data['total_quantity'] =  CartUser::where('user_id',$cart_item['user_id'])->sum('quantity');
-                return $this->sendApiResponse(true, 0,'Remove Cart SuccessFully', $data);
+                $data['total_quantity'] =  CartUser::where('user_id', $cart_item['user_id'])->sum('quantity');
+                return $this->sendApiResponse(true, 0, 'Remove Cart SuccessFully', $data);
             }
         } catch (\Throwable $th) {
-            return $this->sendApiResponse(false, 0,'Failed to Cart List!', (object)[]);
-
+            return $this->sendApiResponse(false, 0, 'Failed to Cart List!', (object)[]);
         }
-
     }
 
     public function userPurchaseOrder(Request $request)
     {
-        try
-        {
+        try {
             $user_id = $request->user_id;
             $dealer_code = (isset($request->dealer_code)) ? $request->dealer_code : '';
             $dealer_discount_type = (isset($request->dealer_discount_type)) ? $request->dealer_discount_type : '';
@@ -964,7 +871,7 @@ class CustomerApiController extends Controller
             // $commission_days = (isset($dealer->commission_days)) ? $dealer->commission_days : 10;
             // $commission_date = Carbon::now()->addDays($commission_days);
 
-            if($user && count($cart_items) > 0){
+            if ($user && count($cart_items) > 0) {
 
                 // Create New Order
                 $order = new Order();
@@ -987,10 +894,10 @@ class CustomerApiController extends Controller
                 $order->total = $total;
                 $order->save();
 
-                if($order->id) {
+                if ($order->id) {
                     $product_ids = [];
-                    foreach($cart_items as $cart_item){
-                        $cart_item = CartUser::with(['designs'])->where('id',$cart_item)->first();
+                    foreach ($cart_items as $cart_item) {
+                        $cart_item = CartUser::with(['designs'])->where('id', $cart_item)->first();
                         $item_quantity = $cart_item->quantity;
                         $gold_type = $cart_item->gold_type;
                         $gold_color = $gold_color_arr[$cart_item->gold_color];
@@ -1056,11 +963,11 @@ class CustomerApiController extends Controller
                     'message' => 'Order has been Placed SuccessFully.',
                     'data'    => $order->id,
                 ], Response::HTTP_OK);
-            }else{
-                return $this->sendApiResponse(false, 0,'Failed to Purchase Order!', (object)[]);
+            } else {
+                return $this->sendApiResponse(false, 0, 'Failed to Purchase Order!', (object)[]);
             }
-        }catch (\Throwable $th){
-            return $this->sendApiResponse(false, 0,'Failed to Purchase Order!', (object)[]);
+        } catch (\Throwable $th) {
+            return $this->sendApiResponse(false, 0, 'Failed to Purchase Order!', (object)[]);
         }
     }
 
@@ -1068,11 +975,11 @@ class CustomerApiController extends Controller
     public function getStateCities(Request $request)
     {
         try {
-            $cities = City::select('id','state_id','name')->where('state_id',$request->state_id)->get();
+            $cities = City::select('id', 'state_id', 'name')->where('state_id', $request->state_id)->get();
             $data = new StateCitiesResource($cities);
-            return $this->sendApiResponse(true, 0,'State records retrived SuccessFully..', $data);
+            return $this->sendApiResponse(true, 0, 'State records retrived SuccessFully..', $data);
         } catch (\Throwable $th) {
-            return $this->sendApiResponse(false, 0,'Failed to retrived States!', (object)[]);
+            return $this->sendApiResponse(false, 0, 'Failed to retrived States!', (object)[]);
         }
     }
 
@@ -1080,11 +987,11 @@ class CustomerApiController extends Controller
     public function getHeaderTags()
     {
         try {
-            $tags = Tag::where('display_on_header',1)->where('status',1)->get();
+            $tags = Tag::where('display_on_header', 1)->where('status', 1)->get();
             $data = new HeaderTagsResource($tags);
-            return $this->sendApiResponse(true, 0,'Header Tags retrived SuccessFully..', $data);
+            return $this->sendApiResponse(true, 0, 'Header Tags retrived SuccessFully..', $data);
         } catch (\Throwable $th) {
-            return $this->sendApiResponse(false, 0,'Failed to retrived Tags!', (object)[]);
+            return $this->sendApiResponse(false, 0, 'Failed to retrived Tags!', (object)[]);
         }
     }
 
@@ -1094,22 +1001,22 @@ class CustomerApiController extends Controller
         try {
             $dealer_code = (isset($request->dealer_code)) ? $request->dealer_code : '';
 
-            if(!empty($dealer_code)){
+            if (!empty($dealer_code)) {
                 // Dealer
                 $dealer = User::where('dealer_code', $dealer_code)->first();
-                if(isset($dealer->id) && $dealer->status == 1){
+                if (isset($dealer->id) && $dealer->status == 1) {
                     $code_data['dealer_code'] = $dealer->dealer_code;
                     $code_data['discount_type'] = $dealer->discount_type;
                     $code_data['discount_value'] = $dealer->discount_value;
-                    return $this->sendApiResponse(true, 0,'Dealer code has been Applied SuccessFully.', $code_data);
-                }else{
-                    return $this->sendApiResponse(false, 0,'Please Enter a Valid Dealer Code!', (object)[]);
+                    return $this->sendApiResponse(true, 0, 'Dealer code has been Applied SuccessFully.', $code_data);
+                } else {
+                    return $this->sendApiResponse(false, 0, 'Please Enter a Valid Dealer Code!', (object)[]);
                 }
-            }else{
-                return $this->sendApiResponse(false, 0,'Please Enter a Dealer Code!', (object)[]);
+            } else {
+                return $this->sendApiResponse(false, 0, 'Please Enter a Dealer Code!', (object)[]);
             }
         } catch (\Throwable $th) {
-            return $this->sendApiResponse(false, 0,'Something went Wrong!', (object)[]);
+            return $this->sendApiResponse(false, 0, 'Something went Wrong!', (object)[]);
         }
     }
 
@@ -1117,8 +1024,7 @@ class CustomerApiController extends Controller
     // Function for Get Settings
     public function getSiteSettings()
     {
-        try
-        {
+        try {
             $keys = [
                 'instagram_link',
                 'facebook_link',
@@ -1128,42 +1034,32 @@ class CustomerApiController extends Controller
             ];
 
             $settings = [];
-            foreach($keys as $key_val)
-            {
+            foreach ($keys as $key_val) {
                 $setting = AdminSetting::where('setting_key', $key_val)->first();
                 $settings[$key_val] = (isset($setting->value) && !empty($setting->value)) ? $setting->value : '';
             }
 
-            return $this->sendApiResponse(true, 0,'Site Settings has been Fetched.', $settings);
-
-        }
-        catch (\Throwable $th)
-        {
-            return $this->sendApiResponse(false, 0,'Something went Wrong!', (object)[]);
+            return $this->sendApiResponse(true, 0, 'Site Settings has been Fetched.', $settings);
+        } catch (\Throwable $th) {
+            return $this->sendApiResponse(false, 0, 'Something went Wrong!', (object)[]);
         }
     }
 
 
     // Function for Get Page Settings
-    public function customPages(Request $request)
+    public function getPageDetails(Request $request)
     {
         try {
             $page_slug = (isset($request->page_slug)) ? $request->page_slug : '';
-            if(empty($page_slug)){
-                $pages = Page::where('status',1)->where('is_static', 0)->get();
-            }else{
-                $pages = Page::where('slug',$page_slug)->get();
+            $page = Page::where('slug', $page_slug)->first();
+            if (isset($page->id)) {
+                $data = new CustomPagesResource($page);
+                return $this->sendApiResponse(true, 0, 'Page Details has been Fetched..', $data);
+            } else {
+                return $this->sendApiResponse(false, 0, 'Oops, Page Not Found!', (object)[]);
             }
-
-            if(count($pages) > 0){
-                $data = new CustomPagesResource($pages);
-                return $this->sendApiResponse(true, 0,'Pages retrived SuccessFully..', $data);
-            }else{
-                return $this->sendApiResponse(false, 0,'Oops, Page Not Found!', (object)[]);
-            }
-
         } catch (\Throwable $th) {
-            return $this->sendApiResponse(false, 0,'Something went Wrong!', (object)[]);
+            return $this->sendApiResponse(false, 0, 'Something went Wrong!', (object)[]);
         }
     }
 
@@ -1176,25 +1072,24 @@ class CustomerApiController extends Controller
             $user_type = $request->user_type;
             $user = User::where('id', $user_id)->where('user_type', $user_type)->first();
 
-            if(isset($user->id)){
-                if($user->user_type == 1){
+            if (isset($user->id)) {
+                if ($user->user_type == 1) {
                     $order_details = Order::with(['order_items'])->where('id', $order_id)->where('dealer_id', $user_id)->first();
-                }else{
+                } else {
                     $order_details = Order::with(['order_items'])->where('id', $order_id)->where('user_id', $user_id)->first();
                 }
 
-                if(isset($order_details->id)){
+                if (isset($order_details->id)) {
                     $data = new OrderDetailsResource($order_details);
-                    return $this->sendApiResponse(true, 0,'Order Details has been Fetched.', $data);
-                }else{
-                    return $this->sendApiResponse(false, 0,'Order Not Found!', (object)[]);
+                    return $this->sendApiResponse(true, 0, 'Order Details has been Fetched.', $data);
+                } else {
+                    return $this->sendApiResponse(false, 0, 'Order Not Found!', (object)[]);
                 }
-            }
-            else{
-                return $this->sendApiResponse(false, 0,'User Not Found!', (object)[]);
+            } else {
+                return $this->sendApiResponse(false, 0, 'User Not Found!', (object)[]);
             }
         } catch (\Throwable $th) {
-            return $this->sendApiResponse(false, 0,'Something went Wrong!', (object)[]);
+            return $this->sendApiResponse(false, 0, 'Something went Wrong!', (object)[]);
         }
     }
 
@@ -1205,20 +1100,19 @@ class CustomerApiController extends Controller
             $user_type = $request->user_type;
             $user_id = $request->user_id;
             $user = User::where('id', $user_id)->where('user_type', $user_type)->first();
-            if(isset($user->id)){
-                if($user->user_type == 1){
+            if (isset($user->id)) {
+                if ($user->user_type == 1) {
                     $orders = Order::where('dealer_id', $user->id)->orderBy('created_at', 'DESC')->get();
-                }else{
+                } else {
                     $orders = Order::where('user_id', $user->id)->orderBy('created_at', 'DESC')->get();
                 }
                 $data = new OrdersResource($orders);
-                return $this->sendApiResponse(true, 0,'Orders has been Fetched.', $data);
-            }else{
-                return $this->sendApiResponse(false, 0,'User Not Found!', (object)[]);
+                return $this->sendApiResponse(true, 0, 'Orders has been Fetched.', $data);
+            } else {
+                return $this->sendApiResponse(false, 0, 'User Not Found!', (object)[]);
             }
         } catch (\Throwable $th) {
-            return $this->sendApiResponse(false, 0,'Something went Wrong!', (object)[]);
+            return $this->sendApiResponse(false, 0, 'Something went Wrong!', (object)[]);
         }
     }
-
 }
