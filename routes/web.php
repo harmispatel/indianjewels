@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\{Auth, Route, Artisan};
-use App\Http\Controllers\{AuthController, DashboardController, CategoryController, TagController, DesignController, RoleController, AdminController, AdminSettingsController, BottomBannerController, CommonController, CustomerController, DealerController , OrderController, ReportController, ImportExportController, MiddleBannerController, PageController, TopBannerController};
+use App\Http\Controllers\{AuthController, DashboardController, CategoryController, TagController, DesignController, RoleController, AdminController, AdminSettingsController, BottomBannerController, CommonController, CustomerController, DealerController , OrderController, ReportController, ImportExportController, MiddleBannerController, PageController, TopBannerController, WomansClubRequestController};
 use Illuminate\Http\Request;
 
 /*
@@ -218,6 +218,13 @@ Route::group(['prefix' => 'admin'], function ()
         Route::controller(AdminSettingsController::class)->group(function () {
             Route::get('settings',  'index')->name('settings.index');
             Route::post('settings/update',  'update')->name('settings.update');
+        });
+
+        // Womans Club
+        Route::controller(WomansClubRequestController::class)->group(function () {
+            Route::get('womans-club',  'index')->name('womans-club.index');
+            Route::get('womans-club/load',  'load')->name('womans-club.load');
+            Route::get('womans-club/details/{id}',  'show')->name('womans-club.details');
         });
 
         Route::post('/fetch-excel-by-cmd', function (Request $request){

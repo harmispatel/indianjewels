@@ -7,9 +7,9 @@ use Carbon\Carbon;
 use App\Traits\ImageTrait;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\{Request, Response};
-use App\Models\{Tag, User, City, Page, Order, Metal, Design, Gender, Category, CartUser, CartDealer, AdminSetting, UserDocument, UserWishlist, DealerCollection, OrderDealerReport, OrderItems};
+use App\Models\{Tag, User, City, Page, Order, Metal, Design, Gender, Category, CartUser, CartDealer, AdminSetting, UserDocument, UserWishlist, DealerCollection, OrderDealerReport, OrderItems, WomansClubRequest};
 use App\Http\Resources\{BannerResource, CategoryResource, DesignsResource, DetailDesignResource, FlashDesignResource, HighestDesignResource, MetalResource, GenderResource, CustomerResource, DesignsCollectionFirstResource, DesignCollectionListResource, CartDelaerListResource, OrderDelaerListResource, CartUserListResource, CustomPagesResource, HeaderTagsResource, OrderDetailsResource, OrdersResource, StateCitiesResource};
-use App\Http\Requests\APIRequest\{DesignDetailRequest, DesignsRequest, SubCategoryRequest, UserProfileRequest};
+use App\Http\Requests\APIRequest\{DesignDetailRequest, DesignsRequest, SubCategoryRequest, UserProfileRequest, WomansClubsRequest};
 use Illuminate\Support\Collection;
 
 class CustomerApiController extends Controller
@@ -1111,6 +1111,18 @@ class CustomerApiController extends Controller
             } else {
                 return $this->sendApiResponse(false, 0, 'User Not Found!', (object)[]);
             }
+        } catch (\Throwable $th) {
+            return $this->sendApiResponse(false, 0, 'Something went Wrong!', (object)[]);
+        }
+    }
+
+    function womansClubRequest(WomansClubsRequest $request)
+    {
+        try {
+            $input = $request->except(['how_you_know']);
+            $input['how_you_know'] = serialize($request->how_you_know);
+            WomansClubRequest::create($input);
+            return $this->sendApiResponse(true, 0, 'Your Request has been Sent.', []);
         } catch (\Throwable $th) {
             return $this->sendApiResponse(false, 0, 'Something went Wrong!', (object)[]);
         }

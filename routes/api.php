@@ -71,6 +71,8 @@ Route::get('site-settings', [CustomerApiController::class, 'getSiteSettings']);
 
 Route::post('order-details', [CustomerApiController::class, 'orderDetails']);
 Route::post('my-orders', [CustomerApiController::class, 'myOrders']);
+Route::post('womans-club-request', [CustomerApiController::class, 'womansClubRequest']);
 
 Route::post('forget-password', [AuthApiController::class, 'forgetPassword']);
 Route::post('reset-password', [AuthApiController::class, 'resetPassword']);
+

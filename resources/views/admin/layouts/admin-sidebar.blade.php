@@ -150,6 +150,13 @@ $page_key = (isset(Route::current()->parameters()['page_key'])) ? Route::current
             </ul>
         </li>
 
+        {{-- Womans Club --}}
+        <li class="nav-item">
+            <a class="nav-link {{ ($currentRouteName == 'womans-club.index' || $currentRouteName == 'womans-club.details') ? '' : 'collapsed' }}" href="{{ route('womans-club.index') }}">
+                <i class="fa-solid fa-person-dress"></i><span>Womans Club</span>
+            </a>
+        </li>
+
         {{-- Reports --}}
         <li class="nav-item">
             <a class="nav-link {{ $currentRouteName == 'reports.summary' || $currentRouteName == 'reports.star' || $currentRouteName == 'reports.scheme' || $currentRouteName == 'reports.performance' || $currentRouteName == 'reports.performance.details' ? '' : 'collapsed' }}" data-bs-target="#report-nav" data-bs-toggle="collapse" href="#">
