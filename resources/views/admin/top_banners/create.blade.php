@@ -77,10 +77,10 @@
                                                     </div>
                                                 @endif
                                             </div>
-                                            <div class="col-md-12 mb-3">
+                                            {{-- <div class="col-md-12 mb-3">
                                                 <label for="description" class="form-label">Description</label>
                                                 <textarea name="description" id="description" class="form-control">{{ old('description') }}</textarea>
-                                            </div>
+                                            </div> --}}
                                         </div>
                                     </div>
                                 </div>
@@ -107,93 +107,93 @@
         });
 
         // CKEditor for Description
-        CKEDITOR.ClassicEditor.create(document.getElementById("description"),
-        {
-            toolbar: {
-                items: [
-                    'heading', '|',
-                    'bold', 'italic', 'strikethrough', 'underline', 'code', 'subscript', 'superscript', 'removeFormat', '|',
-                    'bulletedList', 'numberedList', 'todoList', '|',
-                    'outdent', 'indent', '|',
-                    'undo', 'redo',
-                    '-',
-                    'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'highlight', '|',
-                    'alignment', '|',
-                    'link', 'insertImage', 'blockQuote', 'insertTable', 'mediaEmbed', 'codeBlock', 'htmlEmbed', '|',
-                    'specialCharacters', 'horizontalLine', 'pageBreak', '|',
-                    'sourceEditing'
-                ],
-                shouldNotGroupWhenFull: true
-            },
-            list: {
-                properties: {
-                    styles: true,
-                    startIndex: true,
-                    reversed: true
-                }
-            },
-            'height':500,
-            fontSize: {
-                options: [ 10, 12, 14, 'default', 18, 20, 22 ],
-                supportAllValues: true
-            },
-            htmlSupport: {
-                allow: [
-                    {
-                        name: /.*/,
-                        attributes: true,
-                        classes: true,
-                        styles: true
-                    }
-                ]
-            },
-            htmlEmbed: {
-                showPreviews: true
-            },
-            link: {
-                decorators: {
-                    addTargetToExternalLinks: true,
-                    defaultProtocol: 'https://',
-                    toggleDownloadable: {
-                        mode: 'manual',
-                        label: 'Downloadable',
-                        attributes: {
-                            download: 'file'
-                        }
-                    }
-                }
-            },
-            mention: {
-                feeds: [
-                    {
-                        marker: '@',
-                        feed: [
-                            '@apple', '@bears', '@brownie', '@cake', '@cake', '@candy', '@canes', '@chocolate', '@cookie', '@cotton', '@cream',
-                            '@cupcake', '@danish', '@donut', '@dragée', '@fruitcake', '@gingerbread', '@gummi', '@ice', '@jelly-o',
-                            '@liquorice', '@macaroon', '@marzipan', '@oat', '@pie', '@plum', '@pudding', '@sesame', '@snaps', '@soufflé',
-                            '@sugar', '@sweet', '@topping', '@wafer'
-                        ],
-                        minimumCharacters: 1
-                    }
-                ]
-            },
-            removePlugins: [
-                'CKBox',
-                'CKFinder',
-                'EasyImage',
-                'RealTimeCollaborativeComments',
-                'RealTimeCollaborativeTrackChanges',
-                'RealTimeCollaborativeRevisionHistory',
-                'PresenceList',
-                'Comments',
-                'TrackChanges',
-                'TrackChangesData',
-                'RevisionHistory',
-                'Pagination',
-                'WProofreader',
-                'MathType'
-            ]
-        });
+        // CKEDITOR.ClassicEditor.create(document.getElementById("description"),
+        // {
+        //     toolbar: {
+        //         items: [
+        //             'heading', '|',
+        //             'bold', 'italic', 'strikethrough', 'underline', 'code', 'subscript', 'superscript', 'removeFormat', '|',
+        //             'bulletedList', 'numberedList', 'todoList', '|',
+        //             'outdent', 'indent', '|',
+        //             'undo', 'redo',
+        //             '-',
+        //             'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'highlight', '|',
+        //             'alignment', '|',
+        //             'link', 'insertImage', 'blockQuote', 'insertTable', 'mediaEmbed', 'codeBlock', 'htmlEmbed', '|',
+        //             'specialCharacters', 'horizontalLine', 'pageBreak', '|',
+        //             'sourceEditing'
+        //         ],
+        //         shouldNotGroupWhenFull: true
+        //     },
+        //     list: {
+        //         properties: {
+        //             styles: true,
+        //             startIndex: true,
+        //             reversed: true
+        //         }
+        //     },
+        //     'height':500,
+        //     fontSize: {
+        //         options: [ 10, 12, 14, 'default', 18, 20, 22 ],
+        //         supportAllValues: true
+        //     },
+        //     htmlSupport: {
+        //         allow: [
+        //             {
+        //                 name: /.*/,
+        //                 attributes: true,
+        //                 classes: true,
+        //                 styles: true
+        //             }
+        //         ]
+        //     },
+        //     htmlEmbed: {
+        //         showPreviews: true
+        //     },
+        //     link: {
+        //         decorators: {
+        //             addTargetToExternalLinks: true,
+        //             defaultProtocol: 'https://',
+        //             toggleDownloadable: {
+        //                 mode: 'manual',
+        //                 label: 'Downloadable',
+        //                 attributes: {
+        //                     download: 'file'
+        //                 }
+        //             }
+        //         }
+        //     },
+        //     mention: {
+        //         feeds: [
+        //             {
+        //                 marker: '@',
+        //                 feed: [
+        //                     '@apple', '@bears', '@brownie', '@cake', '@cake', '@candy', '@canes', '@chocolate', '@cookie', '@cotton', '@cream',
+        //                     '@cupcake', '@danish', '@donut', '@dragée', '@fruitcake', '@gingerbread', '@gummi', '@ice', '@jelly-o',
+        //                     '@liquorice', '@macaroon', '@marzipan', '@oat', '@pie', '@plum', '@pudding', '@sesame', '@snaps', '@soufflé',
+        //                     '@sugar', '@sweet', '@topping', '@wafer'
+        //                 ],
+        //                 minimumCharacters: 1
+        //             }
+        //         ]
+        //     },
+        //     removePlugins: [
+        //         'CKBox',
+        //         'CKFinder',
+        //         'EasyImage',
+        //         'RealTimeCollaborativeComments',
+        //         'RealTimeCollaborativeTrackChanges',
+        //         'RealTimeCollaborativeRevisionHistory',
+        //         'PresenceList',
+        //         'Comments',
+        //         'TrackChanges',
+        //         'TrackChangesData',
+        //         'RevisionHistory',
+        //         'Pagination',
+        //         'WProofreader',
+        //         'MathType'
+        //     ]
+        // });
 
     </script>
 @endsection

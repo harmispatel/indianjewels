@@ -13,8 +13,8 @@ class PageController extends Controller
     {
         if ($page_slug == 'faq') {
             $page_title = 'FAQ Page';
-        } else if ($page_slug == 'stores') {
-            $page_title = 'Stores Page';
+        } else if ($page_slug == 'contact-us') {
+            $page_title = 'Contact US Page';
         } else if ($page_slug == 'about-us') {
             $page_title = 'About US Page';
         } else if ($page_slug == 'customization') {

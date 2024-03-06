@@ -128,8 +128,8 @@ $page_key = (isset(Route::current()->parameters()['page_key'])) ? Route::current
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('pages.index','stores') }}" class="{{ ($currentRouteName == 'pages.index' && $page_key == 'stores') ? 'active' : '' }}">
-                        <i class="{{ ($currentRouteName == 'pages.index' && $page_key == 'stores') ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Stores</span>
+                    <a href="{{ route('pages.index','contact-us') }}" class="{{ ($currentRouteName == 'pages.index' && $page_key == 'contact-us') ? 'active' : '' }}">
+                        <i class="{{ ($currentRouteName == 'pages.index' && $page_key == 'contact-us') ? 'bi bi-circle-fill' : 'bi bi-circle' }}"></i><span>Contact US</span>
                     </a>
                 </li>
                 <li>
@@ -154,6 +154,13 @@ $page_key = (isset(Route::current()->parameters()['page_key'])) ? Route::current
         <li class="nav-item">
             <a class="nav-link {{ ($currentRouteName == 'womans-club.index' || $currentRouteName == 'womans-club.details') ? '' : 'collapsed' }}" href="{{ route('womans-club.index') }}">
                 <i class="fa-solid fa-person-dress"></i><span>Womans Club</span>
+            </a>
+        </li>
+
+        {{-- Testimonials --}}
+        <li class="nav-item">
+            <a class="nav-link {{ ($currentRouteName == 'testimonials.index' || $currentRouteName == 'testimonials.create' || $currentRouteName == 'testimonials.edit') ? '' : 'collapsed' }}" href="{{ route('testimonials.index') }}">
+                <i class="bi bi-chat-quote"></i><span>Testimonials</span>
             </a>
         </li>
 

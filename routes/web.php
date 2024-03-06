@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\{Auth, Route, Artisan};
-use App\Http\Controllers\{AuthController, DashboardController, CategoryController, TagController, DesignController, RoleController, AdminController, AdminSettingsController, BottomBannerController, CommonController, CustomerController, DealerController , OrderController, ReportController, ImportExportController, MiddleBannerController, PageController, TopBannerController, WomansClubRequestController};
+use App\Http\Controllers\{AuthController, DashboardController, CategoryController, TagController, DesignController, RoleController, AdminController, AdminSettingsController, BottomBannerController, CommonController, CustomerController, DealerController , OrderController, ReportController, ImportExportController, MiddleBannerController, PageController, TestimonialController, TopBannerController, WomansClubRequestController};
 use Illuminate\Http\Request;
 
 /*
@@ -227,6 +227,18 @@ Route::group(['prefix' => 'admin'], function ()
             Route::get('womans-club/details/{id}',  'show')->name('womans-club.details');
         });
 
+        // Designs
+        Route::controller(TestimonialController::class)->group(function () {
+            Route::get('testimonials', 'index')->name('testimonials.index');
+            Route::get('testimonials/load', 'load')->name('testimonials.load');
+            Route::get('testimonials/create', 'create')->name('testimonials.create');
+            Route::post('testimonials/store', 'store')->name('testimonials.store');
+            Route::get('testimonials/edit/{id}', 'edit')->name('testimonials.edit');
+            Route::post('testimonials/update', 'update')->name('testimonials.update');
+            Route::post('testimonials/status', 'status')->name('testimonials.status');
+            Route::post('testimonials/destroy', 'destroy')->name('testimonials.destroy');
+        });
+
         Route::post('/fetch-excel-by-cmd', function (Request $request){
             try {
                 Artisan::call('import:design-from-google-sheet');
@@ -241,6 +253,7 @@ Route::group(['prefix' => 'admin'], function ()
                 ]);
             }
         })->name('fetch.design.excel');
+
 
     });
 
