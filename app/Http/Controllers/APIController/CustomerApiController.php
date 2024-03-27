@@ -7,8 +7,8 @@ use Carbon\Carbon;
 use App\Traits\ImageTrait;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\{Request, Response};
-use App\Models\{Tag, User, City, Page, Order, Metal, Design, Gender, Category, CartUser, CartDealer, AdminSetting, UserDocument, UserWishlist, DealerCollection, OrderDealerReport, OrderItems, WomansClubRequest};
-use App\Http\Resources\{BannerResource, CategoryResource, DesignsResource, DetailDesignResource, FlashDesignResource, HighestDesignResource, MetalResource, GenderResource, CustomerResource, DesignsCollectionFirstResource, DesignCollectionListResource, CartDelaerListResource, OrderDelaerListResource, CartUserListResource, CustomPagesResource, HeaderTagsResource, OrderDetailsResource, OrdersResource, StateCitiesResource};
+use App\Models\{Tag, User, City, Page, Order, Metal, Design, Gender, Category, CartUser, CartDealer, AdminSetting, UserDocument, UserWishlist, DealerCollection, OrderDealerReport, OrderItems, WomansClubRequest,Testimonial};
+use App\Http\Resources\{BannerResource, CategoryResource, DesignsResource, DetailDesignResource, FlashDesignResource, HighestDesignResource, MetalResource, GenderResource, CustomerResource, DesignsCollectionFirstResource, DesignCollectionListResource, CartDelaerListResource, OrderDelaerListResource, CartUserListResource, CustomPagesResource, HeaderTagsResource, OrderDetailsResource, OrdersResource, StateCitiesResource,TestimonialsCollection};
 use App\Http\Requests\APIRequest\{DesignDetailRequest, DesignsRequest, SubCategoryRequest, UserProfileRequest, WomansClubsRequest};
 use Illuminate\Support\Collection;
 
@@ -1127,4 +1127,14 @@ class CustomerApiController extends Controller
             return $this->sendApiResponse(false, 0, 'Something went Wrong!', (object)[]);
         }
     }
+
+    function testimonials(){
+        try {
+            $data=Testimonial::all();
+            return new TestimonialsCollection($data);
+        } catch (\Throwable $th) {
+            return $this->sendApiResponse(false, 0, 'Something went Wrong!', (object)[]);
+        }
+    }
+
 }

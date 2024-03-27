@@ -76,3 +76,5 @@ Route::post('womans-club-request', [CustomerApiController::class, 'womansClubReq
 Route::post('forget-password', [AuthApiController::class, 'forgetPassword']);
 Route::post('reset-password', [AuthApiController::class, 'resetPassword']);
 
+
+Route::get('testimonials', [CustomerApiController::class, 'testimonials']);

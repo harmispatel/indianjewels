@@ -23,7 +23,7 @@ class WomansClubsRequest extends FormRequest
             'mobile' => 'required',
             'city' => 'required',
             'how_you_know' => 'required',
-            'message' => 'required|min:50',
+            'message' => 'nullable|min:50',
         ];
 
         return $rules;
